@@ -37,9 +37,9 @@ function FAQ() {
           </div>
           <div className="text-xl" onClick={() => toggleAnswer(1)}>
             {showAnswer1 ? (
-              <RemoveCircleOutlineOutlinedIcon className="text-lg" />
+              <RemoveCircleOutlineOutlinedIcon className="text-lg cursor-pointer" />
             ) : (
-              <AddCircleOutlineOutlinedIcon className="text-lg" />
+              <AddCircleOutlineOutlinedIcon className="text-lg cursor-pointer" />
             )}
           </div>
         </div>
@@ -56,9 +56,9 @@ function FAQ() {
           </div>
           <div className="text-xl" onClick={() => toggleAnswer(2)}>
             {showAnswer2 ? (
-              <RemoveCircleOutlineOutlinedIcon className="text-lg" />
+              <RemoveCircleOutlineOutlinedIcon className="text-lg cursor-pointer" />
             ) : (
-              <AddCircleOutlineOutlinedIcon className="text-lg" />
+              <AddCircleOutlineOutlinedIcon className="text-lg cursor-pointer" />
             )}
           </div>
         </div>
@@ -75,9 +75,9 @@ function FAQ() {
           </div>
           <div className="text-xl" onClick={() => toggleAnswer(3)}>
             {showAnswer3 ? (
-              <RemoveCircleOutlineOutlinedIcon className="text-lg" />
+              <RemoveCircleOutlineOutlinedIcon className="text-lg cursor-pointer" />
             ) : (
-              <AddCircleOutlineOutlinedIcon className="text-lg" />
+              <AddCircleOutlineOutlinedIcon className="text-lg cursor-pointer" />
             )}
           </div>
         </div>

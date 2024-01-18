@@ -1,24 +1,46 @@
 import * as React from "react";
+import LoginImage from "../images/log1.jpg";
+
 
 function Login(props) {
   return (
-   <div>
-    <div className="flex">
-        <div className="flex flex-col gap-8 w-1/2 justify-center items-center py-12 bg-bg-color text-white">
-            <div className="flex flex-col gap-4">
-                <h2 className="text-2xl font-bold">Login</h2>
-                <p>Enter your Credentials to Login</p>
+    <div className="flex h-screen">
+      {/* Left side */}
+      <div className="flex w-1/2 border-black-100 border-5">
+        <div className="flex flex-col gap-8 p-8 bg-bg-color text-white w-full">
+       
+          <div className="flex flex-col gap-5">
+            <h2 className="text-5xl font-bold">Login</h2>
+            <p className="text-2xl">Enter your Credentials to Login</p>
+          </div>
+          <div className="flex flex-col gap-4">
+            <div className="text-black">
+              <p className="text-white pl-1">Email</p>
+              <input
+                className="p-2 rounded-lg w-full"
+                placeholder="Enter Email"
+              />
             </div>
-            <div className="flex flex-col gap-4">
-                <div className="text-black"><p className="text-white pl-1">Email</p><input className="p-1 rounded-lg"placeholder="Enter Email"></input></div>
-                <div className="text-black mt-6"><p className="text-white pl-1">Password</p><input className="p-1 rounded-lg"placeholder="Enter Password"></input></div>
+            <div className="text-black mt-4">
+              <p className="text-white pl-1">Password</p>
+              <input
+                className="p-2 rounded-lg w-full"
+                placeholder="Enter Password"
+              />
             </div>
+          </div>
+          <button className="bg-blue-500 text-white p-2 rounded-lg w-full">
+            Login
+          </button>
         </div>
-        <div></div>
+      </div>
+
+      {/* Right side */}
+      <div className="w-1/2 border-gray-100 border-5">
+        <img src={LoginImage} alt="login" className="w-full h-full object-cover" />
+      </div>
     </div>
-   </div>
   );
 }
-
 
 export default Login;
