@@ -36,14 +36,14 @@ const authenticateUser = async (email, password) => {
             return { userType: "employee", user: empUser };
         }
 
-        // Email not found or password incorrect
-        return { userType: "invalid", user: null };
+        // Password does not match
+        return { userType: "error", user: null, error: "Password does not match." };
     } catch (error) {
         console.error("Error authenticating user:", error);
-        return { userType: "error", user: null };
+        return { userType: "error", user: null, error: "An error occurred while authenticating user." };
     } finally {
         await client.close();
     }
 };
 
-module.exports ={ authenticateUser};
+module.exports = { authenticateUser };

@@ -1,16 +1,18 @@
-const express = require('express');
+const express = require("express");
 const bcrypt = require("bcrypt");
 
-const {authenticateUser}=require('../Authentication/userAuth')
- 
-const router=express.Router();
+const { authenticateUser } = require("../Authentication/userAuth");
 
-router.post('/', async (req, res) => {
+const router = express.Router();
 
-   const {email,password}=req.body;
-   const user=await authenticateUser(email,password);
-   console.log(user);
-   res.send(user);
-   
-})
-module.exports=router;
+router.post("/", async (req, res) => {
+  const { email, password } = req.body;
+  const user = await authenticateUser(email, password);
+  console.log(user);
+  if (!user.user) {
+    res.status(500).send(user);
+  } else {
+    res.status(200).send(user);
+  }
+});
+module.exports = router;
