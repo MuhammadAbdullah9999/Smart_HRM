@@ -1,16 +1,14 @@
-const { getUserData } = require("./utilities/getUserData");
-const { getHrAndEmployee } = require("../GetOrganizationData/GetHRandEmployee");
-const { connectToMongoDB, closeMongoDBConnection } = require("../connectDB");
-const bcrypt = require("bcrypt");
+const argon2 = require("argon2");
 
 const authenticateUser = async (email, password) => {
   try {
     const db = await connectToMongoDB();
+
     // Check if the email exists in the Organizations collection
     const orgCollection = db.collection("Organizations");
     const orgUser = await orgCollection.findOne({ email: email });
 
-    if (orgUser && (await bcrypt.compare(password, orgUser.password))) {
+    if (orgUser && (await argon2.verify(orgUser.password, password))) {
       const hrData = await getUserData("HR", orgUser._id.toString());
       return { userType: "business_owner", user: orgUser, hrData: hrData };
     }
@@ -19,7 +17,7 @@ const authenticateUser = async (email, password) => {
     const hrCollection = db.collection("HR");
     const hrUser = await hrCollection.findOne({ email: email });
 
-    if (hrUser && (await bcrypt.compare(password, hrUser.password))) {
+    if (hrUser && (await argon2.verify(hrUser.password, password))) {
       return ({
         userType,
         user,
@@ -33,7 +31,7 @@ const authenticateUser = async (email, password) => {
     const empCollection = db.collection("Employees");
     const empUser = await empCollection.findOne({ email: email });
 
-    if (empUser && (await bcrypt.compare(password, empUser.password))) {
+    if (empUser && (await argon2.verify(empUser.password, password))) {
       return { userType: "employee", user: empUser };
     }
 

@@ -1,5 +1,15 @@
-const { generateHash } = require("../utilities/generatePasswordHash");
+const argon2 = require("argon2");
 const { connectToMongoDB, closeMongoDBConnection } = require("../connectDB");
+
+const generateHash = async (password) => {
+  try {
+    // Hash the password using Argon2
+    const hash = await argon2.hash(password);
+    return hash;
+  } catch (error) {
+    throw error;
+  }
+};
 
 const addHR = async (
   organizationId,
@@ -16,9 +26,10 @@ const addHR = async (
   leaves
 ) => {
   try {
-    const db = connectToMongoDB();
+    const db = await connectToMongoDB();
     const col = db.collection("HR");
 
+    // Check if HR with the same email already exists
     const existingHR = await col.findOne({ email: email });
     if (existingHR) {
       return {
@@ -26,6 +37,7 @@ const addHR = async (
         error: "HR is already registered with these credentials.",
       };
     }
+
     const hashedPassword = await generateHash(password);
 
     let hrDocument = {
@@ -48,11 +60,12 @@ const addHR = async (
       return { message: "HR added successfully", error: null };
     }
   } catch (err) {
-    console.log(err.stack);
+    console.error(err.stack);
   } finally {
     await closeMongoDBConnection();
   }
 };
+
 module.exports = {
   addHR,
 };

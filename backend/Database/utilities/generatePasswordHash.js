@@ -1,15 +1,15 @@
-const bcrypt = require("bcrypt");
+const argon2 = require("argon2");
 
 const generateHash = async (password) => {
-    try {
-      const saltRounds = 10;
-      const salt = await bcrypt.genSalt(saltRounds);
-      const hash = await bcrypt.hash(password, salt);
-      return hash;
-    } catch (error) {
-      throw error;
-    }
-  };
-  module.exports={
-    generateHash
+  try {
+    // Hash the password using Argon2
+    const hash = await argon2.hash(password);
+    return hash;
+  } catch (error) {
+    throw error;
   }
+};
+
+module.exports = {
+  generateHash
+};

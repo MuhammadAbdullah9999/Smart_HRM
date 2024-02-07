@@ -1,6 +1,16 @@
-const { generateHash } = require("../utilities/generatePasswordHash");
+const argon2 = require("argon2");
 const { getHrAndEmployee } = require("../GetOrganizationData/GetHRandEmployee");
 const { connectToMongoDB, closeMongoDBConnection } = require("../connectDB");
+
+const generateHash = async (password) => {
+  try {
+    // Hash the password using Argon2
+    const hash = await argon2.hash(password);
+    return hash;
+  } catch (error) {
+    throw error;
+  }
+};
 
 const addEmployee = async (
   organizationId,
@@ -29,6 +39,7 @@ const addEmployee = async (
         error: "Employee is already registered with these credentials.",
       };
     }
+
     const hashedPassword = await generateHash(password);
 
     let employeeDocument = {
@@ -65,7 +76,7 @@ const addEmployee = async (
       return { data: data, error: null };
     }
   } catch (err) {
-    console.log(err.stack);
+    console.error(err.stack);
   } finally {
     await closeMongoDBConnection();
   }
