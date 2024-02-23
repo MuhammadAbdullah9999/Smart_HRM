@@ -9,16 +9,10 @@ const EmployeeCard = ({ Id, Name, EmailText, Contact, Department }) => {
             <div className="p-4 bg-gradient-to-r from-blue-400 to-indigo-500 text-white">
                 <p className="text-lg text-center font-bold" >{Id}</p>
             </div>
-            {/* <div className="rounded-full overflow-hidden w-20 h-20 self-center mb-2">
-                    <img
-                        src={`data:image/png;base64,${Image}`}
-                        alt={`${Name}'s Image`}
-                        className="w-full h-full object-cover"
-                    />
-                </div> */}
+            
             <div className="flex flex-col p-4">
-                <h2 className="text-lg font-bold mb-2 self-center">{Name}</h2>
-                <p className="text-gray-600 mb-2">
+                <h2 className="text-xl font-bold mb-4 self-center">{Name}</h2>
+                <p className="text-gray-400 mb-2 text-sm">
                     <ApartmentIcon className="mr-2 p-1" />
                     {Department}
                 </p>
