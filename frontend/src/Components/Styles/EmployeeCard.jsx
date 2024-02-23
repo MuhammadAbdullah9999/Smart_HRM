@@ -3,11 +3,11 @@ import { Email, Phone } from "@mui/icons-material";
 import ApartmentIcon from '@mui/icons-material/Apartment';
 import LaunchRoundedIcon from '@mui/icons-material/LaunchRounded';
 
-const EmployeeCard = ({ Id, Name, EmailText, Contact, Department }) => {
+const EmployeeCard = ({ Id, Name, EmailText, Contact, Department, Image }) => {
     return (
-        <div className="flex flex-col shadow-md rounded-md overflow-hidden" >
-            <div className="p-4 bg-gradient-to-r from-blue-400 to-indigo-500 text-white">
-                <p className="text-lg text-center font-bold" >{Id}</p>
+        <div className="flex flex-col border border-gray-300 shadow-md shadow-gray-300 hover:shadow-blue-300 rounded-xl overflow-hidden cursor-pointer transition-transform transform hover:scale-105">
+            <div className="p-1 border-b border-gray-300 bg-blue-100">
+                <p className="text-md text-center font-bold">{Id}</p>
             </div>
             
             <div className="flex flex-col p-4">
