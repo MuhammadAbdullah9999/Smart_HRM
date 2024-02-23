@@ -9,6 +9,7 @@ const EmployeeCard = ({ Id, Name, EmailText, Contact, Department, Image }) => {
             <div className="p-1 border-b border-gray-300 bg-blue-100">
                 <p className="text-md text-center font-bold">{Id}</p>
             </div>
+            
             <div className="flex flex-col p-4">
                 {/* <div className="rounded-full overflow-hidden w-20 h-20 self-center mb-2">
                     <img
