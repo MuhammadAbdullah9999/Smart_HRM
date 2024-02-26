@@ -1,5 +1,4 @@
-// Components/Dashboard/Attendance.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import DashboardOverview from "../Dashboard/DashboardOverview";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
@@ -12,7 +11,6 @@ const Attendance = () => {
   const [employeeID] = useState("EMP001");
   const [attendancePercentage] = useState(70); // Hardcoded attendance percentage
   const [selectedMonth, setSelectedMonth] = useState("January");
-  const [sidebarDate, setSidebarDate] = useState(new Date());
 
   const attendanceDetails = [
     {
@@ -58,7 +56,6 @@ const Attendance = () => {
   ];
 
   const pieChartData = {
-    labels: ["Present", "Absent"],
     series: [attendancePercentage, 100 - attendancePercentage],
   };
 
@@ -76,25 +73,25 @@ const Attendance = () => {
       <DashboardOverview pageName="Attendance" />
 
       {/* Upper Section */}
-      <div className="flex flex-row pt-6 mb-8">
-        <div className="flex flex-col justify-center items-center w-1/3 rounded-xl mr-4 border border-gray-200 shadow-md shadow-gray-300 hover:shadow-blue-300 cursor-pointer">
-          <p className="text-2xl font-extrabold text-center p-2 rounded-md">
+      <div className="flex flex-col md:flex-row pt-6 mb-8">
+        <div className="flex flex-col justify-center items-center w-full md:w-1/3 rounded-xl mb-4 md:mb-0 mr-0 md:mr-4 border border-gray-200 shadow-md shadow-gray-300 hover:shadow-blue-300 cursor-pointer">
+          <p className="text-xl font-extrabold text-center p-2 rounded-md">
             <EventAvailableIcon /> {employeeID}
           </p>
           <p className="text-md text-center text-gray-500">Employee ID</p>
         </div>
 
-        <div className="w-1/3 p-1 bg-transparent rounded-xl mr-4 border border-gray-200 shadow-md shadow-gray-300 hover:shadow-blue-300 cursor-pointer">
+        <div className="w-full md:w-1/3 p-1 bg-transparent rounded-xl mb-4 md:mb-0 mr-0 md:mr-4 border border-gray-200 shadow-md shadow-gray-300 hover:shadow-blue-300 cursor-pointer">
           {/* Attendance Percentage Section */}
-          <div className="w-1/2">
+          <div className="w-full">
             <p className="text-xl p-1 font-extrabold text-center rounded-md">
               {attendancePercentage}%
             </p>
             <p className="text-sm text-center mb-[-10px] text-gray-500">Attendance</p>
           </div>
 
-          {/* Pie Chart Section */}
-          <div className="flex items-center justify-center">
+          {/* Pie Chart Section - Hidden for tablets */}
+          <div className="flex items-center justify-center hidden md:flex lg:flex xl:flex">
             <ReactApexChart
               type="donut"
               height={90}
@@ -104,7 +101,7 @@ const Attendance = () => {
           </div>
         </div>
 
-        <div className="flex flex-col justify-center items-center w-1/3 p-4 rounded-xl mr-4 border border-gray-200 shadow-md shadow-gray-300 hover:shadow-blue-300 cursor-pointer">
+        <div className="flex flex-col justify-center items-center w-full md:w-1/3 p-4 rounded-xl mb-4 md:mb-0 mr-0 md:mr-4 border border-gray-200 shadow-md shadow-gray-300 hover:shadow-blue-300 cursor-pointer">
           <div className="flex text-xl font-extrabold p-2">
             <CalendarTodayIcon /> 
             <p className="ml-2">Month</p>
@@ -130,16 +127,16 @@ const Attendance = () => {
       <div className="flex flex-col border border-black bg-transparent rounded-md p-4">
         {/* Headings */}
         <div className="flex flex-row font-semibold mb-2 border-b-2">
-          <div className="w-1/4">
+          <div className="w-1/4 text-center">
             <CalendarTodayIcon /> Date
           </div>
-          <div className="w-1/4">
+          <div className="w-1/4 text-center">
             <AccessTimeIcon /> Check In
           </div>
-          <div className="w-1/4">
+          <div className="w-1/4 text-center">
             <AccessTimeIcon /> Check Out
           </div>
-          <div className="w-1/4">
+          <div className="w-1/4 text-center">
             <CheckIcon /> Status
           </div>
         </div>
@@ -147,10 +144,10 @@ const Attendance = () => {
         {/* Attendance Details Data */}
         {attendanceDetails.map((detail) => (
           <div key={detail.date} className="flex flex-row mb-2">
-            <div className="w-1/4">{detail.date}</div>
-            <div className="w-1/4">{detail.checkIn}</div>
-            <div className="w-1/4">{detail.checkOut}</div>
-            <div className="w-1/4">
+            <div className="w-1/4 text-center">{detail.date}</div>
+            <div className="w-1/4 text-center">{detail.checkIn}</div>
+            <div className="w-1/4 text-center">{detail.checkOut}</div>
+            <div className="w-1/4 text-center">
               {detail.status === "Present" ? (
                 <CheckIcon style={{ color: "#4caf50" }} />
               ) : (

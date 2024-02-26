@@ -17,6 +17,7 @@ import Payroll from "./Components/Dashboard/Payroll/Payroll";
 import ApplyJob from "./Components/Jobs/ApplyJob";
 import Recruitment from "./Components/Dashboard/Recruitment/Recruitment";
 import Applicants from "./Components/Dashboard/Recruitment/Applicants";
+import MarkAttendance from "./Components/Attendance/MarkAttendance"; // Import the new component
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Footer from "./Components/Intro/Footer";
 
@@ -48,13 +49,17 @@ function App() {
             path="/dashboard/Employees"
             element={<Employees></Employees>}
           />
-          <Route
-            path="/Jobs"
-            element={<Jobs></Jobs>}
-          />
+          <Route path="/Jobs" element={<Jobs></Jobs>} />
           <Route path="/register" element={<Register></Register>}></Route>
-          <Route path="/dashboard/Employees/AddEmployee" element={<AddEmployee></AddEmployee>}></Route>
-          <Route path="/dashboard/attendance" element={<AttendancePage></AttendancePage>}></Route>
+          <Route
+            path="/dashboard/Employees/AddEmployee"
+            element={<AddEmployee></AddEmployee>}
+          ></Route>
+          <Route
+            path="/dashboard/attendance"
+            element={<AttendancePage></AttendancePage>}
+          ></Route>
+          <Route path="/dashboard/mark-attendance" element={<MarkAttendance />} /> {/* New route for marking attendance */}
           <Route path="/dashboard/leave" element={<Leave></Leave>}></Route>
           <Route path="/dashboard/payroll" element={<Payroll></Payroll>}></Route>
           <Route path="/dashboard/recruitment" element={<Recruitment></Recruitment>}></Route>
