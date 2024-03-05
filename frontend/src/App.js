@@ -20,6 +20,7 @@ import Applicants from "./Components/Dashboard/Recruitment/Applicants";
 import MarkAttendance from "./Components/Attendance/MarkAttendance"; // Import the new component
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Footer from "./Components/Intro/Footer";
+import AttendanceMain from "./Components/Attendance/AttendanceMain";
 
 function App() {
   return (
@@ -59,6 +60,7 @@ function App() {
             path="/dashboard/attendance"
             element={<AttendancePage></AttendancePage>}
           ></Route>
+          <Route path="/dashboard/attendanceMain" element={<AttendanceMain></AttendanceMain>}></Route>
           <Route path="/dashboard/mark-attendance" element={<MarkAttendance />} /> {/* New route for marking attendance */}
           <Route path="/dashboard/leave" element={<Leave></Leave>}></Route>
           <Route path="/dashboard/payroll" element={<Payroll></Payroll>}></Route>

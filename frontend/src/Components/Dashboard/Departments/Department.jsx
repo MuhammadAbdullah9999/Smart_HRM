@@ -49,7 +49,7 @@ function Department() {
       <div className="flex-1 p-6">
         <DashboardOverview pageName="Departments"></DashboardOverview>
         <div className="flex flex-col gap-12 justify-center items-left">
-          <div className="w-10/12 md:w-11/12 mt-5 shadow-md shadow-gray-300 hover:shadow-blue-300 cursor-pointer border border-gray-200">
+          <div className="w-10/12 md:w-11/12 mt-5 shadow-md shadow-gray-200 cursor-pointer border border-gray-200">
             <TableContainer component={Paper}>
               <Table className="min-w-full">
                 <TableHead>
@@ -97,7 +97,7 @@ function Department() {
 
 
 
-          <div className="bg-gray-100 rounded-xl p-4 w-10/12 md:w-11/12">
+          <div className="bg-gray-100 rounded-xl p-4 w-10/12 md:w-11/12 shadow-md shadow-gray-200">
             <h2 className="text-xl font-bold m-2">Add Department</h2>
             <div className="flex items-center mt-5 mb-8">
               <input

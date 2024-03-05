@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import LoginImage from "../images/log1.jpg";
@@ -24,7 +24,7 @@ const Login = () => {
   const [errors, setErrors] = useState({});
   const [apiError, setApiError] = useState("");
   const [user, setUser] = useState("");
-  const [loading,setLoading]=useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -76,19 +76,16 @@ const Login = () => {
       }
     } catch (error) {
       console.log(error);
-      setLoading(false);  
+      setLoading(false);
       setApiError(error.response.data.error);
     }
   };
 
   return (
-    <div className={`flex flex-col md:flex-row h-screen ${loading ? 'pointer-events-none opacity-70' : ''}`} >
-
-         {loading && (
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-            <CircularProgress color="inherit" />
-          </div>
-        )}
+    <div className="flex flex-col md:flex-row h-screen">
+      {/* Background blur effect */}
+      {loading && <div className="absolute inset-0 backdrop-filter backdrop-blur-sm z-10"></div>}
+      
       {/* Left Section */}
       <div className="w-full md:w-1/2 p-4 h-full">
         <Link to='/'><ArrowBackIcon className="cursor-pointer absolute top-8 left-8 text-black" /></Link>
@@ -108,7 +105,6 @@ const Login = () => {
           </p>
 
           <form className="grid grid-cols-1 gap-6 mt-20" onSubmit={handleLogin}>
-
             {/* Email */}
             <div>
               <InputField
@@ -141,8 +137,6 @@ const Login = () => {
                 focusColor="white"
                 top="6"
               />
-                {/* {loading && (<div className="backdrop-blur-sm absolute inset-1"></div>)} */}
-
               {errors.password && (
                 <p className="text-red-800 font-bold text-xs text-left">
                   {errors.password}
@@ -163,10 +157,15 @@ const Login = () => {
               </button>
             </div>
           </form>
-
-          {/* API Error */}
         </div>
       </div>
+
+      {/* Circular progress */}
+      {loading && (
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20">
+          <CircularProgress style={{ color: 'blue' }} />
+        </div>
+      )}
     </div>
   );
 };
