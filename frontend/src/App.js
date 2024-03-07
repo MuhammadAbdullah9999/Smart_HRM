@@ -21,7 +21,7 @@ import MarkAttendance from "./Components/Attendance/MarkAttendance"; // Import t
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Footer from "./Components/Intro/Footer";
 import AttendanceMain from "./Components/Attendance/AttendanceMain";
-
+import CeoDashboard from "./Components/Ceo/Dashboard/CeoDashboard";
 function App() {
   return (
     <>
@@ -68,6 +68,7 @@ function App() {
           <Route path="/dashboard/recruitment/applicants/:jobId/:organizationId" element={<Applicants></Applicants>}></Route>
 
           <Route path="/ApplyJob/:orgId/:jobTitle/:jobDescription/:orgName/:jobId" element={<ApplyJob></ApplyJob>}></Route>
+          <Route path="/Ceo/Dashboard" element={<CeoDashboard></CeoDashboard>}></Route>
 
         </Routes>
       </BrowserRouter>
