@@ -57,7 +57,7 @@ function App() {
             element={<AddEmployee></AddEmployee>}
           ></Route>
           <Route
-            path="/dashboard/attendance"
+            path="/dashboard/attendance/:employeeId"
             element={<AttendancePage></AttendancePage>}
           ></Route>
           <Route path="/dashboard/attendanceMain" element={<AttendanceMain></AttendanceMain>}></Route>

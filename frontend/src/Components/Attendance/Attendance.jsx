@@ -6,8 +6,20 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import ReactApexChart from "react-apexcharts";
+import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+
 
 const Attendance = () => {
+  const { employeeId } = useParams();
+  const employeeData = useSelector((state) => state.EmployeeData);
+
+   const employee = employeeData.EmployeeData.employeeData.find(
+    (employee) => employee._id === employeeId
+  );
+
+console.log(employee);
+
   const [employeeID] = useState("EMP001");
   const [attendancePercentage] = useState(70); // Hardcoded attendance percentage
   const [selectedMonth, setSelectedMonth] = useState("January");
