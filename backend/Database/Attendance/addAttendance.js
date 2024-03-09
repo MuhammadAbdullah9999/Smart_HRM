@@ -9,9 +9,9 @@ async function addAttendance(
   organizationId,
   employeeId,
   month,
+  date,
   checkInTime,
   checkOutTime,
-  date,
   attendanceStatus
 ) {
   try {
@@ -21,10 +21,10 @@ async function addAttendance(
     const attendance = {
       employeeId,
       month,
+      date,
       checkInTime,
       checkOutTime,
-      date,
-      attendanceStatus,
+      attendanceStatus
     };
 
     const result = await employeeCollection.findOneAndUpdate(

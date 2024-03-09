@@ -57,10 +57,10 @@ function App() {
             element={<AddEmployee></AddEmployee>}
           ></Route>
           <Route
-            path="/dashboard/attendance/:employeeId"
+            path="/dashboard/attendanceDetail/:employeeId"
             element={<AttendancePage></AttendancePage>}
           ></Route>
-          <Route path="/dashboard/attendanceMain" element={<AttendanceMain></AttendanceMain>}></Route>
+          <Route path="/dashboard/attendance" element={<AttendanceMain></AttendanceMain>}></Route>
           <Route path="/dashboard/mark-attendance" element={<MarkAttendance />} /> {/* New route for marking attendance */}
           <Route path="/dashboard/leave" element={<Leave></Leave>}></Route>
           <Route path="/dashboard/payroll" element={<Payroll></Payroll>}></Route>
