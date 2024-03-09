@@ -17,7 +17,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    email: "muhammad@devsinc.com",
+    email: "hafizzabdullah@gmail.com",
     password: "123456",
   });
 
@@ -69,6 +69,7 @@ const Login = () => {
 
       if (response.data) {
         if(response.data.userType === "business_owner"){
+          dispatch(setEmployeeData(response.data));
           setLoading(false);
           navigate(`/CEO/dashboard`);
           return;

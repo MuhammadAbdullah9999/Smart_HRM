@@ -25,7 +25,6 @@ function CeoSidebar({ isOpen, onClose }) {
     setIsSidebarOpen(!isSidebarOpen);
   };
   const employeeData = useSelector((state) => state.EmployeeData);
-
   const location = useLocation();
 
   const isActive = (pathname) => {
@@ -60,7 +59,7 @@ function CeoSidebar({ isOpen, onClose }) {
             className="w-12 h-12 rounded-full mb-1"
           />
           <div className="text-center">
-            <p className="text-white text-lg font-semibold mt-1">{employeeData.user.name}</p>
+            <p className="text-white text-lg font-semibold mt-1">{employeeData.EmployeeData.user.name}</p>
             <p className="text-gray-300 text-sm">HR Manager</p>
           </div>
         </div>
@@ -69,7 +68,7 @@ function CeoSidebar({ isOpen, onClose }) {
         <nav>
           <ul className="space-y-1 w-full">
             <SidebarItem
-              to="/HR/dashboard"
+              to="/CEO/dashboard"
               label="Dashboard"
               isActive={isActive("/dashboard")}
               onClose={onClose}
