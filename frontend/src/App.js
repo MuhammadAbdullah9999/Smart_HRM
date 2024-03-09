@@ -68,7 +68,7 @@ function App() {
           <Route path="/dashboard/recruitment/applicants/:jobId/:organizationId" element={<Applicants></Applicants>}></Route>
 
           <Route path="/ApplyJob/:orgId/:jobTitle/:jobDescription/:orgName/:jobId" element={<ApplyJob></ApplyJob>}></Route>
-          <Route path="/Ceo/Dashboard" element={<CeoDashboard></CeoDashboard>}></Route>
+          <Route path="/CEO/Dashboard" element={<CeoDashboard></CeoDashboard>}></Route>
 
         </Routes>
       </BrowserRouter>

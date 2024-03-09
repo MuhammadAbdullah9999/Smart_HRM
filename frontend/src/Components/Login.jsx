@@ -68,11 +68,19 @@ const Login = () => {
       );
 
       if (response.data) {
-        dispatch(setJobs(response.data.jobs.jobs));
-        dispatch(setEmployeeData(response.data));
-        setUser(response.data);
-        setLoading(false);
-        navigate(`/HR/dashboard`, { state: { data: response.data } });
+        if(response.data.userType === "business_owner"){
+          setLoading(false);
+          navigate(`/CEO/dashboard`);
+          return;
+        }
+        else if(response.data.userType === "HR"){
+          dispatch(setJobs(response.data.jobs.jobs));
+          dispatch(setEmployeeData(response.data));
+          setUser(response.data);
+          setLoading(false);
+          navigate(`/HR/dashboard`, { state: { data: response.data } });
+        }
+        
       }
     } catch (error) {
       console.log(error);
