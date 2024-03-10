@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "../Dashboard/Sidebar";
 import DashboardOverview from "../Dashboard/DashboardOverview";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
@@ -6,24 +6,87 @@ import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import CancelIcon from "@mui/icons-material/Cancel";
+import { useSelector } from 'react-redux';
+import validator from 'validator';
+import axios from "axios";
 
 const MarkAttendance = () => {
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [employeeAttendance, setEmployeeAttendance] = useState([
-    { id: 1, name: "Sameer", checkIn: "", checkOut: "", status: "" },
-    { id: 2, name: "Ahsan", checkIn: "", checkOut: "", status: "" },
-    { id: 3, name: "Abdullah", checkIn: "", checkOut: "", status: "" },
-    { id: 4, name: "Babar Azam", checkIn: "", checkOut: "", status: "" },
-    { id: 5, name: "Saim Ayub", checkIn: "", checkOut: "", status: "" },
-    { id: 6, name: "Haris", checkIn: "", checkOut: "", status: "" },
-    // Add more dummy data as needed
-  ]);
+  const employeeData = useSelector(state => state.EmployeeData.EmployeeData);
 
-  // Function to handle submitting the attendance data
-  const handleSubmit = () => {
-    // Implement logic to submit attendance data
-    console.log("Attendance submitted:", employeeAttendance);
-  };
+  const email=employeeData.user.email
+  const organizationId=employeeData.user.organizationId;
+
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [employeeAttendance, setEmployeeAttendance] = useState([]);
+  const [errors, setErrors] = useState({});
+
+  // Populate initial employeeAttendance state based on employeeData
+  useEffect(() => {
+    if (employeeData) {
+      const initialAttendance = employeeData.employeeData.map((employee) => ({
+        employeeId: employee._id,  // Assuming the ID is named _id in your data
+        name: employee.name,
+        checkInTime: "",
+        checkOutTime: "",
+        attendanceStatus: "",
+        hrEmail:email,
+        organizationId:organizationId
+      }));
+      setEmployeeAttendance(initialAttendance);
+    }
+  }, [employeeData]);
+
+// Function to handle submitting the attendance data
+const handleSubmit = async() => {
+  // Validate fields
+  // const validationErrors = {};
+
+  // // Check if date is selected
+  // if (!selectedDate) {
+  //   validationErrors["selectedDate"] = "Date is required.";
+  // }
+
+  // // Check Check-In and Check-Out fields
+  // employeeAttendance.forEach((employee) => {
+  //   if (validator.isEmpty(employee.checkIn)) {
+  //     validationErrors[`${employee.id}_checkIn`] = "Check-in field is required.";
+  //   }
+  //   if (validator.isEmpty(employee.checkOut)) {
+  //     validationErrors[`${employee.id}_checkOut`] = "Check-out field is required.";
+  //   }
+  // });
+
+  // // If there are validation errors, set them in state
+  // if (Object.keys(validationErrors).length > 0) {
+  //   setErrors(validationErrors);
+  //   return;
+  // }
+
+  // Log all data with employee IDs
+ const allData = employeeAttendance.map((employee) => {
+    const selectedDateObject = new Date(selectedDate);
+    const month = selectedDateObject.toLocaleString('en-US', { month: 'long' });
+
+    return {
+      employeeId: employee.employeeId,
+      name: employee.name,
+      checkInTime: "5:00 am",
+      checkOutTime: "3:00 am",
+      attendanceStatus: "present",
+      month: month,
+      hrEmail:email,
+      organizationId:organizationId,
+      date:selectedDate
+    };
+  });
+
+  console.log("Attendance submitted:", allData);
+  const response=await axios.post('http://localhost:5000/AddAttendance',allData);
+  console.log(response);
+
+  // Clear errors after successful submission
+  setErrors({});
+};
 
   // Function to set all employees' status to present
   const handleSetAllPresent = () => {
@@ -47,7 +110,7 @@ const MarkAttendance = () => {
       {/* Main content */}
       <div className="flex-grow p-4 md:p-8">
         {/* Dashboard Overview with date */}
-        <DashboardOverview pageName="Mark Attendance" currentDate={selectedDate} />
+        <DashboardOverview pageName="Mark Attendance"/>
 
         {/* Date Selection and Submit Button */}
         <div className="flex flex-col md:flex-row items-center justify-between mb-4">
@@ -57,8 +120,13 @@ const MarkAttendance = () => {
               type="date"
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
-              className="border border-gray-300 p-2 ml-2 mb-2 md:mb-0 md:mr-4 rounded-lg"
+              className={`border border-gray-300 p-2 ml-2 mb-2 md:mb-0 md:mr-4 rounded-lg ${
+                errors["selectedDate"] ? "border-red-500" : ""
+              }`}
             />
+            {errors["selectedDate"] && (
+              <span className="text-red-500">{errors["selectedDate"]}</span>
+            )}
           </div>
           <button
             className="bg-blue-500 text-white py-2 px-4 rounded-lg"
@@ -107,8 +175,13 @@ const MarkAttendance = () => {
                           )
                         )
                       }
-                      className="w-full border border-gray-300 p-1 rounded-lg text-center"
+                      className={`w-full border border-gray-300 p-1 rounded-lg text-center ${
+                        errors[`${employee.id}_checkIn`] ? "border-red-500" : ""
+                      }`}
                     />
+                    {errors[`${employee.id}_checkIn`] && (
+                      <span className="text-red-500">{errors[`${employee.id}_checkIn`]}</span>
+                    )}
                   </td>
                   <td className="border border-gray-300 p-2 text-center">
                     <input
@@ -123,8 +196,13 @@ const MarkAttendance = () => {
                           )
                         )
                       }
-                      className="w-full border border-gray-300 p-1 rounded-lg text-center"
+                      className={`w-full border border-gray-300 p-1 rounded-lg text-center ${
+                        errors[`${employee.id}_checkOut`] ? "border-red-500" : ""
+                      }`}
                     />
+                    {errors[`${employee.id}_checkOut`] && (
+                      <span className="text-red-500">{errors[`${employee.id}_checkOut`]}</span>
+                    )}
                   </td>
                   <td className="border border-gray-300 p-2 text-center">
                     <CheckCircleOutlineIcon
@@ -161,4 +239,3 @@ const MarkAttendance = () => {
 };
 
 export default MarkAttendance;
-    

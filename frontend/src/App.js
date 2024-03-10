@@ -22,6 +22,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Footer from "./Components/Intro/Footer";
 import AttendanceMain from "./Components/Attendance/AttendanceMain";
 import CeoDashboard from "./Components/Ceo/Dashboard/CeoDashboard";
+import AddAttendance from "./Components/Attendance/AddAttendance";
+
 function App() {
   return (
     <>
@@ -61,7 +63,8 @@ function App() {
             element={<AttendancePage></AttendancePage>}
           ></Route>
           <Route path="/dashboard/attendance" element={<AttendanceMain></AttendanceMain>}></Route>
-          <Route path="/dashboard/mark-attendance" element={<MarkAttendance />} /> {/* New route for marking attendance */}
+          <Route path="/dashboard/Attendance/AddAttendance" element={<AddAttendance />} /> {/* New route for marking attendance */}
+          <Route path="/dashboard/Attendance/mark-attendance" element={<MarkAttendance />} /> {/* New route for marking attendance */}
           <Route path="/dashboard/leave" element={<Leave></Leave>}></Route>
           <Route path="/dashboard/payroll" element={<Payroll></Payroll>}></Route>
           <Route path="/dashboard/recruitment" element={<Recruitment></Recruitment>}></Route>
