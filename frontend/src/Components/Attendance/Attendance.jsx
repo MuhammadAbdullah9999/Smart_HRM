@@ -11,10 +11,10 @@ import { useSelector } from "react-redux";
 
 const Attendance = () => {
   const { employeeId } = useParams();
-  const employeeData = useSelector((state) => state.EmployeeData);
+  const employeeData = useSelector((state) => state.EmployeeData.EmployeeData);
 
   
-  const employee = employeeData.EmployeeData.employeeData.find(
+  const employee = employeeData.employeeData.find(
     (employee) => employee._id === employeeId
   );
 

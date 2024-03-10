@@ -9,20 +9,21 @@ import EnhancedTable from "../Styles/Table";
 import { Link } from "react-router-dom";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
+import CeoSidebar from "../Ceo/Dashboard/CeoSidebar";
 
 function AttendanceMain() {
   const [employees, setEmployees] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [attendanceData, setAttendanceData] = useState([]);
-  const data = useSelector((state) => state.EmployeeData);
+  const data = useSelector((state) => state.EmployeeData.EmployeeData);
+  console.log(data.userType);
 
   useEffect(() => {
     setEmployees(data.employeeData);
-
     const currentMonth = new Date()
       .toLocaleString("default", { month: "long" })
       .toLowerCase();
-    const updatedEmployees = data.EmployeeData.employeeData.map((employee) => {
+    const updatedEmployees = data.employeeData.map((employee) => {
       const currentMonthAttendance =
         employee.attendance?.filter(
           (entry) => entry.month.toLowerCase() === currentMonth
@@ -43,7 +44,7 @@ function AttendanceMain() {
         presentDays,
         absentDays,
         attendancePercentage,
-        currentMonth
+        currentMonth,
       };
     });
 
@@ -64,7 +65,12 @@ function AttendanceMain() {
   return (
     <div className="flex">
       <div className="fixed">
-        <Sidebar />
+        {data && data.userType === "business_owner" ? (
+          <CeoSidebar></CeoSidebar>
+        ) : (
+          <Sidebar></Sidebar>
+        )}
+        {/* <Sidebar /> */}
       </div>
       <div className="flex flex-col md:ml-72 w-full">
         <div className="sm:ml-20 md:ml-0 w-full pr-8 mt-6">
@@ -107,7 +113,6 @@ function AttendanceMain() {
         </div>
 
         <div className="flex justify-center gap-8 h-full w-full p-4 flex-wrap">
-
           {filteredEmployees.length > 0 ? (
             filteredEmployees.map((employee, index) => (
               <div className="w-72" key={index}>

@@ -68,6 +68,7 @@ const Login = () => {
       );
 
       if (response.data) {
+        console.log(response.data)
         if(response.data.userType === "business_owner"){
           dispatch(setEmployeeData(response.data));
           setLoading(false);

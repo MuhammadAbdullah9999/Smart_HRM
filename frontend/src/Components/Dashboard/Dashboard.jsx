@@ -4,7 +4,7 @@ import DashboardContent from "./DashboardContent";
 import { useSelector } from 'react-redux';
 
 function Dashboard() {
-  const employeeData = useSelector(state => state.EmployeeData);
+  const employeeData = useSelector(state => state.EmployeeData.EmployeeData);
   console.log(employeeData);
 
   const [userData, setUserData] = useState(null);

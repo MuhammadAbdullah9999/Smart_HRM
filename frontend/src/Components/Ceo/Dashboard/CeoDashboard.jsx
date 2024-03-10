@@ -4,7 +4,7 @@ import DashboardOverview from "../../Dashboard/DashboardOverview";
 import { useSelector } from 'react-redux';
 
 function CeoDashboard() {
-  const employeeData = useSelector(state => state.EmployeeData);
+  const employeeData = useSelector(state => state.EmployeeData.EmployeeData);
   console.log(employeeData);
 
   return (
@@ -18,15 +18,15 @@ function CeoDashboard() {
           <div className="flex justify-center md:justify-start flex-wrap gap-4 pl-4">
             <Card
               cardText="Employees"
-              cardNumber={employeeData.EmployeeData.noOfEmployees}
+              cardNumber={employeeData.noOfEmployees}
               bgColor="blue-500"
             ></Card>
             <Card
               cardText="Departments"
-              cardNumber={employeeData.EmployeeData.noOfDepartments.uniqueDepartmentsCount}
+              cardNumber={employeeData.noOfDepartments.uniqueDepartmentsCount}
               bgColor="green-500"
             ></Card>
-            <Card cardText="HRs" cardNumber={employeeData.EmployeeData.noOfHRs} bgColor="red-500"></Card>
+            <Card cardText="HRs" cardNumber={employeeData.noOfHRs} bgColor="red-500"></Card>
             <Card
               cardText="Leave Request"
               cardNumber="10"
