@@ -7,29 +7,37 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { useSelector } from 'react-redux';
+import { useDispatch } from "react-redux";
+import { setEmployeeData } from "../../state";
 import validator from 'validator';
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const MarkAttendance = () => {
+
+  const navigate=useNavigate();
+  const dispatch = useDispatch();
   const employeeData = useSelector(state => state.EmployeeData.EmployeeData);
 
   const email=employeeData.user.email
-  const organizationId=employeeData.user.organizationId;
+  const organizationId=employeeData.employeeData[0].organizationId;
 
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [employeeAttendance, setEmployeeAttendance] = useState([]);
   const [errors, setErrors] = useState({});
+  const [apiError, setApiError]=useState('')
 
   // Populate initial employeeAttendance state based on employeeData
   useEffect(() => {
     if (employeeData) {
       const initialAttendance = employeeData.employeeData.map((employee) => ({
-        employeeId: employee._id,  // Assuming the ID is named _id in your data
+        employeeId: employee._id,
+        loginType:employeeData.userType,
         name: employee.name,
         checkInTime: "",
         checkOutTime: "",
         attendanceStatus: "",
-        hrEmail:email,
+        email:email,
         organizationId:organizationId
       }));
       setEmployeeAttendance(initialAttendance);
@@ -74,15 +82,27 @@ const handleSubmit = async() => {
       checkOutTime: "3:00 am",
       attendanceStatus: "present",
       month: month,
-      hrEmail:email,
+      email:email,
       organizationId:organizationId,
-      date:selectedDate
+      date:selectedDate,
+      loginType:employee.loginType
     };
   });
 
   console.log("Attendance submitted:", allData);
-  const response=await axios.post('http://localhost:5000/AddAttendance',allData);
-  console.log(response);
+  try{
+    const response=await axios.post('http://localhost:5000/AddAttendance',allData);
+    if(response.data){
+      dispatch(setEmployeeData(response.data.data));
+      console.log(response.data);
+      navigate('/dashboard/attendance')
+    }
+  }
+  catch(error){
+    setApiError(error.message);
+    console.log(error);
+  }
+
 
   // Clear errors after successful submission
   setErrors({});
@@ -135,7 +155,7 @@ const handleSubmit = async() => {
             Submit
           </button>
         </div>
-
+{apiError && (<p className="text-red-500 font-bold text-xl text-center">{apiError}</p>)}
         {/* Employee Attendance Section with scrollbar */}
         <div className="overflow-auto">
           <table className="table-auto border-collapse border border-gray-300 w-full">
