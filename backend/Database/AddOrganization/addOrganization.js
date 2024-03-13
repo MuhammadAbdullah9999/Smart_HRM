@@ -14,7 +14,6 @@ const addOrganization = async (
   const hashedPassword = await generateHash(password);
 
   try {
-    await client.connect();
     const db = await connectToMongoDB();
     const col = db.collection("Organizations");
 
@@ -59,7 +58,7 @@ const addOrganization = async (
       error: err.message,
     };
   } finally {
-    await client.close();
+    await closeMongoDBConnection();
   }
 };
 
