@@ -2,6 +2,7 @@ import React from "react";
 import { Email, Phone } from "@mui/icons-material";
 import ApartmentIcon from '@mui/icons-material/Apartment';
 import LaunchRoundedIcon from '@mui/icons-material/LaunchRounded';
+import { Link } from "react-router-dom";
 
 const EmployeeCard = ({ Id, Name, EmailText, Contact, Department, Image }) => {
     return (
@@ -24,10 +25,11 @@ const EmployeeCard = ({ Id, Name, EmailText, Contact, Department, Image }) => {
                     <Phone className="mr-2 p-1" />
                     <p className="text-gray-400 text-sm">{Contact}</p>
                 </div>
-                <button className="bg-bg-color hover:bg-blue-700 text-white font-bold px-1 py-1.5 rounded-lg mt-3">
+                <Link to='/dashboard/Employees/EmployeeProfile'><button className="bg-bg-color hover:bg-blue-700 text-white font-bold px-1 py-1.5 rounded-lg mt-3 w-full">
                     <LaunchRoundedIcon className="mr-2" style={{ fontSize: "1.2rem" }} ></LaunchRoundedIcon>
                     Open
                 </button>
+                </Link>
             </div>
         </div>
     );
