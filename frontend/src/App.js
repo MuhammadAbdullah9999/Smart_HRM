@@ -23,6 +23,8 @@ import Footer from "./Components/Intro/Footer";
 import AttendanceMain from "./Components/Attendance/AttendanceMain";
 import CeoDashboard from "./Components/Ceo/Dashboard/CeoDashboard";
 import AddAttendance from "./Components/Attendance/AddAttendance";
+import ForgotPassword from "./Components/ForgotPassword/ForgotPassword";
+import OTPVerify from "./Components/ForgotPassword/OTPVerify";
 
 function App() {
   return (
@@ -72,7 +74,7 @@ function App() {
 
           <Route path="/ApplyJob/:orgId/:jobTitle/:jobDescription/:orgName/:jobId" element={<ApplyJob></ApplyJob>}></Route>
           <Route path="/CEO/Dashboard" element={<CeoDashboard></CeoDashboard>}></Route>
-
+          <Route path="/reset-password/:userType/:token" element={<ForgotPassword></ForgotPassword>}></Route>
         </Routes>
       </BrowserRouter>
     </>
