@@ -9,6 +9,7 @@ import Login from "./Components/Login";
 import Register from "./Components/Register";
 import Department from "./Components/Dashboard/Departments/Department";
 import Employees from "./Components/Dashboard/Employees/Employees";
+import EmployeeProfile from "./Components/Dashboard/Employees/EmployeeProfile";
 import AddEmployee from "./Components/Dashboard/Employees/AddEmployee/AddEmployee";
 import AttendancePage from "./Components/Attendance/AttendancePage";
 import Leave from './Components/Dashboard/Leave/Leave'
@@ -53,6 +54,10 @@ function App() {
           <Route
             path="/dashboard/Employees"
             element={<Employees></Employees>}
+          />
+           <Route
+            path="/dashboard/Employees/EmployeeProfile"
+            element={<EmployeeProfile></EmployeeProfile>}
           />
           <Route path="/Jobs" element={<Jobs></Jobs>} />
           <Route path="/register" element={<Register></Register>}></Route>
