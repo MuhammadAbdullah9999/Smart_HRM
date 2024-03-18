@@ -20,6 +20,7 @@ const Deduction=require('./Routes/Payroll/Deduction/Deduction');
 const Payroll=require('./Routes/Payroll/Payroll');
 const ForgotPassword=require('./Routes/Authentication/ForgotPassword');
 const ResetPassword=require('./Routes/Authentication/ResetPassword');
+const UpdateEmployeeProfile=require('./Routes/UpdateEmployeeProfile/UpdateEmployeeProfile');
 
 const app = express();
 
@@ -45,7 +46,8 @@ app.use('/AddBonus',AddBonus);
 app.use('/Deduction',Deduction);
 app.use('/Payroll',Payroll);
 app.use('/ForgotPassword',ForgotPassword);
-app.use('/ResetPassword',ResetPassword)
+app.use('/ResetPassword',ResetPassword);
+app.use('/UpdateEmployeeProfile',UpdateEmployeeProfile)
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {

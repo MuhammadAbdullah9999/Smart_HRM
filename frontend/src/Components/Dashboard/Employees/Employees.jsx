@@ -92,6 +92,7 @@ function Employees() {
                   Department={employee.department}
                   Contact={employee.contact}
                   EmailText={employee.email}
+                  employeeId={employee._id}
                 // Image={employee.image}
                 />
               </div>
