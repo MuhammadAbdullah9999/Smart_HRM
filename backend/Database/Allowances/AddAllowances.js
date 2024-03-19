@@ -8,21 +8,29 @@ async function addAllowances(employeeId, allowanceType, allowanceAmount) {
         const collection = db.collection('Employees');
 
         // Find employee by ID
-        const employee = await collection.findOne({ _id: new ObjectId (employeeId) });
+        const employee = await collection.findOne({ _id: new ObjectId(employeeId) });
 
-        // If employee exists, add allowance
+        // If employee exists, find allowance type
         if (employee) {
             const allowances = employee.Allowances || [];
-            allowances.push({ type: allowanceType, amount: allowanceAmount });
+            const existingAllowanceIndex = allowances.findIndex(allowance => allowance.type === allowanceType);
 
-            await collection.updateOne({ _id:new ObjectId(employee._id) }, { $set: { Allowances: allowances } });
+            // If allowance type exists, update its amount
+            if (existingAllowanceIndex !== -1) {
+                allowances[existingAllowanceIndex].amount = allowanceAmount;
+            } else {
+                // If allowance type does not exist, add new entry
+                allowances.push({ type: allowanceType, amount: allowanceAmount });
+            }
 
-            console.log('Allowance added successfully!');
+            await collection.updateOne({ _id: new ObjectId(employee._id) }, { $set: { Allowances: allowances } });
+
+            console.log('Allowance added/updated successfully!');
         } else {
             console.log('Employee not found!');
         }
     } catch (error) {
-        console.error('Error adding allowance:', error);
+        console.error('Error adding/updating allowance:', error);
     } finally {
         await closeMongoDBConnection();
     }

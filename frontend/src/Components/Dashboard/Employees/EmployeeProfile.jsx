@@ -5,7 +5,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import EditIcon from "@mui/icons-material/Edit";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import axios from 'axios'
+import axios from "axios";
 
 function EmployeeProfile() {
   const employeesData = useSelector(
@@ -30,6 +30,7 @@ function EmployeeProfile() {
   });
 
   // State to manage input values
+  const[apiError,setApiError]=useState('')
   const [grossSalary, setGrossSalary] = useState("");
   const [inputValues, setInputValues] = useState({
     basicSalary: employeeData ? employeeData.salary : "",
@@ -57,21 +58,33 @@ function EmployeeProfile() {
           ).amount
         : ""
       : "",
-      bonus: employeeData
+    bonus: employeeData
       ? employeeData.bonuses
-          .filter((bonus) => bonus.month === new Date().toLocaleString('en-US', { month: 'long' }).toLowerCase())
+          .filter(
+            (bonus) =>
+              bonus.month ===
+              new Date()
+                .toLocaleString("en-US", { month: "long" })
+                .toLowerCase()
+          )
           .map((bonus) => bonus.bonusAmount)
           .reduce((acc, val) => acc + parseFloat(val), 0) // Sum up the bonus amounts
-      : "", 
+      : "",
     bonusReason: employeeData
-  ? employeeData.bonuses
-      .filter((bonus) => bonus.month === new Date().toLocaleString('en-US', { month: 'long' }).toLowerCase())
-      .map((bonus) => bonus.bonusType)
-      .join(", ") // Join the bonus types into a single string separated by commas
-  : "",
+      ? employeeData.bonuses
+          .filter(
+            (bonus) =>
+              bonus.month ===
+              new Date()
+                .toLocaleString("en-US", { month: "long" })
+                .toLowerCase()
+          )
+          .map((bonus) => bonus.bonusType)
+          .join(", ") // Join the bonus types into a single string separated by commas
+      : "",
 
-      deduction:"",
-      deductionReason:"",
+    deduction: "",
+    deductionReason: "",
     grossSalary: grossSalary,
   });
 
@@ -93,10 +106,9 @@ function EmployeeProfile() {
     grossSalaryValue += parseFloat(inputValues.homeAllowance || 0);
     grossSalaryValue += parseFloat(inputValues.medicalAllowance || 0);
     grossSalaryValue += parseFloat(inputValues.transportAllowance || 0);
-    grossSalaryValue += parseFloat(inputValues.bonus || 0)
+    grossSalaryValue += parseFloat(inputValues.bonus || 0);
     setGrossSalary(grossSalaryValue);
     return grossSalaryValue;
-
   };
 
   // Effect to calculate gross salary on component mount and whenever inputValues change
@@ -104,49 +116,112 @@ function EmployeeProfile() {
     calculateGrossSalary();
   }, [inputValues]);
   // Effect to set day, date, and month on component mount
-// Effect to set day and month on component mount
-useEffect(() => {
-  // Get the current date
-  const currentDate = new Date();
+  // Effect to set day and month on component mount
+  useEffect(() => {
+    // Get the current date
+    const currentDate = new Date();
 
-  // Array of month names
-  const monthNames = [
-    "January", "February", "March", "April", "May", "June", "July",
-    "August", "September", "October", "November", "December"
-  ];
+    // Array of month names
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
 
-  // Get day name (e.g., Monday, Tuesday, etc.)
-  const dayName = new Intl.DateTimeFormat("en-US", { weekday: "long" }).format(currentDate);
+    // Get day name (e.g., Monday, Tuesday, etc.)
+    const dayName = new Intl.DateTimeFormat("en-US", {
+      weekday: "long",
+    }).format(currentDate);
 
-  // Get month name (e.g., January, February, etc.)
-  const monthName = monthNames[currentDate.getMonth()];
+    // Get month name (e.g., January, February, etc.)
+    const monthName = monthNames[currentDate.getMonth()];
 
-  // Set the input values with day and month
-  setInputValues({
-    ...inputValues,
-    day: dayName,
-    month: monthName
-  });
-  
-}, []);
+    // Set the input values with day and month
+    setInputValues({
+      ...inputValues,
+      day: dayName,
+      month: monthName,
+    });
+  }, []);
 
-// Function to handle saving changes
+  // Function to handle saving changes
 const handleSaveChanges = async () => {
   // Calculate the gross salary value
   const grossSalaryValue = calculateGrossSalary();
 
-  // Update the inputValues state with the new gross salary value
-  setInputValues({ ...inputValues, grossSalary: grossSalaryValue });
+  // Get the current date
+  const currentDate = new Date();
 
-  console.log("Changes saved:", inputValues);
-  const response = await axios.post('http://localhost:5000/UpdateEmployeeProfile', inputValues);
-  console.log(response.data);
+  // Get the current month and year
+  const month = new Intl.DateTimeFormat("en-US", {
+    month: "long",
+  }).format(currentDate);
+  const year = currentDate.getFullYear();
+
+  // Update the inputValues state with the new gross salary value, month, and year
+  setInputValues({
+    ...inputValues,
+    grossSalary: grossSalaryValue,
+    month,
+    year,
+  });
+
+  // Prepare the data to be sent to the API
+  const data = {
+    medicalAllowance: {
+      allowanceType: "Medical",
+      amount: inputValues.medicalAllowance,
+    },
+    homeAllowance: {
+      allowanceType: "Home",
+      amount: inputValues.homeAllowance,
+    },
+    transportAllowance: {
+      allowanceType: "Transportation",
+      amount: inputValues.transportAllowance,
+    },
+    bonus: {
+      bonusReason: inputValues.bonusReason,
+      amount: inputValues.bonus,
+    },
+    deduction: {
+      deductionReason: inputValues.deductionReason,
+      amount: inputValues.deduction,
+    },
+    employeeId,
+    month,
+    year,
+  };
+
+  // Log the data to be sent to the API
+  console.log(data);
+
+  // Make a POST request to the API
+  try {
+    setApiError('')
+    const response = await axios.post(
+      "http://localhost:5000/UpdateEmployeeProfile",
+      data
+    );
+    console.log(response.data);
+  } catch (error) {
+    setApiError(error.response.data)
+    console.error("Error updating employee profile:", error);
+  }
 };
 
   const handleGeneratePayroll = () => {
     console.log("Payroll generated");
   };
-
 
   return (
     <div className="flex flex-col md:flex-row">
@@ -423,6 +498,7 @@ const handleSaveChanges = async () => {
           </div>
 
           {/* Buttons */}
+          {apiError && <p className="text-red-500 font-bold mt-2">{apiError}</p>}
           <div className="flex mt-8">
             <button
               className="px-4 py-2 mr-4 bg-white border border-bg-color border-2 text-black rounded-lg hover:bg-blue-100"
