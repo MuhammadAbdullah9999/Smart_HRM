@@ -16,6 +16,12 @@ const MarkAttendance = () => {
     { id: 4, name: "Babar Azam", checkIn: "", checkOut: "", status: "" },
     { id: 5, name: "Saim Ayub", checkIn: "", checkOut: "", status: "" },
     { id: 6, name: "Haris", checkIn: "", checkOut: "", status: "" },
+    { id: 7, name: "Sameer", checkIn: "", checkOut: "", status: "" },
+    { id: 8, name: "Ahsan", checkIn: "", checkOut: "", status: "" },
+    { id: 9, name: "Abdullah", checkIn: "", checkOut: "", status: "" },
+    { id: 10, name: "Babar Azam", checkIn: "", checkOut: "", status: "" },
+    { id: 11, name: "Saim Ayub", checkIn: "", checkOut: "", status: "" },
+    { id: 12, name: "Haris", checkIn: "", checkOut: "", status: "" },
     // Add more dummy data as needed
   ]);
 
