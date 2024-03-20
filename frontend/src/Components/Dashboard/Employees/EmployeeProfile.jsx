@@ -10,6 +10,7 @@ import { setEmployeeData } from "../../../state/index";
 import axios from "axios";
 
 function EmployeeProfile() {
+  
   const dispatch = useDispatch();
 
   const employeesData = useSelector(
@@ -22,8 +23,7 @@ function EmployeeProfile() {
   const employeeData = employeesData.employeeData.find(
     (employee) => employee._id === employeeId
   );
-// console.log(employeeData)
-  // State to manage edit mode for each input
+
   const [editMode, setEditMode] = useState({
     basicSalary: false,
     homeAllowance: false,
@@ -39,13 +39,13 @@ function EmployeeProfile() {
   const [inputValues, setInputValues] = useState({
     basicSalary: employeeData ? employeeData.salary : "",
     homeAllowance: employeeData
-      ? employeeData.Allowances.find((allowance) => allowance.type === "Home")
-        ? employeeData.Allowances.find((allowance) => allowance.type === "Home")
+      ? employeeData.Allowances?.find((allowance) => allowance.type === "Home")
+        ? employeeData.Allowances?.find((allowance) => allowance.type === "Home")
             .amount
         : ""
       : "",
     medicalAllowance: employeeData
-      ? employeeData.Allowances.find(
+      ? employeeData.Allowances?.find(
           (allowance) => allowance.type === "Medical"
         )
         ? employeeData.Allowances.find(
@@ -54,7 +54,7 @@ function EmployeeProfile() {
         : ""
       : "",
     transportAllowance: employeeData
-      ? employeeData.Allowances.find(
+      ? employeeData.Allowances?.find(
           (allowance) => allowance.type === "Transportation"
         )
         ? employeeData.Allowances.find(
@@ -64,8 +64,7 @@ function EmployeeProfile() {
       : "",
    // State to manage input values
    bonus: employeeData
-   ? employeeData.bonuses
-       .filter(
+   ? employeeData.bonuses?.filter(
          (bonus) =>
            bonus.month ===
              new Date().toLocaleString("en-US", { month: "long" }) &&
@@ -75,8 +74,7 @@ function EmployeeProfile() {
        .reduce((acc, val) => acc + parseFloat(val), 0) // Sum up the bonus amounts
    : "",
  bonusReason: employeeData
-   ? employeeData.bonuses
-       .filter(
+   ? employeeData.bonuses?.filter(
          (bonus) =>
            bonus.month ===
              new Date().toLocaleString("en-US", { month: "long" }) &&
@@ -90,7 +88,7 @@ function EmployeeProfile() {
     deductionReason: "",
     grossSalary: grossSalary,
   });
-console.log(inputValues);
+// console.log(inputValues);
   // State to manage gross salary
 
   // Function to toggle edit mode for an input field
