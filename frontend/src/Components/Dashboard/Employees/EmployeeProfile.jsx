@@ -5,20 +5,24 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import EditIcon from "@mui/icons-material/Edit";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { setEmployeeData } from "../../../state/index";
 import axios from "axios";
 
 function EmployeeProfile() {
+  const dispatch = useDispatch();
+
   const employeesData = useSelector(
-    (state) => state.EmployeeData.EmployeeData.employeeData
+    (state) => state.EmployeeData.EmployeeData
   );
 
   const { employeeId } = useParams();
 
   // Find the employee with the matching employeeId
-  const employeeData = employeesData.find(
+  const employeeData = employeesData.employeeData.find(
     (employee) => employee._id === employeeId
   );
-
+// console.log(employeeData)
   // State to manage edit mode for each input
   const [editMode, setEditMode] = useState({
     basicSalary: false,
@@ -58,36 +62,35 @@ function EmployeeProfile() {
           ).amount
         : ""
       : "",
-    bonus: employeeData
-      ? employeeData.bonuses
-          .filter(
-            (bonus) =>
-              bonus.month ===
-              new Date()
-                .toLocaleString("en-US", { month: "long" })
-                .toLowerCase()
-          )
-          .map((bonus) => bonus.bonusAmount)
-          .reduce((acc, val) => acc + parseFloat(val), 0) // Sum up the bonus amounts
-      : "",
-    bonusReason: employeeData
-      ? employeeData.bonuses
-          .filter(
-            (bonus) =>
-              bonus.month ===
-              new Date()
-                .toLocaleString("en-US", { month: "long" })
-                .toLowerCase()
-          )
-          .map((bonus) => bonus.bonusType)
-          .join(", ") // Join the bonus types into a single string separated by commas
-      : "",
+   // State to manage input values
+   bonus: employeeData
+   ? employeeData.bonuses
+       .filter(
+         (bonus) =>
+           bonus.month ===
+             new Date().toLocaleString("en-US", { month: "long" }) &&
+           bonus.year === new Date().getFullYear()
+       )
+       .map((bonus) => bonus.bonusAmount)
+       .reduce((acc, val) => acc + parseFloat(val), 0) // Sum up the bonus amounts
+   : "",
+ bonusReason: employeeData
+   ? employeeData.bonuses
+       .filter(
+         (bonus) =>
+           bonus.month ===
+             new Date().toLocaleString("en-US", { month: "long" }) &&
+           bonus.year === new Date().getFullYear()
+       )
+       .map((bonus) => bonus.bonusReason)
+       .join(", ") // Join the bonus reasons into a single string separated by commas
+   : "",
 
     deduction: "",
     deductionReason: "",
     grossSalary: grossSalary,
   });
-
+console.log(inputValues);
   // State to manage gross salary
 
   // Function to toggle edit mode for an input field
@@ -200,6 +203,8 @@ const handleSaveChanges = async () => {
     employeeId,
     month,
     year,
+    email:employeesData.user.email,
+    organizationId:employeesData.user.organizationId
   };
 
   // Log the data to be sent to the API
@@ -212,7 +217,8 @@ const handleSaveChanges = async () => {
       "http://localhost:5000/UpdateEmployeeProfile",
       data
     );
-    console.log(response.data);
+    dispatch(setEmployeeData(response.data));
+    // console.log(response.data);
   } catch (error) {
     setApiError(error.response.data)
     console.error("Error updating employee profile:", error);
