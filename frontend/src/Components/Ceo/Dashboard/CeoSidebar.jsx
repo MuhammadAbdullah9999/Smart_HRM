@@ -80,7 +80,7 @@ function CeoSidebar({ isOpen, onClose }) {
             />
            
             <SidebarItem
-              to=""
+              to="/CEO/dashboard/attendance"
               label="Attendance"
               isActive={isActive("/dashboard/attendance")}
               onClose={onClose}
@@ -91,7 +91,7 @@ function CeoSidebar({ isOpen, onClose }) {
               }
             />
             <SidebarItem
-              to=""
+              to="/CEO/dashboard/leave"
               label="Leave"
               isActive={isActive("/dashboard/leave")}
               onClose={onClose}
@@ -100,7 +100,7 @@ function CeoSidebar({ isOpen, onClose }) {
               }
             />
              <SidebarItem
-              to=""
+              to="/CEO/dashboard/employees"
               label="HRs"
               isActive={isActive("/dashboard/payroll")}
               onClose={onClose}

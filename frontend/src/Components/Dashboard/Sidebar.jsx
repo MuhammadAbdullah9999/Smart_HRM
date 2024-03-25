@@ -77,7 +77,7 @@ function Sidebar({ isOpen, onClose }) {
               }
             />
             <SidebarItem
-              to="/dashboard/departments"
+              to="/HR/dashboard/departments"
               label="Departments"
               isActive={isActive("/dashboard/departments")}
               onClose={onClose}
@@ -88,7 +88,7 @@ function Sidebar({ isOpen, onClose }) {
               }
             />
             <SidebarItem
-              to="/dashboard/employees"
+              to="/HR/dashboard/employees"
               label="Employees"
               isActive={isActive("/dashboard/employees")}
               onClose={onClose}
@@ -97,7 +97,7 @@ function Sidebar({ isOpen, onClose }) {
               }
             />
             <SidebarItem
-              to="/dashboard/attendance"
+              to="/HR/dashboard/attendance"
               label="Attendance"
               isActive={isActive("/dashboard/attendance")}
               onClose={onClose}
@@ -108,7 +108,7 @@ function Sidebar({ isOpen, onClose }) {
               }
             />
             <SidebarItem
-              to="/dashboard/leave"
+              to="/HR/dashboard/leave"
               label="Leave"
               isActive={isActive("/dashboard/leave")}
               onClose={onClose}
@@ -117,7 +117,7 @@ function Sidebar({ isOpen, onClose }) {
               }
             />
             <SidebarItem
-              to="/dashboard/payroll"
+              to="/HR/dashboard/payroll"
               label="Payroll"
               isActive={isActive("/dashboard/payroll")}
               onClose={onClose}
@@ -126,7 +126,7 @@ function Sidebar({ isOpen, onClose }) {
               }
             />
             <SidebarItem
-              to="/dashboard/recruitment"
+              to="/HR/dashboard/recruitment"
               label="Recruitment"
               isActive={isActive("/dashboard/recruitment")}
               onClose={onClose}
@@ -137,7 +137,7 @@ function Sidebar({ isOpen, onClose }) {
               }
             />
             <SidebarItem
-              to="/dashboard/profile"
+              to="/HR/dashboard/profile"
               label="Profile"
               isActive={isActive("/dashboard/profile")}
               onClose={onClose}
@@ -146,7 +146,7 @@ function Sidebar({ isOpen, onClose }) {
               }
             />
             <SidebarItem
-              to="/dashboard/settings"
+              to="/HR/dashboard/settings"
               label="Settings"
               isActive={isActive("/dashboard/settings")}
               onClose={onClose}

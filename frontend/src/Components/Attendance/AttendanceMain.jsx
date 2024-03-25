@@ -16,7 +16,6 @@ function AttendanceMain() {
   const [searchTerm, setSearchTerm] = useState("");
   const [attendanceData, setAttendanceData] = useState([]);
   const data = useSelector((state) => state.EmployeeData.EmployeeData);
-  console.log(data.userType);
 
   useEffect(() => {
     setEmployees(data.employeeData);
@@ -37,7 +36,7 @@ function AttendanceMain() {
       ).length;
 
       const totalDays = currentMonthAttendance.length;
-      console.log(presentDays,totalDays)
+      // console.log(presentDays,totalDays)
       const attendancePercentage = parseFloat(((presentDays / totalDays) * 100).toFixed(1));
 
       return {
@@ -100,7 +99,7 @@ function AttendanceMain() {
             </div>
 
             <div className="flex items-center">
-              <Link to="/dashboard/Attendance/mark-attendance">
+              <Link to="/HR/dashboard/Attendance/mark-attendance">
                 <button className="bg-bg-color px-3 py-2 rounded-3xl border-none font-bold text-center cursor-pointer transition duration-400 hover:shadow-lg hover:shadow-gray-400 active:transform active:scale-97 active:shadow-lg">
                   <AddIcon
                     className="inline-block"

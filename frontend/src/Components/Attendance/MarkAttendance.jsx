@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../Dashboard/Sidebar";
+import CeoSidebar from "../Ceo/Dashboard/CeoSidebar";
 import DashboardOverview from "../Dashboard/DashboardOverview";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
@@ -41,9 +42,9 @@ const MarkAttendance = () => {
         organizationId:organizationId
       }));
       setEmployeeAttendance(initialAttendance);
+    
     }
   }, [employeeData]);
-
 // Function to handle submitting the attendance data
 const handleSubmit = async() => {
   // Validate fields
@@ -88,14 +89,17 @@ const handleSubmit = async() => {
       loginType:employee.loginType
     };
   });
-
-  console.log("Attendance submitted:", allData);
   try{
     const response=await axios.post('http://localhost:5000/AddAttendance',allData);
     if(response.data){
       dispatch(setEmployeeData(response.data.data));
-      console.log(response.data);
-      navigate('/dashboard/attendance')
+      // console.log(response.data);
+      if(employeeAttendance.loginType==="business_owner"){
+        navigate('/CEO/dashboard/attendance')
+      }
+      else{
+        navigate('/HR/dashboard/attendance')
+      }
     }
   }
   catch(error){
@@ -121,11 +125,14 @@ const handleSubmit = async() => {
       prev.map((employee) => ({ ...employee, status: "absent" }))
     );
   };
-
   return (
     <div className="flex flex-col md:flex-row">
       {/* Sidebar */}
-      <Sidebar />
+      {employeeData && employeeData.userType === "business_owner" ? (
+          <CeoSidebar></CeoSidebar>
+        ) : (
+          <Sidebar></Sidebar>
+        )}
 
       {/* Main content */}
       <div className="flex-grow p-4 md:p-8">
