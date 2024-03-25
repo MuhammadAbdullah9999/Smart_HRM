@@ -13,13 +13,14 @@ import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 function Employees() {
   const [employees, setEmployees] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const data = useSelector((state) => state.EmployeeData);
+  const data = useSelector((state) => state.EmployeeData.EmployeeData.employeeData);
+  console.log(data)
 
   useEffect(() => {
-    console.log("employees");
-    console.log(data.employeeData);
-    setEmployees(data.employeeData);
-  }, [data.employeeData]);
+    // console.log("employees");
+    // console.log(data.employeeData);
+    setEmployees(data);
+  }, [data]);
 
   const filteredEmployees = employees.filter((employee) => {
     const nameMatch = employee.name

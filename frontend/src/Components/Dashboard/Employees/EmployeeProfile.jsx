@@ -16,8 +16,8 @@ function EmployeeProfile() {
   const employeesData = useSelector(
     (state) => state.EmployeeData.EmployeeData
   );
-
   const { employeeId } = useParams();
+  console.log(employeesData)
 
   // Find the employee with the matching employeeId
   const employeeData = employeesData.employeeData.find(
@@ -81,22 +81,36 @@ function EmployeeProfile() {
            bonus.year === new Date().getFullYear()
        )
        .map((bonus) => bonus.bonusReason)
-       .join(", ") // Join the bonus reasons into a single string separated by commas
+       .join(", ") 
    : "",
 
-    deduction: "",
-    deductionReason: "",
+    // deduction: employeeData
+    // ? employeeData.deduction?.filter(
+    //       (deduction) =>
+    //         deduction.month ===
+    //           new Date().toLocaleString("en-US", { month: "long" }) &&
+    //         deduction.year === new Date().getFullYear()
+    //     )
+    //     .map((deduction) => deduction.deductionAmount)
+    //     .join(", ") 
+    // : "",
+    // deductionReason:  employeeData
+    // ? employeeData.deduction?.filter(
+    //       (deduction) =>
+    //         deduction.month ===
+    //           new Date().toLocaleString("en-US", { month: "long" }) &&
+    //         deduction.year === new Date().getFullYear()
+    //     )
+    //     .map((deduction) => deduction.deductionReason)
+    //     .join(", ") 
+    // : "",
     grossSalary: grossSalary,
   });
-// console.log(inputValues);
-  // State to manage gross salary
 
-  // Function to toggle edit mode for an input field
   const toggleEditMode = (field) => {
     setEditMode({ ...editMode, [field]: !editMode[field] });
   };
 
-  // Function to handle input changes
   const handleInputChange = (field, value) => {
     setInputValues({ ...inputValues, [field]: value });
   };
@@ -112,14 +126,11 @@ function EmployeeProfile() {
     return grossSalaryValue;
   };
 
-  // Effect to calculate gross salary on component mount and whenever inputValues change
   useEffect(() => {
     calculateGrossSalary();
   }, [inputValues]);
-  // Effect to set day, date, and month on component mount
-  // Effect to set day and month on component mount
+ 
   useEffect(() => {
-    // Get the current date
     const currentDate = new Date();
 
     // Array of month names
@@ -205,10 +216,6 @@ const handleSaveChanges = async () => {
     organizationId:employeesData.user.organizationId
   };
 
-  // Log the data to be sent to the API
-  console.log(data);
-
-  // Make a POST request to the API
   try {
     setApiError('')
     const response = await axios.post(
@@ -226,6 +233,49 @@ const handleSaveChanges = async () => {
   const handleGeneratePayroll = () => {
     console.log("Payroll generated");
   };
+
+  useEffect(()=>{
+    const attendance = employeeData ? employeeData.attendance : [];
+
+    // Get the current month and date
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth(); // Get current month (0-indexed)
+    const currentYear = currentDate.getFullYear(); // Get current year
+    
+    // Filter attendance records for the current month and year
+    const attendanceForCurrentMonthAndYear = attendance.filter((record) => {
+      const recordDate = new Date(record.date);
+      const recordMonth = recordDate.getMonth();
+      const recordYear = recordDate.getFullYear();
+      return recordMonth === currentMonth && recordYear === currentYear;
+    });
+    
+    const totalWorkingDays = attendanceForCurrentMonthAndYear.length;
+    const presentDays = attendanceForCurrentMonthAndYear.filter(
+      (record) => record.attendanceStatus === "present"
+    ).length;
+    console.log(totalWorkingDays, presentDays)
+    const attendancePercentage = (presentDays / totalWorkingDays) * 100;
+    const legalDays=(totalWorkingDays*80)/100
+    const daysOfDeduction=legalDays-presentDays;
+    if(presentDays<legalDays){
+      const deductionValue = Math.floor(daysOfDeduction * 2000);
+      console.log(deductionValue)
+      setInputValues({
+        ...inputValues,
+       
+        deduction: deductionValue,
+        deductionReason:"Short Attendance"
+      });
+      
+    }
+    
+    console.log(`Attendance percentage for the current month: ${attendancePercentage}%`);
+    
+    
+  },[])
+
+
 
   return (
     <div className="flex flex-col md:flex-row">
@@ -257,20 +307,21 @@ const handleSaveChanges = async () => {
                 </th>
                 <td className="p-3 text-md font-bold">{employeeData?.name}</td>
               </tr>
+             
+              <tr>
+                <th className="p-3 pl-8 text-left text-md text-gray-500">
+                  Employee Email
+                </th>
+                <td className="p-3 text-md font-bold">
+                  {employeeData?.email}
+                </td>
+              </tr>
               <tr>
                 <th className="p-3 pl-8 text-left text-md text-gray-500">
                   Department
                 </th>
                 <td className="p-3 text-md font-bold">
                   {employeeData?.department}
-                </td>
-              </tr>
-              <tr>
-                <th className="p-3 pl-8 text-left text-md text-gray-500">
-                  Employee Type
-                </th>
-                <td className="p-3 text-md font-bold">
-                  {employeeData?.employeeType}
                 </td>
               </tr>
               <tr>

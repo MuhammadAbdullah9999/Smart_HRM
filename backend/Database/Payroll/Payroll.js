@@ -104,7 +104,7 @@ async function calculatePayroll(organizationId, year, month) {
 
         const message = `Payroll calculation and email sending completed for ${year}-${month}`;
 
-        console.log(message);
+        // console.log(message);
 
         // Send sample email with data for the first employee
         if (payroll.length > 0) {

@@ -13,37 +13,51 @@ import {
   Paper,
 } from "@mui/material";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function Payroll() {
+  const navigate=useNavigate();
   const [employees, setEmployees] = useState([]);
   const data = useSelector((state) => state.EmployeeData);
+const organizationId=data.user.organizationId;
 
-  useEffect(() => {
-    console.log("employees");
-    console.log(data.employeeData);
+useEffect(() => {
+    // console.log("employees");
+    // console.log(data.employeeData);
     setEmployees(data.employeeData);
   }, [data.employeeData]);
 
   const handleViewClick = (employeeId) => {
     // Handle view click logic here
     console.log(`View button clicked for employeeId: ${employeeId}`);
+    navigate(`/dashboard/Employees/EmployeeProfile/${employeeId}`)
   };
 
-  const handleGeneratePayrollClick = () => {
+  const handleGeneratePayrollClick = async () => {
     const confirmGenerate = window.confirm("Are you sure you want to generate payroll?");
+    
     if (confirmGenerate) {
-      // Make Axios call here
-      axios.post('your_generate_payroll_api_endpoint', /* payload if needed */)
-        .then(response => {
-          // Handle success
-          console.log('Payroll generated successfully!', response.data);
-        })
-        .catch(error => {
-          // Handle error
-          console.error('Error generating payroll:', error.message);
+      try {
+        const currentDate = new Date();
+        const currentYear = currentDate.getFullYear();
+        const currentMonth = new Intl.DateTimeFormat("en-US", { month: "long" }).format(currentDate);
+  
+        const response = await axios.post('http://localhost:5000/Payroll', {
+          organizationId: organizationId,
+          year: currentYear,
+          month: currentMonth
         });
+        
+        const responseMessage = window.confirm(response.data.message);
+
+
+        console.log('Payroll generated successfully!', response.data);
+      } catch (error) {
+        console.error('Error generating payroll:', error.message);
+      }
     }
   };
+  
 
   return (
     <div className="flex w-full gap-4">
@@ -53,7 +67,7 @@ function Payroll() {
         <div className="my-4">
           <button
             onClick={handleGeneratePayrollClick}
-            className="p-2 bg-sec-color active:bg-white active:text-sec-color text-white rounded-lg"
+            className="p-2 bg-bg-color hover:bg-blue-700 active:bg-gray-200 active:text-bg-color text-white rounded-lg"
           >
             Generate Payroll
           </button>
@@ -88,8 +102,8 @@ function Payroll() {
                   <TableCell>{employee.salary}</TableCell>
                   <TableCell>
                     <button
-                      onClick={() => handleViewClick(employee.id)}
-                      className="bg-sec-color text-white p-2 px-4 rounded-lg cursor-pointer active:text-sec-color active:bg-white"
+                      onClick={() => handleViewClick(employee._id)}
+                      className="bg-bg-color hover:bg-blue-700 active:bg-gray-200 active:text-bg-color text-white p-2 px-4 rounded-lg cursor-pointer "
                     >
                       View
                     </button>

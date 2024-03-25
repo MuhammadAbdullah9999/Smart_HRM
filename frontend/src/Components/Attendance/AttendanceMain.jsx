@@ -37,6 +37,7 @@ function AttendanceMain() {
       ).length;
 
       const totalDays = currentMonthAttendance.length;
+      console.log(presentDays,totalDays)
       const attendancePercentage = parseFloat(((presentDays / totalDays) * 100).toFixed(1));
 
       return {
