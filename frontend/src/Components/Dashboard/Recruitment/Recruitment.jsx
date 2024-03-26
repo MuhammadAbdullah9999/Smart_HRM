@@ -28,7 +28,7 @@ function Recruitment() {
                 {job.jobDescription.split("\n").slice(0, 3).join("\n")}...
               </p>
               <Link
-                to={`/dashboard/recruitment/applicants/${job._id}/${job.organizationId}`}
+                to={`/HR/dashboard/recruitment/applicants/${job._id}/${job.organizationId}`}
               >
                 <button className="p-2 self-end rounded-md bg-sec-color text-white">
                   View

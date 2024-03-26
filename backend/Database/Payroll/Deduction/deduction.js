@@ -1,7 +1,7 @@
 const { connectToMongoDB, closeMongoDBConnection } = require('../../connectDB');
 const { ObjectId } = require('mongodb');
 
-async function addDeductionToEmployee(employeeId, deductionType, month, year, deductionReason, deductionAmount) {
+async function addDeductionToEmployee(employeeId, month, year, deductionReason, deductionAmount) {
     try {
         // Connect to MongoDB Atlas
         const db = await connectToMongoDB();
@@ -17,30 +17,39 @@ async function addDeductionToEmployee(employeeId, deductionType, month, year, de
             // Check if the employee document has a 'deductions' array, and create it if not
             const deductionsArray = employee.deductions || [];
 
-            // Append the new deduction to the 'deductions' array
-            deductionsArray.push({
-                deductionType: deductionType,
-                month: month,
-                year: year,
-                deductionReason: deductionReason,
-                deductionAmount: deductionAmount
-            });
+            // Check if the deduction reason for the given month and year already exists
+            const existingDeductionIndex = deductionsArray.findIndex(
+                (deduction) => deduction.month === month && deduction.year === year
+            );
 
-            // Update the employee document with the new 'deductions' array
+            if (existingDeductionIndex !== -1) {
+                // If the deduction reason already exists for the given month and year, update its deduction amount
+                deductionsArray[existingDeductionIndex].deductionAmount = deductionAmount;
+            } else {
+                // If the deduction reason does not exist for the given month and year, append the new deduction to the 'deductions' array
+                deductionsArray.push({
+                    month: month,
+                    year: year,
+                    deductionReason: deductionReason,
+                    deductionAmount: deductionAmount
+                });
+            }
+
+            // Update the employee document with the modified 'deductions' array
             await employeeCollection.updateOne(
                 { _id: new ObjectId(employeeId) },
                 { $set: { deductions: deductionsArray } }
             );
 
             console.log('Deduction added successfully.');
-            return({error:null});
+            return { error: null };
 
         } else {
             console.log('Employee not found.');
         }
     } catch (error) {
-        
-        return({error:error});
+        console.error('Error adding deduction to MongoDB Atlas:', error);
+        return { error: error };
     } finally {
         // Close the MongoDB connection
         await closeMongoDBConnection();

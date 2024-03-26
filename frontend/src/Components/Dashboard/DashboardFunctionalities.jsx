@@ -5,7 +5,9 @@ import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import InputField from "../Styles/InputField";
 
-function DashboardFunctionalities({ toDoList, newTask, setNewTask, handleAddToDo, handleDeleteToDo }) {
+
+function DashboardFunctionalities({ toDoList,newTask, setNewTask, handleAddToDo, handleDeleteToDo }) {
+
   return (
     <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4 mt-10 rounded-lg">
       {/* Notifications Section */}
@@ -43,10 +45,10 @@ function DashboardFunctionalities({ toDoList, newTask, setNewTask, handleAddToDo
           </div>
         </div>
         <ul className="list-disc list-inside">
-          {toDoList.map((item, index) => (
+          {toDoList && toDoList.map((item, index) => (
             <li key={index} className="flex items-center justify-between mb-2 relative ml-2">
               <div className="flex items-center">
-                <div className="list-item ">{item}</div>
+                <div className="list-item ">{item.task}</div>
               </div>
               <div
                 onClick={() => handleDeleteToDo(index)}

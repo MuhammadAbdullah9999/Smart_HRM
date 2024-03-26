@@ -46,13 +46,13 @@ function App() {
             }
           ></Route>
           <Route path="/login" element={<Login></Login>}></Route>
-          <Route path="/HR/dashboard" element={<Dashboard></Dashboard>} />
+          <Route path="/:userType/dashboard" element={<Dashboard></Dashboard>} />
           <Route
-            path="/dashboard/departments"
+            path="/:userType/dashboard/departments"
             element={<Department></Department>}
           />
           <Route
-            path="/dashboard/Employees"
+            path="/:userType/dashboard/Employees"
             element={<Employees></Employees>}
           />
            <Route
@@ -69,15 +69,15 @@ function App() {
             path="/dashboard/attendanceDetail/:employeeId"
             element={<AttendancePage></AttendancePage>}
           ></Route>
-          <Route path="/dashboard/attendance" element={<AttendanceMain></AttendanceMain>}></Route>
-          <Route path="/dashboard/Attendance/AddAttendance" element={<AddAttendance />} /> {/* New route for marking attendance */}
-          <Route path="/dashboard/Attendance/mark-attendance" element={<MarkAttendance />} /> {/* New route for marking attendance */}
-          <Route path="/dashboard/leave" element={<Leave></Leave>}></Route>
-          <Route path="/dashboard/payroll" element={<Payroll></Payroll>}></Route>
-          <Route path="/dashboard/recruitment" element={<Recruitment></Recruitment>}></Route>
-          <Route path="/dashboard/recruitment/applicants/:jobId/:organizationId" element={<Applicants></Applicants>}></Route>
+          <Route path="/:userType/dashboard/attendance" element={<AttendanceMain></AttendanceMain>}></Route>
+          <Route path="/:userType/dashboard/Attendance/AddAttendance" element={<AddAttendance />} /> {/* New route for marking attendance */}
+          <Route path="/:userType/dashboard/Attendance/mark-attendance" element={<MarkAttendance />} /> {/* New route for marking attendance */}
+          <Route path="/:userType/dashboard/leave" element={<Leave></Leave>}></Route>
+          <Route path="/:userType/dashboard/payroll" element={<Payroll></Payroll>}></Route>
+          <Route path="/:userType/dashboard/recruitment" element={<Recruitment></Recruitment>}></Route>
+          <Route path="/:userType/dashboard/recruitment/applicants/:jobId/:organizationId" element={<Applicants></Applicants>}></Route>
 
-          <Route path="/ApplyJob/:orgId/:jobTitle/:jobDescription/:orgName/:jobId" element={<ApplyJob></ApplyJob>}></Route>
+          <Route path="/:userType/ApplyJob/:orgId/:jobTitle/:jobDescription/:orgName/:jobId" element={<ApplyJob></ApplyJob>}></Route>
           <Route path="/CEO/Dashboard" element={<CeoDashboard></CeoDashboard>}></Route>
           <Route path="/reset-password/:userType/:token" element={<ForgotPassword></ForgotPassword>}></Route>
         </Routes>

@@ -60,7 +60,7 @@ function CeoSidebar({ isOpen, onClose }) {
           />
           <div className="text-center">
             <p className="text-white text-lg font-semibold mt-1">{employeeData.EmployeeData.user.name}</p>
-            <p className="text-gray-300 text-sm">HR Manager</p>
+            <p className="text-gray-300 text-sm">CEO</p>
           </div>
         </div>
 
@@ -80,7 +80,7 @@ function CeoSidebar({ isOpen, onClose }) {
             />
            
             <SidebarItem
-              to="/dashboard/attendance"
+              to="/CEO/dashboard/attendance"
               label="Attendance"
               isActive={isActive("/dashboard/attendance")}
               onClose={onClose}
@@ -91,7 +91,7 @@ function CeoSidebar({ isOpen, onClose }) {
               }
             />
             <SidebarItem
-              to="/dashboard/leave"
+              to="/CEO/dashboard/leave"
               label="Leave"
               isActive={isActive("/dashboard/leave")}
               onClose={onClose}
@@ -100,7 +100,7 @@ function CeoSidebar({ isOpen, onClose }) {
               }
             />
              <SidebarItem
-              to="/dashboard/payroll"
+              to="/CEO/dashboard/employees"
               label="HRs"
               isActive={isActive("/dashboard/payroll")}
               onClose={onClose}
@@ -109,7 +109,7 @@ function CeoSidebar({ isOpen, onClose }) {
               }
             />
              <SidebarItem
-              to="/dashboard/payroll"
+              to=""
               label="Announcements"
               isActive={isActive("/dashboard/payroll")}
               onClose={onClose}
@@ -118,7 +118,7 @@ function CeoSidebar({ isOpen, onClose }) {
               }
             />
             <SidebarItem
-              to="/dashboard/payroll"
+              to=""
               label="Payroll"
               isActive={isActive("/dashboard/payroll")}
               onClose={onClose}
@@ -128,7 +128,7 @@ function CeoSidebar({ isOpen, onClose }) {
             />
            
             <SidebarItem
-              to="/dashboard/profile"
+              to=""
               label="Profile"
               isActive={isActive("/dashboard/profile")}
               onClose={onClose}
@@ -137,7 +137,7 @@ function CeoSidebar({ isOpen, onClose }) {
               }
             />
             <SidebarItem
-              to="/dashboard/settings"
+              to=""
               label="Settings"
               isActive={isActive("/dashboard/settings")}
               onClose={onClose}

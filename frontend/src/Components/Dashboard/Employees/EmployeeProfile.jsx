@@ -5,21 +5,20 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import EditIcon from "@mui/icons-material/Edit";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import axios from 'axios'
+import { useDispatch } from "react-redux";
+import { setEmployeeData } from "../../../state/index";
+import axios from "axios";
 
 function EmployeeProfile() {
-  const employeesData = useSelector(
-    (state) => state.EmployeeData.EmployeeData.employeeData
-  );
+  const dispatch = useDispatch();
 
+  const employeesData = useSelector((state) => state.EmployeeData.EmployeeData);
   const { employeeId } = useParams();
 
   // Find the employee with the matching employeeId
-  const employeeData = employeesData.find(
+  const employeeData = employeesData.employeeData.find(
     (employee) => employee._id === employeeId
   );
-
-  // State to manage edit mode for each input
   const [editMode, setEditMode] = useState({
     basicSalary: false,
     homeAllowance: false,
@@ -30,17 +29,19 @@ function EmployeeProfile() {
   });
 
   // State to manage input values
+  const [apiError, setApiError] = useState("");
   const [grossSalary, setGrossSalary] = useState("");
   const [inputValues, setInputValues] = useState({
     basicSalary: employeeData ? employeeData.salary : "",
     homeAllowance: employeeData
-      ? employeeData.Allowances.find((allowance) => allowance.type === "Home")
-        ? employeeData.Allowances.find((allowance) => allowance.type === "Home")
-            .amount
+      ? employeeData.Allowances?.find((allowance) => allowance.type === "Home")
+        ? employeeData.Allowances?.find(
+            (allowance) => allowance.type === "Home"
+          ).amount
         : ""
       : "",
     medicalAllowance: employeeData
-      ? employeeData.Allowances.find(
+      ? employeeData.Allowances?.find(
           (allowance) => allowance.type === "Medical"
         )
         ? employeeData.Allowances.find(
@@ -49,7 +50,7 @@ function EmployeeProfile() {
         : ""
       : "",
     transportAllowance: employeeData
-      ? employeeData.Allowances.find(
+      ? employeeData.Allowances?.find(
           (allowance) => allowance.type === "Transportation"
         )
         ? employeeData.Allowances.find(
@@ -57,32 +58,57 @@ function EmployeeProfile() {
           ).amount
         : ""
       : "",
-      bonus: employeeData
+    // State to manage input values
+    bonus: employeeData
       ? employeeData.bonuses
-          .filter((bonus) => bonus.month === new Date().toLocaleString('en-US', { month: 'long' }).toLowerCase())
+          ?.filter(
+            (bonus) =>
+              bonus.month ===
+                new Date().toLocaleString("en-US", { month: "long" }) &&
+              bonus.year === new Date().getFullYear()
+          )
           .map((bonus) => bonus.bonusAmount)
           .reduce((acc, val) => acc + parseFloat(val), 0) // Sum up the bonus amounts
-      : "", 
+      : "",
     bonusReason: employeeData
-  ? employeeData.bonuses
-      .filter((bonus) => bonus.month === new Date().toLocaleString('en-US', { month: 'long' }).toLowerCase())
-      .map((bonus) => bonus.bonusType)
-      .join(", ") // Join the bonus types into a single string separated by commas
-  : "",
+      ? employeeData.bonuses
+          ?.filter(
+            (bonus) =>
+              bonus.month ===
+                new Date().toLocaleString("en-US", { month: "long" }) &&
+              bonus.year === new Date().getFullYear()
+          )
+          .map((bonus) => bonus.bonusReason)
+          .join(", ")
+      : "",
 
-      deduction:"",
-      deductionReason:"",
+    // deduction: employeeData
+    // ? employeeData.deduction?.filter(
+    //       (deduction) =>
+    //         deduction.month ===
+    //           new Date().toLocaleString("en-US", { month: "long" }) &&
+    //         deduction.year === new Date().getFullYear()
+    //     )
+    //     .map((deduction) => deduction.deductionAmount)
+    //     .join(", ")
+    // : "",
+    // deductionReason:  employeeData
+    // ? employeeData.deduction?.filter(
+    //       (deduction) =>
+    //         deduction.month ===
+    //           new Date().toLocaleString("en-US", { month: "long" }) &&
+    //         deduction.year === new Date().getFullYear()
+    //     )
+    //     .map((deduction) => deduction.deductionReason)
+    //     .join(", ")
+    // : "",
     grossSalary: grossSalary,
   });
 
-  // State to manage gross salary
-
-  // Function to toggle edit mode for an input field
   const toggleEditMode = (field) => {
     setEditMode({ ...editMode, [field]: !editMode[field] });
   };
 
-  // Function to handle input changes
   const handleInputChange = (field, value) => {
     setInputValues({ ...inputValues, [field]: value });
   };
@@ -93,67 +119,171 @@ function EmployeeProfile() {
     grossSalaryValue += parseFloat(inputValues.homeAllowance || 0);
     grossSalaryValue += parseFloat(inputValues.medicalAllowance || 0);
     grossSalaryValue += parseFloat(inputValues.transportAllowance || 0);
-    grossSalaryValue += parseFloat(inputValues.bonus || 0)
+    grossSalaryValue += parseFloat(inputValues.bonus || 0);
     setGrossSalary(grossSalaryValue);
     return grossSalaryValue;
-
   };
 
-  // Effect to calculate gross salary on component mount and whenever inputValues change
   useEffect(() => {
     calculateGrossSalary();
   }, [inputValues]);
-  // Effect to set day, date, and month on component mount
-// Effect to set day and month on component mount
-useEffect(() => {
-  // Get the current date
-  const currentDate = new Date();
 
-  // Array of month names
-  const monthNames = [
-    "January", "February", "March", "April", "May", "June", "July",
-    "August", "September", "October", "November", "December"
-  ];
+  useEffect(() => {
+    const currentDate = new Date();
 
-  // Get day name (e.g., Monday, Tuesday, etc.)
-  const dayName = new Intl.DateTimeFormat("en-US", { weekday: "long" }).format(currentDate);
+    // Array of month names
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
 
-  // Get month name (e.g., January, February, etc.)
-  const monthName = monthNames[currentDate.getMonth()];
+    // Get day name (e.g., Monday, Tuesday, etc.)
+    const dayName = new Intl.DateTimeFormat("en-US", {
+      weekday: "long",
+    }).format(currentDate);
 
-  // Set the input values with day and month
-  setInputValues({
-    ...inputValues,
-    day: dayName,
-    month: monthName
-  });
-  
-}, []);
+    // Get month name (e.g., January, February, etc.)
+    const monthName = monthNames[currentDate.getMonth()];
 
-// Function to handle saving changes
-const handleSaveChanges = async () => {
-  // Calculate the gross salary value
-  const grossSalaryValue = calculateGrossSalary();
+    // Set the input values with day and month
+    setInputValues({
+      ...inputValues,
+      day: dayName,
+      month: monthName,
+    });
+  }, []);
 
-  // Update the inputValues state with the new gross salary value
-  setInputValues({ ...inputValues, grossSalary: grossSalaryValue });
+  // Function to handle saving changes
+  const handleSaveChanges = async () => {
+    // Calculate the gross salary value
+    const grossSalaryValue = calculateGrossSalary();
 
-  console.log("Changes saved:", inputValues);
-  const response = await axios.post('http://localhost:5000/UpdateEmployeeProfile', inputValues);
-  console.log(response.data);
-};
+    // Get the current date
+    const currentDate = new Date();
+
+    // Get the current month and year
+    const month = new Intl.DateTimeFormat("en-US", {
+      month: "long",
+    }).format(currentDate);
+    const year = currentDate.getFullYear();
+
+    // Update the inputValues state with the new gross salary value, month, and year
+    setInputValues({
+      ...inputValues,
+      grossSalary: grossSalaryValue,
+      month,
+      year,
+    });
+
+    // Prepare the data to be sent to the API
+    const data = {
+      medicalAllowance: {
+        allowanceType: "Medical",
+        amount: inputValues.medicalAllowance,
+      },
+      homeAllowance: {
+        allowanceType: "Home",
+        amount: inputValues.homeAllowance,
+      },
+      transportAllowance: {
+        allowanceType: "Transportation",
+        amount: inputValues.transportAllowance,
+      },
+      bonus: {
+        bonusReason: inputValues.bonusReason,
+        amount: inputValues.bonus,
+      },
+      deduction: {
+        deductionReason: inputValues.deductionReason,
+        amount: inputValues.deduction,
+      },
+      employeeId,
+      month,
+      year,
+      email: employeesData.user.email,
+      organizationId: employeesData.user.organizationId,
+    };
+
+    try {
+      setApiError("");
+      const response = await axios.post(
+        "http://localhost:5000/UpdateEmployeeProfile",
+        data
+      );
+      dispatch(setEmployeeData(response.data));
+      // console.log(response.data);
+    } catch (error) {
+      setApiError(error.response.data);
+      console.error("Error updating employee profile:", error);
+    }
+  };
 
   const handleGeneratePayroll = () => {
     console.log("Payroll generated");
   };
 
+  useEffect(() => {
+    const attendance = employeeData ? employeeData.attendance : [];
+
+    // Get the current month and date
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth(); // Get current month (0-indexed)
+    const currentYear = currentDate.getFullYear(); // Get current year
+
+    // Filter attendance records for the current month and year
+    const attendanceForCurrentMonthAndYear = attendance.filter((record) => {
+      const recordDate = new Date(record.date);
+      const recordMonth = recordDate.getMonth();
+      const recordYear = recordDate.getFullYear();
+      return recordMonth === currentMonth && recordYear === currentYear;
+    });
+
+    const totalWorkingDays = attendanceForCurrentMonthAndYear.length;
+    const presentDays = attendanceForCurrentMonthAndYear.filter(
+      (record) => record.attendanceStatus === "present"
+    ).length;
+    console.log(totalWorkingDays, presentDays);
+    const attendancePercentage = (presentDays / totalWorkingDays) * 100;
+    const legalDays = (totalWorkingDays * 80) / 100;
+    const daysOfDeduction = legalDays - presentDays;
+    if (presentDays < legalDays) {
+      const deductionValue = Math.floor(daysOfDeduction * 2000);
+      console.log(deductionValue);
+      setInputValues({
+        ...inputValues,
+
+        deduction: deductionValue,
+        deductionReason: "Short Attendance",
+      });
+    }
+
+    console.log(
+      `Attendance percentage for the current month: ${attendancePercentage}%`
+    );
+  }, []);
 
   return (
     <div className="flex flex-col md:flex-row">
       {/* Back button */}
-      <Link to="/dashboard/Employees">
-        <ArrowBackIcon className="cursor-pointer absolute top-8 left-8 " />
-      </Link>
+      {employeesData && employeesData.userType === "business_owner" ? (
+        <Link to="/CEO/dashboard/Employees">
+          <ArrowBackIcon className="cursor-pointer absolute top-8 left-8 " />
+        </Link>
+      ) : (
+        <Link to="/HR/dashboard/Employees">
+          <ArrowBackIcon className="cursor-pointer absolute top-8 left-8 " />
+        </Link>
+      )}
 
       {/* Main content */}
       <div className="w-full p-16">
@@ -178,20 +308,19 @@ const handleSaveChanges = async () => {
                 </th>
                 <td className="p-3 text-md font-bold">{employeeData?.name}</td>
               </tr>
+
+              <tr>
+                <th className="p-3 pl-8 text-left text-md text-gray-500">
+                  Employee Email
+                </th>
+                <td className="p-3 text-md font-bold">{employeeData?.email}</td>
+              </tr>
               <tr>
                 <th className="p-3 pl-8 text-left text-md text-gray-500">
                   Department
                 </th>
                 <td className="p-3 text-md font-bold">
                   {employeeData?.department}
-                </td>
-              </tr>
-              <tr>
-                <th className="p-3 pl-8 text-left text-md text-gray-500">
-                  Employee Type
-                </th>
-                <td className="p-3 text-md font-bold">
-                  {employeeData?.employeeType}
                 </td>
               </tr>
               <tr>
@@ -423,6 +552,9 @@ const handleSaveChanges = async () => {
           </div>
 
           {/* Buttons */}
+          {apiError && (
+            <p className="text-red-500 font-bold mt-2">{apiError}</p>
+          )}
           <div className="flex mt-8">
             <button
               className="px-4 py-2 mr-4 bg-white border border-bg-color border-2 text-black rounded-lg hover:bg-blue-100"
