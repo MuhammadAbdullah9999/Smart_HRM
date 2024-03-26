@@ -73,7 +73,7 @@ function App() {
           <Route path="/:userType/dashboard/attendance" element={<AttendanceMain></AttendanceMain>}></Route>
           <Route path="/:userType/dashboard/Attendance/AddAttendance" element={<AddAttendance />} /> {/* New route for marking attendance */}
           <Route path="/:userType/dashboard/Attendance/mark-attendance" element={<MarkAttendance />} />
-          <Route path="/:userType/dashboard/Attendance/profile" element={<Profile />} />
+          <Route path="/:userType/dashboard/profile" element={<Profile />} />
           <Route path="/:userType/dashboard/leave" element={<Leave></Leave>}></Route>
           <Route path="/:userType/dashboard/payroll" element={<Payroll></Payroll>}></Route>
           <Route path="/:userType/dashboard/recruitment" element={<Recruitment></Recruitment>}></Route>
