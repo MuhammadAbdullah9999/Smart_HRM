@@ -148,7 +148,7 @@ function Sidebar({ isOpen, onClose }) {
             <SidebarItem
               to="/HR/dashboard/settings"
               label="Settings"
-              isActive={isActive("/dashboard/settings")}
+              isActive={isActive("/dashboard/setting")}
               onClose={onClose}
               icon={
                 <SettingsRoundedIcon style={{ color: "white", fontSize: 20 }} />
