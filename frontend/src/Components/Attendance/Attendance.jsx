@@ -6,11 +6,44 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import ReactApexChart from "react-apexcharts";
+import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Attendance = () => {
-  const [employeeID] = useState("EMP001");
-  const [attendancePercentage] = useState(70); // Hardcoded attendance percentage
-  const [selectedMonth, setSelectedMonth] = useState("January");
+  const { employeeId } = useParams();
+  const employeeData = useSelector((state) => state.EmployeeData.EmployeeData);
+
+  
+  const employee = employeeData.employeeData.find(
+    (employee) => employee._id === employeeId
+  );
+
+  console.log(employee);
+  const currentMonth = new Date()
+    .toLocaleString("default", { month: "long" })
+    .toLowerCase();
+
+    const [employeeID] = useState("EMP001");
+    // const [attendancePercentage] = useState(70); // Hardcoded attendance percentage
+    const [selectedMonth, setSelectedMonth] = useState(currentMonth);
+  
+    const currentMonthAttendance =
+        employee.attendance?.filter(
+          (entry) => entry.month.toLowerCase() === selectedMonth
+        ) || [];
+
+  console.log(currentMonthAttendance);
+
+        const presentDays = currentMonthAttendance.filter(
+          (entry) => entry.attendanceStatus.toLowerCase() === "present"
+        ).length;
+        const absentDays = currentMonthAttendance.filter(
+          (entry) => entry.attendanceStatus.toLowerCase() === "absent"
+        ).length;
+  
+        const totalDays = currentMonthAttendance.length;
+        const attendancePercentage = (presentDays / totalDays) * 100;
+        
 
   const attendanceDetails = [
     {
@@ -43,7 +76,7 @@ const Attendance = () => {
   const months = [
     "January",
     "February",
-    "March",
+    "march",
     "April",
     "May",
     "June",
@@ -87,7 +120,9 @@ const Attendance = () => {
             <p className="text-xl p-1 font-extrabold text-center rounded-md">
               {attendancePercentage}%
             </p>
-            <p className="text-sm text-center mb-[-10px] text-gray-500">Attendance</p>
+            <p className="text-sm text-center mb-[-10px] text-gray-500">
+              Attendance
+            </p>
           </div>
 
           {/* Pie Chart Section - Hidden for tablets */}
@@ -103,7 +138,7 @@ const Attendance = () => {
 
         <div className="flex flex-col justify-center items-center w-full md:w-1/3 p-4 rounded-xl mb-4 md:mb-0 mr-0 md:mr-4 border border-gray-200 shadow-md shadow-gray-300 hover:shadow-blue-300 cursor-pointer">
           <div className="flex text-xl font-extrabold p-2">
-            <CalendarTodayIcon /> 
+            <CalendarTodayIcon />
             <p className="ml-2">Month</p>
           </div>
           <select
@@ -142,13 +177,13 @@ const Attendance = () => {
         </div>
 
         {/* Attendance Details Data */}
-        {attendanceDetails.map((detail) => (
+        {currentMonthAttendance.map((detail) => (
           <div key={detail.date} className="flex flex-row mb-2">
             <div className="w-1/4 text-center">{detail.date}</div>
-            <div className="w-1/4 text-center">{detail.checkIn}</div>
-            <div className="w-1/4 text-center">{detail.checkOut}</div>
+            <div className="w-1/4 text-center">{detail.checkInTime}</div>
+            <div className="w-1/4 text-center">{detail.checkOutTime}</div>
             <div className="w-1/4 text-center">
-              {detail.status === "Present" ? (
+              {detail.attendanceStatus === "present" ? (
                 <CheckIcon style={{ color: "#4caf50" }} />
               ) : (
                 <CloseIcon style={{ color: "#f44336" }} />

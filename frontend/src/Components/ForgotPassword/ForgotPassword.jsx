@@ -1,24 +1,25 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import LoginImage from "../images/log1.jpg";
+import {useParams, useNavigate } from "react-router-dom";
+import LoginImage from "../../images/log1.jpg"
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CircularProgress from '@mui/material/CircularProgress';
 import LoginOutlinedIcon from "@mui/icons-material/LoginOutlined";
-import InputField from "./Styles/InputField";
+import InputField from "../Styles/InputField";
 import validator from "validator";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { setEmployeeData } from "../state/index";
-import { setJobs } from "../state/JobsSlice";
+import { setEmployeeData } from "../../state/index";
+import { setJobs } from "../../state/JobsSlice";
 
-const Login = () => {
+const ForgotPassword = () => {
+    const { userType, token } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    email: "hafizzabdullah@gmail.com",
-    password: "123456",
+    password: "",
+    confirmPassword: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -35,53 +36,55 @@ const Login = () => {
   const validateForm = () => {
     let isValid = true;
     const newErrors = {};
-
-    if (!validator.isEmail(formData.email)) {
-      newErrors.email = "Invalid email format";
-      isValid = false;
-    }
-    if (validator.isEmpty(formData.email)) {
-      newErrors.email = "Email is required";
-      isValid = false;
-    }
-
-    if (validator.isEmpty(formData.password)) {
-      newErrors.password = "Password is required";
-      isValid = false;
-    }
-
+  
+    // if (validator.isEmpty(formData.password)) {
+    //   newErrors.password = "Password is required";
+    //   isValid = false;
+    // } else if (!validator.isLength(formData.password, { min: 8 })) {
+    //   newErrors.password = "Password must be at least 8 characters long";
+    //   isValid = false;
+    // } else if (!validator.isAlphanumeric(formData.password)) {
+    //   newErrors.password = "Password must contain alphanumeric characters";
+    //   isValid = false;
+    // }
+  
+    // if (validator.isEmpty(formData.confirmPassword)) {
+    //   newErrors.confirmPassword = "Confirm Password is required";
+    //   isValid = false;
+    // } else if (formData.password !== formData.confirmPassword) {
+    //   newErrors.confirmPassword = "Passwords do not match";
+    //   isValid = false;
+    // }
+  
     setErrors(newErrors);
     return isValid;
   };
+  
 
-  const handleLogin = async (e) => {
+  const handleResetPassword = async (e) => {
     e.preventDefault();
-    setLoading(true);
 
     if (!validateForm()) {
       return;
     }
     try {
+        setLoading(true);
+        const data={
+            userType:userType,
+            token:token,
+            password:formData.password
+        }
+        console.log(data)
+
       const response = await axios.post(
-        "http://localhost:5000/Login",
-        formData
+        "http://localhost:5000/ResetPassword",
+        data
       );
 
       if (response.data) {
+        setLoading(false);
         console.log(response.data)
-        if(response.data.userType === "business_owner"){
-          dispatch(setEmployeeData(response.data));
-          setLoading(false);
-          navigate(`/CEO/dashboard`);
-          return;
-        }
-        else if(response.data.userType === "HR"){
-          dispatch(setJobs(response.data.jobs.jobs));
-          dispatch(setEmployeeData(response.data));
-          setUser(response.data);
-          setLoading(false);
-          navigate(`/HR/dashboard`, { state: { data: response.data } });
-        }
+        navigate(`/login`);
         
       }
     } catch (error) {
@@ -91,20 +94,6 @@ const Login = () => {
     }
   };
 
-  const forgotPassword=async()=>{
-    try{
-      const response=await axios.post('http://localhost:5000/ForgotPassword',formData);
-      console.log(response.data);
-      if(response.data){
-        alert(response.data.message)
-      }
-    }
-    catch(error){
-      console.log(error);
-      setApiError(error.response.data.error)
-    }
-    
-  }
   return (
     <div className="flex flex-col md:flex-row h-screen">
       {/* Background blur effect */}
@@ -123,36 +112,17 @@ const Login = () => {
       {/* Right Section */}
       <div className="bg-sec-color w-full md:w-1/2 p-4 flex items-center justify-center h-full">
         <div className="bg-sec-color p-8 text-center max-w-md mx-auto">
-          <h2 className="text-5xl font-bold mb-4 text-white">Login</h2>
+          <h2 className="text-4xl font-bold mb-4 text-white">Reset Password</h2>
           <p className="text-lg text-white mb-6">
-            Enter your credentials to login
+            Enter password to reset
           </p>
 
-          <form className="grid grid-cols-1 gap-6 mt-20" onSubmit={handleLogin}>
+          <form className="grid grid-cols-1 gap-6 mt-20" onSubmit={handleResetPassword}>
             {/* Email */}
             <div>
               <InputField
-                label="Email"
-                type="text"
-                id="email"
-                name="email"
-                value={formData.email}
-                autoComplete="off"
-                onChange={handleInputChange}
-                focusColor="white"
-                top="6"
-              />
-              {errors.email && (
-                <p className="text-red-800 font-bold text-xs text-left">
-                  {errors.email}
-                </p>
-              )}
-            </div>
-            {/* Password */}
-            <div>
-              <InputField
                 label="Password"
-                type="password"
+                type="text"
                 id="password"
                 name="password"
                 value={formData.password}
@@ -161,10 +131,28 @@ const Login = () => {
                 focusColor="white"
                 top="6"
               />
-              <p className="text-white text-xs text-start underline cursor-pointer active:text-gray-400" onClick={forgotPassword}>Forgot Password ?</p>
               {errors.password && (
                 <p className="text-red-800 font-bold text-xs text-left">
                   {errors.password}
+                </p>
+              )}
+            </div>
+            {/* Password */}
+            <div>
+              <InputField
+                label="confirmPassword"
+                type="confirmPassword"
+                id="confirmPassword"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                autoComplete="off"
+                onChange={handleInputChange}
+                focusColor="white"
+                top="6"
+              />
+              {errors.confirmPassword && (
+                <p className="text-red-800 font-bold text-xs text-left">
+                  {errors.confirmPassword}
                 </p>
               )}
             </div>
@@ -178,7 +166,7 @@ const Login = () => {
             <div className="mb-4">
               <button className="flex justify-center bg-bg-color text-white p-1 rounded cursor-pointer w-full mt-4 active:text-sec-color active:bg-white">
                 <LoginOutlinedIcon className="mr-2" />
-                <p className="text-lg font-bold">Login</p>
+                <p className="text-lg font-bold">Reset Password</p>
               </button>
             </div>
           </form>
@@ -195,4 +183,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default ForgotPassword;

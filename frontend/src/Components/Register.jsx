@@ -7,7 +7,9 @@ import InputField from "./Styles/InputField";
 import validator from 'validator'
 import { Link } from "react-router-dom";
 import CircularProgress from '@mui/material/CircularProgress';
+import { useNavigate } from "react-router-dom";
 const Register = () => {
+  const navigate=useNavigate();
   
   const employeesOptions = [
     { start: 1, end: 10, label: "1 - 10" },
@@ -94,6 +96,7 @@ const Register = () => {
 
       if(response){
         setLoading(false);
+        navigate('/Login');
       }
       console.log(response.data);
       // Handle success

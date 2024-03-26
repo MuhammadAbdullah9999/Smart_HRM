@@ -9,7 +9,7 @@ function DashboardFunctionalities({ toDoList, newTask, setNewTask, handleAddToDo
   return (
     <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4 mt-10 rounded-lg">
       {/* Notifications Section */}
-      <div className="bg-gray-100 rounded-xl p-4">
+      <div className="bg-gray-100 rounded-xl p-4 shadow-md shadow-gray-200">
         <h2 className="text-xl font-semibold mb-4">Notifications</h2>
         <ul>
           <li className="flex items-center mb-2">
@@ -24,7 +24,7 @@ function DashboardFunctionalities({ toDoList, newTask, setNewTask, handleAddToDo
       </div>
 
       {/* To-Do List Section */}
-      <div className="bg-gray-100 rounded-xl p-4">
+      <div className="bg-gray-100 rounded-xl p-4 shadow-md shadow-gray-200">
         <h2 className="text-xl font-semibold mb-4">To-Do List</h2>
         <div className="flex items-center justify-center mt-5 mb-8">
           <input

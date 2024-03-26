@@ -2,8 +2,11 @@ const { getUserData } = require("./utilities/getUserData");
 const { getHrAndEmployee } = require("../GetOrganizationData/GetHRandEmployee");
 const { connectToMongoDB, closeMongoDBConnection } = require("../connectDB");
 const {getJobsByOrganizationId} = require('../GetOrganizationData/getOrganizationJobs');
+const { countEmployeesInOrganization,countHrsInOrganization } = require("../GetOrganizationData/countEmployeeAndHRInOrg");
+const {countUniqueDepartments}=require('../GetOrganizationData/countDepartments');
 const bcrypt = require("bcrypt");
 
+const {getCeoAndEmployee}=require('../GetOrganizationData/getCeoAndEmployee');
 const authenticateUser = async (email, password) => {
   try {
     const db = await connectToMongoDB();
@@ -12,8 +15,13 @@ const authenticateUser = async (email, password) => {
     const orgUser = await orgCollection.findOne({ email: email });
 
     if (orgUser && (await bcrypt.compare(password, orgUser.password))) {
-      const hrData = await getUserData("HR", orgUser._id.toString());
-      return { userType: "business_owner", user: orgUser, hrData: hrData };
+      // const hrData = await getUserData("HR", orgUser._id.toString());
+      // const employeesCount = await countEmployeesInOrganization(orgUser._id.toString());
+      // const hrCount=await countHrsInOrganization(orgUser._id.toString());
+      // const departments = await countUniqueDepartments(orgUser._id.toString());
+      const {userType,user,employeeData,noOfEmployees,noOfDepartments,noOfHRs}=await getCeoAndEmployee(email,orgUser._id.toString())
+      // return { userType: "business_owner", user: orgUser, employeeData: hrData,noOfEmployees:employeesCount,noOfHRs:hrCount,noOfDepartments:departments };
+      return { userType, user, employeeData, noOfEmployees, noOfDepartments, noOfHRs }
     }
 
     // Check if the email exists in the HRs collection

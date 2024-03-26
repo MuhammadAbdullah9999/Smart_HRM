@@ -82,7 +82,7 @@ function Employees() {
         </div>
 
 
-        <div className="flex justify-center gap-14 h-full w-full p-4 flex-wrap">
+        <div className="flex justify-center gap-8 h-full w-full p-4 flex-wrap">
           {filteredEmployees.length > 0 ? (
             filteredEmployees.map((employee, index) => (
               <div className="w-72" key={index}>
@@ -92,6 +92,7 @@ function Employees() {
                   Department={employee.department}
                   Contact={employee.contact}
                   EmailText={employee.email}
+                  employeeId={employee._id}
                 // Image={employee.image}
                 />
               </div>

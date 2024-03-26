@@ -9,6 +9,7 @@ import Login from "./Components/Login";
 import Register from "./Components/Register";
 import Department from "./Components/Dashboard/Departments/Department";
 import Employees from "./Components/Dashboard/Employees/Employees";
+import EmployeeProfile from "./Components/Dashboard/Employees/EmployeeProfile";
 import AddEmployee from "./Components/Dashboard/Employees/AddEmployee/AddEmployee";
 import AttendancePage from "./Components/Attendance/AttendancePage";
 import Leave from './Components/Dashboard/Leave/Leave'
@@ -20,7 +21,11 @@ import Applicants from "./Components/Dashboard/Recruitment/Applicants";
 import MarkAttendance from "./Components/Attendance/MarkAttendance"; // Import the new component
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Footer from "./Components/Intro/Footer";
-import Profile from "./Components/Attendance/Profile";
+import AttendanceMain from "./Components/Attendance/AttendanceMain";
+import CeoDashboard from "./Components/Ceo/Dashboard/CeoDashboard";
+import AddAttendance from "./Components/Attendance/AddAttendance";
+import ForgotPassword from "./Components/ForgotPassword/ForgotPassword";
+import OTPVerify from "./Components/ForgotPassword/OTPVerify";
 
 function App() {
   return (
@@ -50,6 +55,10 @@ function App() {
             path="/dashboard/Employees"
             element={<Employees></Employees>}
           />
+           <Route
+            path="/dashboard/Employees/EmployeeProfile/:employeeId"
+            element={<EmployeeProfile></EmployeeProfile>}
+          />
           <Route path="/Jobs" element={<Jobs></Jobs>} />
           <Route path="/register" element={<Register></Register>}></Route>
           <Route
@@ -57,18 +66,20 @@ function App() {
             element={<AddEmployee></AddEmployee>}
           ></Route>
           <Route
-            path="/dashboard/attendance"
+            path="/dashboard/attendanceDetail/:employeeId"
             element={<AttendancePage></AttendancePage>}
           ></Route>
-          <Route path="/dashboard/mark-attendance" element={<MarkAttendance />} /> {/* New route for marking attendance */}
-          <Route path="/dashboard/profile" element={<Profile />} /> {/* New route for marking attendance */}
+          <Route path="/dashboard/attendance" element={<AttendanceMain></AttendanceMain>}></Route>
+          <Route path="/dashboard/Attendance/AddAttendance" element={<AddAttendance />} /> {/* New route for marking attendance */}
+          <Route path="/dashboard/Attendance/mark-attendance" element={<MarkAttendance />} /> {/* New route for marking attendance */}
           <Route path="/dashboard/leave" element={<Leave></Leave>}></Route>
           <Route path="/dashboard/payroll" element={<Payroll></Payroll>}></Route>
           <Route path="/dashboard/recruitment" element={<Recruitment></Recruitment>}></Route>
           <Route path="/dashboard/recruitment/applicants/:jobId/:organizationId" element={<Applicants></Applicants>}></Route>
 
           <Route path="/ApplyJob/:orgId/:jobTitle/:jobDescription/:orgName/:jobId" element={<ApplyJob></ApplyJob>}></Route>
-
+          <Route path="/CEO/Dashboard" element={<CeoDashboard></CeoDashboard>}></Route>
+          <Route path="/reset-password/:userType/:token" element={<ForgotPassword></ForgotPassword>}></Route>
         </Routes>
       </BrowserRouter>
     </>
