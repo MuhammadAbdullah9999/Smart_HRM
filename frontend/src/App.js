@@ -26,6 +26,9 @@ import CeoDashboard from "./Components/Ceo/Dashboard/CeoDashboard";
 import AddAttendance from "./Components/Attendance/AddAttendance";
 import ForgotPassword from "./Components/ForgotPassword/ForgotPassword";
 import Announcements from "./Components/Dashboard/Announcements/Announcements";
+import OTPVerify from "./Components/ForgotPassword/OTPVerify";
+import Profile from "./Components/Attendance/Profile";
+
 function App() {
   return (
     <>
@@ -70,7 +73,8 @@ function App() {
           ></Route>
           <Route path="/:userType/dashboard/attendance" element={<AttendanceMain></AttendanceMain>}></Route>
           <Route path="/:userType/dashboard/Attendance/AddAttendance" element={<AddAttendance />} /> {/* New route for marking attendance */}
-          <Route path="/:userType/dashboard/Attendance/mark-attendance" element={<MarkAttendance />} /> {/* New route for marking attendance */}
+          <Route path="/:userType/dashboard/Attendance/mark-attendance" element={<MarkAttendance />} />
+          <Route path="/:userType/dashboard/profile" element={<Profile />} />
           <Route path="/:userType/dashboard/leave" element={<Leave></Leave>}></Route>
           <Route path="/:userType/dashboard/payroll" element={<Payroll></Payroll>}></Route>
           <Route path="/:userType/dashboard/recruitment" element={<Recruitment></Recruitment>}></Route>
