@@ -66,7 +66,7 @@ const Profile = () => {
             {/* Profile Picture */}
             <div className="flex justify-center items-center relative">
               <label htmlFor="profile-pic-upload">
-                <Avatar alt="Profile Picture" src={profileData.profilePic} sx={{ width: 120, height: 120 }} />
+                <Avatar alt="Profile Picture" src={profileData.profilePic} sx={{ width: 65, height: 65 }} />
                 {isEditingPic && (
                   <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2">
                     <input

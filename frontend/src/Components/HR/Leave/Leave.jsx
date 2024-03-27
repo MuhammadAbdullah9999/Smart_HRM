@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import Sidebar from "../Sidebar";
+import Sidebar from "../Dashboard/Sidebar";
 import CeoSidebar from "../../Ceo/Dashboard/CeoSidebar";
-import DashboardOverview from "../DashboardOverview";
+import DashboardOverview from "../Dashboard/DashboardOverview";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { setEmployeeData } from "../../../state/index";

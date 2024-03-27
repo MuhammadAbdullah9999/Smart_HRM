@@ -2,7 +2,7 @@
 import React from 'react';
 import Sidebar from '../Dashboard/Sidebar';
 import Attendance from './Attendance';
-import CeoSidebar from '../Ceo/Dashboard/CeoSidebar';
+import CeoSidebar from '../../Ceo/Dashboard/CeoSidebar';
 import { useSelector } from "react-redux";
 
 const AttendancePage = () => {

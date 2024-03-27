@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import Sidebar from "../Sidebar";
-import DashboardOverview from "../DashboardOverview";
+import Sidebar from "../Dashboard/Sidebar";
+import DashboardOverview from "../Dashboard/DashboardOverview";
 import InputField from "../../Styles/InputField";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, IconButton, Typography } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';

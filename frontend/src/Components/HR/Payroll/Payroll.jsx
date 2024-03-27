@@ -1,6 +1,6 @@
 import React from "react";
-import Sidebar from "../Sidebar";
-import DashboardOverview from "../DashboardOverview";
+import Sidebar from "../Dashboard/Sidebar";
+import DashboardOverview from "../Dashboard/DashboardOverview";
 import { useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import {
@@ -30,7 +30,7 @@ useEffect(() => {
   const handleViewClick = (employeeId) => {
     // Handle view click logic here
     console.log(`View button clicked for employeeId: ${employeeId}`);
-    navigate(`/dashboard/Employees/EmployeeProfile/${employeeId}`)
+    navigate(`/Employees/EmployeeProfile/${employeeId}`)
   };
 
   const handleGeneratePayrollClick = async () => {

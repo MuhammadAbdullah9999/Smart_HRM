@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../Dashboard/Sidebar";
-import CeoSidebar from "../Ceo/Dashboard/CeoSidebar";
+import CeoSidebar from "../../Ceo/Dashboard/CeoSidebar";
 import DashboardOverview from "../Dashboard/DashboardOverview";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
@@ -9,7 +9,7 @@ import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { useSelector } from 'react-redux';
 import { useDispatch } from "react-redux";
-import { setEmployeeData } from "../../state";
+import { setEmployeeData } from "../../../state";
 import validator from 'validator';
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -95,10 +95,10 @@ const handleSubmit = async() => {
       dispatch(setEmployeeData(response.data.data));
       // console.log(response.data);
       if(employeeAttendance.loginType==="business_owner"){
-        navigate('/CEO/dashboard/attendance')
+        navigate('/CEO/attendance')
       }
       else{
-        navigate('/HR/dashboard/attendance')
+        navigate('/HR/attendance')
       }
     }
   }

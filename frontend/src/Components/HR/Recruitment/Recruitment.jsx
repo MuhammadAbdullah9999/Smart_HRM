@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import Sidebar from "../Sidebar";
-import DashboardOverview from "../DashboardOverview";
+import Sidebar from "../Dashboard/Sidebar";
+import DashboardOverview from "../Dashboard/DashboardOverview";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
@@ -28,7 +28,7 @@ function Recruitment() {
                 {job.jobDescription.split("\n").slice(0, 3).join("\n")}...
               </p>
               <Link
-                to={`/HR/dashboard/recruitment/applicants/${job._id}/${job.organizationId}`}
+                to={`/HR/recruitment/applicants/${job._id}/${job.organizationId}`}
               >
                 <button className="p-2 self-end rounded-md bg-sec-color text-white">
                   View

@@ -1,8 +1,8 @@
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import Sidebar from "../Sidebar";
-import DashboardOverview from "../DashboardOverview";
+import Sidebar from "../Dashboard/Sidebar";
+import DashboardOverview from "../Dashboard/DashboardOverview";
 import { pdfjs, Document, Page } from "react-pdf";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import InputField from "../../Styles/InputField";
@@ -145,14 +145,14 @@ function Applicants() {
                     <p className="text-sm">{applicant.phoneNumber}</p>
                   </div>
                   <div className="flex justify-end mt-2">
-                    <button className="p-2 text-sm mr-2 bg-sec-color text-white rounded-lg active:text-sec-color active:bg-white">
+                    {/* <button className="p-2 text-sm mr-2 bg-sec-color text-white rounded-lg active:text-sec-color active:bg-white">
                       View CV
-                    </button>
+                    </button> */}
                     <button
                       className="p-2 text-sm bg-sec-color text-white rounded-lg active:text-sec-color active:bg-white"
                       onClick={() => handlePdfClick(applicant.cv)}
                     >
-                      Download CV
+                      View CV
                     </button>
                   </div>
                 </div>

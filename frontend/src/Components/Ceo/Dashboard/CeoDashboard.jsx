@@ -1,6 +1,6 @@
 import CeoSidebar from "./CeoSidebar";
 import Card from "../Styles/CeoDashboardCard";
-import DashboardOverview from "../../Dashboard/DashboardOverview";
+import DashboardOverview from "../../HR/Dashboard/DashboardOverview";
 import { useSelector } from 'react-redux';
 
 function CeoDashboard() {

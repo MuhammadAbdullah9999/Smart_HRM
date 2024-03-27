@@ -3,7 +3,7 @@ import React from "react";
 import DashboardStat from "./DashboardStat";
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
-import InputField from "../Styles/InputField";
+import InputField from "../../Styles/InputField";
 
 
 function DashboardFunctionalities({ toDoList,newTask, setNewTask, handleAddToDo, handleDeleteToDo }) {

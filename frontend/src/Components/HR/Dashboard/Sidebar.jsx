@@ -1,7 +1,7 @@
 // src/components/Dashboard/Sidebar.jsx
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import logoImage from "../../images/avi.jpg";
+import logoImage from "../../../images/avi.jpg";
 import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
 import AccountBalanceRoundedIcon from "@mui/icons-material/AccountBalanceRounded";
 import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded";
@@ -77,9 +77,9 @@ function Sidebar({ isOpen, onClose }) {
               }
             />
             <SidebarItem
-              to="/HR/dashboard/departments"
+              to="/HR/departments"
               label="Departments"
-              isActive={isActive("/dashboard/departments")}
+              isActive={isActive("/departments")}
               onClose={onClose}
               icon={
                 <AccountBalanceRoundedIcon
@@ -88,18 +88,18 @@ function Sidebar({ isOpen, onClose }) {
               }
             />
             <SidebarItem
-              to="/HR/dashboard/employees"
+              to="/HR/employees"
               label="Employees"
-              isActive={isActive("/dashboard/employees")}
+              isActive={isActive("/employees")}
               onClose={onClose}
               icon={
                 <GroupsRoundedIcon style={{ color: "white", fontSize: 20 }} />
               }
             />
             <SidebarItem
-              to="/HR/dashboard/attendance"
+              to="/HR/attendance"
               label="Attendance"
-              isActive={isActive("/dashboard/attendance")}
+              isActive={isActive("/attendance")}
               onClose={onClose}
               icon={
                 <PermContactCalendarRoundedIcon
@@ -108,27 +108,27 @@ function Sidebar({ isOpen, onClose }) {
               }
             />
             <SidebarItem
-              to="/HR/dashboard/leave"
+              to="/HR/leave"
               label="Leave"
-              isActive={isActive("/dashboard/leave")}
+              isActive={isActive("/leave")}
               onClose={onClose}
               icon={
                 <EventRoundedIcon style={{ color: "white", fontSize: 20 }} />
               }
             />
             <SidebarItem
-              to="/HR/dashboard/payroll"
+              to="/HR/payroll"
               label="Payroll"
-              isActive={isActive("/dashboard/payroll")}
+              isActive={isActive("/payroll")}
               onClose={onClose}
               icon={
                 <PaidRoundedIcon style={{ color: "white", fontSize: 20 }} />
               }
             />
             <SidebarItem
-              to="/HR/dashboard/recruitment"
+              to="/HR/recruitment"
               label="Recruitment"
-              isActive={isActive("/dashboard/recruitment")}
+              isActive={isActive("/recruitment")}
               onClose={onClose}
               icon={
                 <QueuePlayNextRoundedIcon
@@ -137,18 +137,18 @@ function Sidebar({ isOpen, onClose }) {
               }
             />
             <SidebarItem
-              to="/HR/dashboard/profile"
+              to="/HR/profile"
               label="Profile"
-              isActive={isActive("/dashboard/profile")}
+              isActive={isActive("/profile")}
               onClose={onClose}
               icon={
                 <Person2RoundedIcon style={{ color: "white", fontSize: 20 }} />
               }
             />
             <SidebarItem
-              to="/HR/dashboard/settings"
+              to="/HR/settings"
               label="Settings"
-              isActive={isActive("/dashboard/setting")}
+              isActive={isActive("/setting")}
               onClose={onClose}
               icon={
                 <SettingsRoundedIcon style={{ color: "white", fontSize: 20 }} />

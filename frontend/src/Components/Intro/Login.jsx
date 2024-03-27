@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import LoginImage from "../images/log1.jpg";
+import LoginImage from "../../images/log1.jpg";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CircularProgress from '@mui/material/CircularProgress';
 import LoginOutlinedIcon from "@mui/icons-material/LoginOutlined";
-import InputField from "./Styles/InputField";
+import InputField from "../Styles/InputField";
 import validator from "validator";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { setEmployeeData } from "../state/index";
-import { setJobs } from "../state/JobsSlice";
+import { setEmployeeData } from "../../state/index";
+import { setJobs } from "../../state/JobsSlice";
 
 const Login = () => {
   const dispatch = useDispatch();

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import DashboardOverview from "../DashboardOverview";
+import DashboardOverview from "../Dashboard/DashboardOverview";
 import { Link } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import EditIcon from "@mui/icons-material/Edit";
@@ -276,11 +276,11 @@ function EmployeeProfile() {
     <div className="flex flex-col md:flex-row">
       {/* Back button */}
       {employeesData && employeesData.userType === "business_owner" ? (
-        <Link to="/CEO/dashboard/Employees">
+        <Link to="/CEO/Employees">
           <ArrowBackIcon className="cursor-pointer absolute top-8 left-8 " />
         </Link>
       ) : (
-        <Link to="/HR/dashboard/Employees">
+        <Link to="/HR/Employees">
           <ArrowBackIcon className="cursor-pointer absolute top-8 left-8 " />
         </Link>
       )}

@@ -50,7 +50,7 @@ const AttendanceCard = ({ Id, Name, Month, Percentage, employeeId }) => {
           <ShowChartIcon className="mr-2 p-1" />
           <p className="text-gray-400 text-sm">{Percentage} %</p>
         </div>
-        <Link to={`/dashboard/AttendanceDetail/${employeeId}`}>
+        <Link to={`/AttendanceDetail/${employeeId}`}>
           <button className="bg-bg-color hover:bg-blue-700 text-white font-bold px-1 py-1.5 rounded-lg mt-3 w-full">
             <LaunchRoundedIcon
               className="mr-2"

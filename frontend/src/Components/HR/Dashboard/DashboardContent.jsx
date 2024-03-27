@@ -4,7 +4,7 @@ import DashboardFunctionalities from "./DashboardFunctionalities";
 import DashboardStat from "./DashboardCard";
 import axios from "axios";
 import { useSelector, useDispatch } from 'react-redux';
-import { setEmployeeData } from "../../state";
+import { setEmployeeData } from "../../../state";
 
 function DashboardContent(props) {
     const employeeData = useSelector(state => state.EmployeeData.EmployeeData);

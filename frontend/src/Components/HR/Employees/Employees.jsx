@@ -1,56 +1,29 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../Dashboard/Sidebar";
+import CeoSidebar from "../../Ceo/Dashboard/CeoSidebar";
 import { useSelector } from "react-redux";
 import AddIcon from "@mui/icons-material/Add";
-import AttendanceCard from "../Styles/AttendanceCard";
+import EmployeeCard from "../../Styles/EmployeeCard";
 import DashboardOverview from "../Dashboard/DashboardOverview";
-import InputField from "../Styles/InputField";
-import EnhancedTable from "../Styles/Table";
+import InputField from "../../Styles/InputField";
+import EnhancedTable from "../../Styles/Table";
 import { Link } from "react-router-dom";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
-import CeoSidebar from "../Ceo/Dashboard/CeoSidebar";
 
-function AttendanceMain() {
+function Employees() {
   const [employees, setEmployees] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [attendanceData, setAttendanceData] = useState([]);
-  const data = useSelector((state) => state.EmployeeData.EmployeeData);
+  const data = useSelector(
+    (state) => state.EmployeeData.EmployeeData
+  );
+
 
   useEffect(() => {
+    // console.log("employees");
+    // console.log(data.employeeData);
     setEmployees(data.employeeData);
-    const currentMonth = new Date()
-      .toLocaleString("default", { month: "long" })
-      .toLowerCase();
-    const updatedEmployees = data.employeeData.map((employee) => {
-      const currentMonthAttendance =
-        employee.attendance?.filter(
-          (entry) => entry.month.toLowerCase() === currentMonth
-        ) || [];
-
-      const presentDays = currentMonthAttendance.filter(
-        (entry) => entry.attendanceStatus.toLowerCase() === "present"
-      ).length;
-      const absentDays = currentMonthAttendance.filter(
-        (entry) => entry.attendanceStatus.toLowerCase() === "absent"
-      ).length;
-
-      const totalDays = currentMonthAttendance.length;
-      // console.log(presentDays,totalDays)
-      const attendancePercentage = parseFloat(((presentDays / totalDays) * 100).toFixed(1));
-
-      return {
-        ...employee,
-        presentDays,
-        absentDays,
-        attendancePercentage,
-        currentMonth,
-      };
-    });
-
-    setEmployees(updatedEmployees);
-    setAttendanceData(updatedEmployees);
-  }, [data.EmployeeData]);
+  }, [data]);
 
   const filteredEmployees = employees.filter((employee) => {
     const nameMatch = employee.name
@@ -65,16 +38,15 @@ function AttendanceMain() {
   return (
     <div className="flex">
       <div className="fixed">
-        {data && data.userType === "business_owner" ? (
+      {data && data.userType === "business_owner" ? (
           <CeoSidebar></CeoSidebar>
         ) : (
           <Sidebar></Sidebar>
         )}
-        {/* <Sidebar /> */}
       </div>
       <div className="flex flex-col md:ml-72 w-full">
         <div className="sm:ml-20 md:ml-0 w-full pr-8 mt-6">
-          <DashboardOverview pageName="Attendance" />
+          <DashboardOverview pageName={data.userType==="business_owner"?"HR":"Employee"} />
 
           <div className="flex justify-between rounded-md w-full my-3">
             <div className="flex items-center w-3/4">
@@ -99,13 +71,13 @@ function AttendanceMain() {
             </div>
 
             <div className="flex items-center">
-              <Link to="/HR/dashboard/Attendance/mark-attendance">
+              <Link to="/Employees/AddEmployee">
                 <button className="bg-bg-color px-3 py-2 rounded-3xl border-none font-bold text-center cursor-pointer transition duration-400 hover:shadow-lg hover:shadow-gray-400 active:transform active:scale-97 active:shadow-lg">
                   <AddIcon
                     className="inline-block"
                     style={{ color: "white" }}
                   />
-                  <span className="ml-2 text-white">Add Attendance</span>
+                  <span className="ml-2 text-white">{data.userType==="business_owner"?"Add HR":"Add Employee"}</span>
                 </button>
               </Link>
             </div>
@@ -116,18 +88,19 @@ function AttendanceMain() {
           {filteredEmployees.length > 0 ? (
             filteredEmployees.map((employee, index) => (
               <div className="w-72" key={index}>
-                <AttendanceCard
+                <EmployeeCard
                   Id={index + 1}
                   Name={employee.name}
-                  Month={employee.currentMonth}
-                  Percentage={employee.attendancePercentage}
+                  Department={employee.department}
+                  Contact={employee.contact}
+                  EmailText={employee.email}
                   employeeId={employee._id}
                   // Image={employee.image}
                 />
               </div>
             ))
           ) : (
-            <p>No employees attendance found</p>
+            <p>No employees found</p>
           )}
         </div>
 
@@ -140,4 +113,4 @@ function AttendanceMain() {
   );
 }
 
-export default AttendanceMain;
+export default Employees;
