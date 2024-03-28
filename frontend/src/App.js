@@ -29,6 +29,7 @@ import Announcements from "./Components/Dashboard/Announcements/Announcements";
 import OTPVerify from "./Components/ForgotPassword/OTPVerify";
 import Profile from "./Components/Profile/Profile";
 import Setting from "./Components/Setting/Setting";
+import LeaveApplication from "./Components/Leave/Leave";
 
 function App() {
   return (
@@ -86,6 +87,8 @@ function App() {
           <Route path="/CEO/Dashboard" element={<CeoDashboard></CeoDashboard>}></Route>
           <Route path="/reset-password/:userType/:token" element={<ForgotPassword></ForgotPassword>}></Route>
           <Route path="/CEO/dashboard/Announcements" element={<Announcements></Announcements>}></Route>
+          <Route path="leave" element={<LeaveApplication></LeaveApplication>}></Route>
+
         </Routes>
       </BrowserRouter>
     </>

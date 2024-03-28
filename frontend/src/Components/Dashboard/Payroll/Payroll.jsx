@@ -1,5 +1,6 @@
 import React from "react";
 import Sidebar from "../Sidebar";
+import CeoSidebar from "../../Ceo/Dashboard/CeoSidebar";
 import DashboardOverview from "../DashboardOverview";
 import { useSelector } from "react-redux";
 import { useState, useEffect } from "react";
@@ -18,12 +19,12 @@ import { useNavigate } from "react-router-dom";
 function Payroll() {
   const navigate=useNavigate();
   const [employees, setEmployees] = useState([]);
-  const data = useSelector((state) => state.EmployeeData);
-const organizationId=data.user.organizationId;
+  const data = useSelector((state) => state.EmployeeData.EmployeeData);
+const organizationId=data.userType==='business_owner'?data.user._id: data.user.organizationId;
 
 useEffect(() => {
     // console.log("employees");
-    // console.log(data.employeeData);
+    // console.log(data.userType);
     setEmployees(data.employeeData);
   }, [data.employeeData]);
 
@@ -45,7 +46,8 @@ useEffect(() => {
         const response = await axios.post('http://localhost:5000/Payroll', {
           organizationId: organizationId,
           year: currentYear,
-          month: currentMonth
+          month: currentMonth,
+          userType:data.userType
         });
         
         const responseMessage = window.confirm(response.data.message);
@@ -61,8 +63,11 @@ useEffect(() => {
 
   return (
     <div className="flex w-full gap-4">
-      <Sidebar></Sidebar>
-      <div className="w-full m-4">
+{data && data.userType === "business_owner" ? (
+          <CeoSidebar></CeoSidebar>
+        ) : (
+          <Sidebar></Sidebar>
+        )}      <div className="w-full m-4">
         <DashboardOverview pageName="Payroll"></DashboardOverview>
         <div className="my-4">
           <button

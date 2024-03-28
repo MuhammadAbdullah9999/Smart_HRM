@@ -118,7 +118,7 @@ function CeoSidebar({ isOpen, onClose }) {
               }
             />
             <SidebarItem
-              to=""
+              to="/CEO/dashboard/payroll"
               label="Payroll"
               isActive={isActive("/dashboard/payroll")}
               onClose={onClose}

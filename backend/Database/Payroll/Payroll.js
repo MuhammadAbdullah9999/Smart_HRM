@@ -2,13 +2,23 @@ const { connectToMongoDB, closeMongoDBConnection } = require('../connectDB');
 const { sendEmail } = require('./SendMail/sendMail');
 const { getOrganizationName } = require('../GetOrganizationData/GetOrganizationName');
 
-async function calculatePayroll(organizationId, year, month) {
+async function calculatePayroll(organizationId, year, month,userType) {
     const organizationName = await getOrganizationName(organizationId);
 
+  
     try {
         const db = await connectToMongoDB();
-        const employeesCollection = db.collection('Employees');
+        let employeesCollection;
+
+        // Choose collection based on userType
+        if (userType === "business_owner") {
+            employeesCollection = db.collection('HR');
+        } else {
+            employeesCollection = db.collection('Employees');
+        }
+
         const payrollCollection = db.collection('payroll');
+
 
         // Check if organization has no employees
         const employeeCount = await employeesCollection.countDocuments({ organizationId });
@@ -72,6 +82,7 @@ async function calculatePayroll(organizationId, year, month) {
                 employeeId: _id,
                 employeeName: name,
                 email,
+                employeeType:userType==='business_owner'?'HR':'Employee',
                 salary: parsedSalary,
                 month,
                 year,
