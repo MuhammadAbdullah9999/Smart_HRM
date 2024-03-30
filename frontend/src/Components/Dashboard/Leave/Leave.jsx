@@ -20,12 +20,30 @@ function Leave() {
   const [hrEmail, setHrEmail] = useState([]);
   const [loading, setLoading] = useState(false);
   const data = useSelector((state) => state.EmployeeData.EmployeeData);
-console.log(data)
+  console.log(data);
+  // useEffect(() => {
+  //   if (data.userType === "employee") {
+  //     setEmployees([data.user]);
+  //   } else {
+  //     setEmployees(data.employeeData);
+  //     setHrEmail(data.user.email);
+  //   }
+  // }, [data.employeeData]);
   useEffect(() => {
-    setEmployees(data.employeeData);
-    setHrEmail(data.user.email);
-  }, [data.employeeData]);
+    setLoading(true);
+    const getEmployees = async () => {
+      const response = await axios.get(
+        `http://localhost:5000/GetEmployees/${data.user.organizationId}/${data.user._id}/${data.userType}`
+      );
+      setLoading(false);
+      setEmployees(response.data.employeeData);
+      setHrEmail(data.user.email);
+      console.log(response);
+    };
+    getEmployees();
+  }, []);
 
+  console.log(employees);
   // Function to handle the approval or rejection of leave request
   // Function to handle the approval or rejection of leave request
   const handleLeaveAction = async (employeeId, leaveId, action) => {
@@ -56,33 +74,28 @@ console.log(data)
   };
 
   return (
-    <div
-      className={`flex gap-4 w-full ${
-        loading ? "pointer-events-none opacity-70" : ""
-      }`}
-    >
-      {loading && (
+    <div className={`flex gap-4 w-full`}>
+      {/* {loading && (
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
           <CircularProgress color="inherit" />
         </div>
-      )}
+      )} */}
       <div>
-      {data && data.userType === "business_owner" ? (
-        <CeoSidebar />
-      ) : (
-        data && data.userType === "employee" ? (
+        {data && data.userType === "business_owner" ? (
+          <CeoSidebar />
+        ) : data && data.userType === "employee" ? (
           <EmployeeSidebar />
         ) : (
           <Sidebar />
-        )
-      )}
+        )}
       </div>
       <div className="w-full p-4">
         <DashboardOverview pageName="Leave"></DashboardOverview>
-        <Link to='/dashboard/leave/applyLeave'><button className="bg-bg-color p-2 rounded-lg text-white shadow-md mb-4 active:bg-white active:text-bg-color">
-          <AddIcon></AddIcon>Apply Leave
-        </button>
-</Link>
+        <Link to="/dashboard/leave/applyLeave">
+          <button className="bg-bg-color p-2 rounded-lg text-white shadow-md mb-4 active:bg-white active:text-bg-color">
+            <AddIcon></AddIcon>Apply Leave
+          </button>
+        </Link>
         <div className="flex justify-between gap-8 w-full h-[77%] ">
           <div className="flex flex-col w-1/3 border border-black rounded-md shadow-lg min-h-full">
             <div className="font-bold">
@@ -158,32 +171,38 @@ console.log(data)
                               </div>
                               <div className="self-center">
                                 <div className="flex gap-2">
-                                  <button
-                                    onClick={() =>
-                                      handleLeaveAction(
-                                        employee._id,
-                                        leave._id,
-                                        "Approved"
-                                      )
-                                    }
-                                    className="p-2 text-sm bg-green-500 text-white rounded-lg active:text-green-600 active:bg-white"
-                                  >
-                                    <DoneIcon fontSize="small"></DoneIcon>
-                                    Approve
-                                  </button>
-                                  <button
-                                    onClick={() =>
-                                      handleLeaveAction(
-                                        employee._id,
-                                        leave._id,
-                                        "reject"
-                                      )
-                                    }
-                                    className="p-2 text-sm bg-red-500 text-white rounded-lg active:text-red-600 active:bg-white"
-                                  >
-                                    <ClearIcon fontSize="small"></ClearIcon>
-                                    Reject
-                                  </button>
+                                  {data.userType === "employee" ? (
+                                    <button>Pending</button>
+                                  ) : (
+                                    <div>
+                                      <button
+                                        onClick={() =>
+                                          handleLeaveAction(
+                                            employee._id,
+                                            leave._id,
+                                            "Approved"
+                                          )
+                                        }
+                                        className="p-2 text-sm bg-green-500 text-white rounded-lg active:text-green-600 active:bg-white"
+                                      >
+                                        <DoneIcon fontSize="small"></DoneIcon>
+                                        Approve
+                                      </button>
+                                      <button
+                                        onClick={() =>
+                                          handleLeaveAction(
+                                            employee._id,
+                                            leave._id,
+                                            "reject"
+                                          )
+                                        }
+                                        className="p-2 text-sm bg-red-500 text-white rounded-lg active:text-red-600 active:bg-white"
+                                      >
+                                        <ClearIcon fontSize="small"></ClearIcon>
+                                        Reject
+                                      </button>
+                                    </div>
+                                  )}
                                 </div>
                               </div>
                             </div>
@@ -192,6 +211,14 @@ console.log(data)
                         )
                     )
                 )}
+              {loading && (
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20">
+                  <CircularProgress style={{ color: "blue" }} />
+                </div>
+              )}
+              {loading && (
+                <div className="absolute inset-0 backdrop-filter backdrop-blur-sm z-10"></div>
+              )}
             </div>
           </div>
         </div>

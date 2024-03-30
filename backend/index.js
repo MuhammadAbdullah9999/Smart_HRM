@@ -23,6 +23,7 @@ const ResetPassword=require('./Routes/Authentication/ResetPassword');
 const UpdateEmployeeProfile=require('./Routes/UpdateEmployeeProfile/UpdateEmployeeProfile');
 const ToDoList=require('./Routes/ToDoList/ToDoList');
 const Announcements=require('./Routes/Announcements/Announcements');
+const GetEmployee=require('./Routes/GetEmployee/GetEmployee')
 const app = express();
 
 app.use(cors({credentials: true }));
@@ -50,7 +51,8 @@ app.use('/ForgotPassword',ForgotPassword);
 app.use('/ResetPassword',ResetPassword);
 app.use('/UpdateEmployeeProfile',UpdateEmployeeProfile)
 app.use('/ToDoList',ToDoList);
-app.use('/Announcement',Announcements)
+app.use('/Announcement',Announcements);
+app.use('/GetEmployees',GetEmployee);
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {

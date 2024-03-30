@@ -29,7 +29,7 @@ import Announcements from "./Components/Dashboard/Announcements/Announcements";
 import OTPVerify from "./Components/ForgotPassword/OTPVerify";
 import Profile from "./Components/Profile/Profile";
 import Setting from "./Components/Setting/Setting";
-import LeaveApplication from "./Components/Leave/Leave";
+import LeaveApplication from "./Components/LeaveApplication/LeaveApplication";
 import EmployeeDashboard from "./Components/Employee/EmployeeDashboard/EmployeeDashboard";
 
 function App() {
