@@ -88,7 +88,7 @@ function App() {
           <Route path="/CEO/Dashboard" element={<CeoDashboard></CeoDashboard>}></Route>
           <Route path="/reset-password/:userType/:token" element={<ForgotPassword></ForgotPassword>}></Route>
           <Route path="/CEO/dashboard/Announcements" element={<Announcements></Announcements>}></Route>
-          <Route path="leave" element={<LeaveApplication></LeaveApplication>}></Route>
+          <Route path="/dashboard/leave/applyLeave" element={<LeaveApplication></LeaveApplication>}></Route>
 
           <Route path="/Employee/Dashboard" element={<EmployeeDashboard></EmployeeDashboard>}></Route>
 

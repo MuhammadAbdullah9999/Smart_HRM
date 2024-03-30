@@ -4,18 +4,12 @@ import { Link, useLocation } from "react-router-dom";
 // import logoImage from "../../../images/avi.jpg";
 import logoImage from '../../images/avi.jpg';
 import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
-import AccountBalanceRoundedIcon from "@mui/icons-material/AccountBalanceRounded";
-import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded";
 import PermContactCalendarRoundedIcon from "@mui/icons-material/PermContactCalendarRounded";
 import EventRoundedIcon from "@mui/icons-material/EventRounded";
-import PaidRoundedIcon from "@mui/icons-material/PaidRounded";
-import QueuePlayNextRoundedIcon from "@mui/icons-material/QueuePlayNextRounded";
 import Person2RoundedIcon from "@mui/icons-material/Person2Rounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
-import PeopleIcon from '@mui/icons-material/People';
-import CampaignIcon from '@mui/icons-material/Campaign';
 import { useState } from "react";
 import { useSelector } from "react-redux";
 
@@ -25,7 +19,6 @@ function EmployeeSidebar({ isOpen, onClose }) {
     setIsSidebarOpen(!isSidebarOpen);
   };
   const employeeData = useSelector((state) => state.EmployeeData);
-  console.log(employeeData)
   const location = useLocation();
 
   const isActive = (pathname) => {
@@ -92,7 +85,7 @@ function EmployeeSidebar({ isOpen, onClose }) {
               }
             />
             <SidebarItem
-              to="/CEO/dashboard/leave"
+              to="/Employee/dashboard/leave"
               label="Leave"
               isActive={isActive("/dashboard/leave")}
               onClose={onClose}

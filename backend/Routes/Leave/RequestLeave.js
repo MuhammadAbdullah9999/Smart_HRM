@@ -4,9 +4,9 @@ const router = express.Router();
 const { requestLeave } = require('../../Database/Leave/RequestLeave');
 
 router.post('/', async(req, res) => {
-    const { employeeId, leaveType, leaveReason, leaveDays,leaveDate } = req.body;
+    const { employeeId, leaveType, leaveReason, leaveDays,leaveDate,userType } = req.body;
 
-    const { message, error,leaveId } = await requestLeave(employeeId, leaveDays,leaveType, leaveReason,leaveDate);
+    const { message, error,leaveId } = await requestLeave(employeeId, leaveDays,leaveType, leaveReason,leaveDate,userType);
 
     if (error) {
         res.status(500).send(error);

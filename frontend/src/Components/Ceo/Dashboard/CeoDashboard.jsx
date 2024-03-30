@@ -12,7 +12,7 @@ function CeoDashboard() {
 
   const [announcements, setAnnouncements] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [apiError, setApiError] = useState("");
+  // const [apiError, setApiError] = useState("");
 
   useEffect(() => {
     // Fetch announcements initially

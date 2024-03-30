@@ -1,5 +1,4 @@
 import EmployeeSidebar from "../EmployeeSidebar";
-import DashboardOverview from "../../Dashboard/DashboardOverview";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -13,7 +12,7 @@ function EmployeeDashboard() {
 
   const [announcements, setAnnouncements] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [apiError, setApiError] = useState("");
+//   const [apiError, setApiError] = useState("");
 
   useEffect(() => {
     // Fetch announcements initially

@@ -6,13 +6,21 @@ async function requestLeave(
   leaveDays,
   leaveType,
   leaveReason,
-  leaveDate
+  leaveDate,
+  userType
 ) {
   try {
+    if(userType === "employee") {
+      userType="Employees";
+    }
+    else if(userType==="HR"){
+      userType="HR";
+    }
     const db = await connectToMongoDB();
-    const employeeCollection = db.collection("Employees");
+    const employeeCollection = db.collection(userType);
 
     const leaveId = new ObjectId(); // Generate a new ObjectId for the leave request
+   
     const leave = {
       _id: leaveId,
       leaveDays,

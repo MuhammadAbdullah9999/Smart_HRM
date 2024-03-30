@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../Sidebar";
 import CeoSidebar from "../../Ceo/Dashboard/CeoSidebar";
+import EmployeeSidebar from "../../Employee/EmployeeSidebar";
 import DashboardOverview from "../DashboardOverview";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
@@ -10,6 +11,7 @@ import AddIcon from "@mui/icons-material/Add";
 import DoneIcon from "@mui/icons-material/Done";
 import ClearIcon from "@mui/icons-material/Clear";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 function Leave() {
   const dispatch = useDispatch();
@@ -65,18 +67,22 @@ console.log(data)
         </div>
       )}
       <div>
-        {data && data.userType === "business_owner" ? (
-          <CeoSidebar></CeoSidebar>
+      {data && data.userType === "business_owner" ? (
+        <CeoSidebar />
+      ) : (
+        data && data.userType === "employee" ? (
+          <EmployeeSidebar />
         ) : (
-          <Sidebar></Sidebar>
-        )}
+          <Sidebar />
+        )
+      )}
       </div>
       <div className="w-full p-4">
         <DashboardOverview pageName="Leave"></DashboardOverview>
-        <button className="bg-bg-color p-2 rounded-lg text-white shadow-md mb-4 active:bg-white active:text-bg-color">
+        <Link to='/dashboard/leave/applyLeave'><button className="bg-bg-color p-2 rounded-lg text-white shadow-md mb-4 active:bg-white active:text-bg-color">
           <AddIcon></AddIcon>Apply Leave
         </button>
-
+</Link>
         <div className="flex justify-between gap-8 w-full h-[77%] ">
           <div className="flex flex-col w-1/3 border border-black rounded-md shadow-lg min-h-full">
             <div className="font-bold">
