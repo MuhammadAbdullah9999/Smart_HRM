@@ -11,14 +11,22 @@ import { useSelector } from "react-redux";
 
 const Attendance = () => {
   const { employeeId } = useParams();
-  const employeeData = useSelector((state) => state.EmployeeData.EmployeeData);
+  let employeeData = useSelector((state) => state.EmployeeData.EmployeeData);
 
-  
-  const employee = employeeData.employeeData.find(
-    (employee) => employee._id === employeeId
-  );
+  let employee='';
 
-  console.log(employee);
+  if(employeeData.userType==='employee'){
+    employee=employeeData.user;
+  }
+  else{
+    employee = employeeData.employeeData.find(
+      (employee) => employee._id === employeeId
+    );
+  }
+  // console.log(employeeData);
+    
+
+  // console.log(employee);
   const currentMonth = new Date()
     .toLocaleString("default", { month: "long" })
     .toLowerCase();

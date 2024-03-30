@@ -22,6 +22,7 @@ function DashboardContent(props) {
                   email: employeeData.user.email,
                   task: newTask.trim()
               });
+              console.log(response.data)
               setToDoList(response.data.toDoList);
               setNewTask("");
               dispatch(setEmployeeData({ 
@@ -70,12 +71,13 @@ function DashboardContent(props) {
     return (
         <div className="p-6 mt-2">
             <DashboardOverview pageName="Dashboard" />
-            <div className="grid grid-cols-2 gap-4">
+            {employeeData.userType==='employee'?'':(<div className="grid grid-cols-2 gap-4">
                 <DashboardStat label="Total Employees" value={props.data.totalEmployees} />
                 <DashboardStat label="Departments" value={props.data.totalDepartments} />
                 <DashboardStat label="Leave Requests" value={props.data.totalLeaveRequest} />
                 <DashboardStat label="Loan Requests" value="0" />
-            </div>
+            </div>)}
+            
             {toDoList && 
                 <DashboardFunctionalities
                     toDoList={toDoList}

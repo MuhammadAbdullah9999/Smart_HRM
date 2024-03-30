@@ -82,6 +82,14 @@ const Login = () => {
           setLoading(false);
           navigate(`/HR/dashboard`, { state: { data: response.data } });
         }
+        else if(response.data.userType === "employee"){
+          // dispatch(setJobs(response.data.jobs.jobs));
+          dispatch(setEmployeeData(response.data));
+          console.log(response.data)
+          setUser(response.data);
+          setLoading(false);
+          navigate(`/Employee/dashboard`, { state: { data: response.data } });
+        }
         
       }
     } catch (error) {

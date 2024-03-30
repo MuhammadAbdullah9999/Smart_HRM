@@ -7,7 +7,14 @@ async function addToDoList(userType, userEmail, task) {
         const db = await connectToMongoDB();
 
         // Access the UserType collection
-        const userTypeCollection = db.collection(userType);
+        let col;
+        if(userType==='HR'){
+            col='HR'
+        }
+        else if(userType==='employee'){
+            col='Employees'
+        }
+        const userTypeCollection = db.collection(col);
 
         // Find the user by email
         const user = await userTypeCollection.findOne({ email: userEmail });

@@ -4,14 +4,17 @@ import DashboardStat from "./DashboardStat";
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import InputField from "../Styles/InputField";
+import { useSelector } from 'react-redux';
 
 
-function DashboardFunctionalities({ toDoList,newTask, setNewTask, handleAddToDo, handleDeleteToDo }) {
+function DashboardFunctionalities({ toDoList,newTask, setNewTask, handleAddToDo, handleDeleteToDo}) {
+  const employeeData = useSelector(state => state.EmployeeData.EmployeeData);
+
 
   return (
-    <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4 mt-10 rounded-lg">
+    <div className={`mt-8 grid grid-cols-1 md:grid-cols-${employeeData.userType==='employee'?'1':'2'} gap-4 rounded-lg`}>
       {/* Notifications Section */}
-      <div className="bg-gray-100 rounded-xl p-4 shadow-md shadow-gray-200">
+      {employeeData.userType==='employee'?'':(<div className="bg-gray-100 rounded-xl p-4 shadow-md shadow-gray-200">
         <h2 className="text-xl font-semibold mb-4">Notifications</h2>
         <ul>
           <li className="flex items-center mb-2">
@@ -23,7 +26,8 @@ function DashboardFunctionalities({ toDoList,newTask, setNewTask, handleAddToDo,
             Upcoming Meeting
           </li>
         </ul>
-      </div>
+      </div>)}
+      
 
       {/* To-Do List Section */}
       <div className="bg-gray-100 rounded-xl p-4 shadow-md shadow-gray-200">

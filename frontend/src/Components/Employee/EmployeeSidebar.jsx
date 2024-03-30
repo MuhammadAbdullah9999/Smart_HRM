@@ -1,7 +1,8 @@
 // src/components/Dashboard/Sidebar.jsx
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import logoImage from "../../images/avi.jpg";
+// import logoImage from "../../../images/avi.jpg";
+import logoImage from '../../images/avi.jpg';
 import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
 import AccountBalanceRoundedIcon from "@mui/icons-material/AccountBalanceRounded";
 import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded";
@@ -13,17 +14,18 @@ import Person2RoundedIcon from "@mui/icons-material/Person2Rounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
+import PeopleIcon from '@mui/icons-material/People';
+import CampaignIcon from '@mui/icons-material/Campaign';
 import { useState } from "react";
 import { useSelector } from "react-redux";
 
-function Sidebar({ isOpen, onClose }) {
+function EmployeeSidebar({ isOpen, onClose }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
-  const employeeData = useSelector((state) => state.EmployeeData.EmployeeData);
-  // console.log(employeeData)
-
+  const employeeData = useSelector((state) => state.EmployeeData);
+  console.log(employeeData)
   const location = useLocation();
 
   const isActive = (pathname) => {
@@ -31,7 +33,7 @@ function Sidebar({ isOpen, onClose }) {
   };
 
   return (
-    <div>
+    <div className="h-[560px]">
       <div className="md:hidden">
         <button
           onClick={toggleSidebar}
@@ -41,7 +43,7 @@ function Sidebar({ isOpen, onClose }) {
         </button>
       </div>
       <aside
-        className={`w-60 m-3 ${
+        className={`w-60 h-full m-3 ${
           isSidebarOpen ? "block" : "hidden"
         } md:block bg-gradient-to-b from-bg-color to-sec-color p-2 flex flex-col justify-center items-center rounded-3xl shadow-xl shadow-gray-300`}
       >
@@ -58,8 +60,8 @@ function Sidebar({ isOpen, onClose }) {
             className="w-12 h-12 rounded-full mb-1"
           />
           <div className="text-center">
-            <p className="text-white text-lg font-semibold mt-1">{employeeData.user.name}</p>
-            <p className="text-gray-300 text-sm">HR Manager</p>
+            <p className="text-white text-lg font-semibold mt-1">{employeeData.EmployeeData.user.name}</p>
+            <p className="text-gray-300 text-sm">Employee</p>
           </div>
         </div>
 
@@ -67,7 +69,7 @@ function Sidebar({ isOpen, onClose }) {
         <nav>
           <ul className="space-y-1 w-full">
             <SidebarItem
-              to="/HR/dashboard"
+              to="/Employee/dashboard"
               label="Dashboard"
               isActive={isActive("/dashboard")}
               onClose={onClose}
@@ -77,28 +79,9 @@ function Sidebar({ isOpen, onClose }) {
                 />
               }
             />
+           
             <SidebarItem
-              to="/HR/dashboard/departments"
-              label="Departments"
-              isActive={isActive("/dashboard/departments")}
-              onClose={onClose}
-              icon={
-                <AccountBalanceRoundedIcon
-                  style={{ color: "white", fontSize: 20 }}
-                />
-              }
-            />
-            <SidebarItem
-              to="/HR/dashboard/employees"
-              label="Employees"
-              isActive={isActive("/dashboard/employees")}
-              onClose={onClose}
-              icon={
-                <GroupsRoundedIcon style={{ color: "white", fontSize: 20 }} />
-              }
-            />
-            <SidebarItem
-              to="/HR/dashboard/attendance"
+              to={`/dashboard/attendanceDetail/${employeeData.user._id}`}
               label="Attendance"
               isActive={isActive("/dashboard/attendance")}
               onClose={onClose}
@@ -109,7 +92,7 @@ function Sidebar({ isOpen, onClose }) {
               }
             />
             <SidebarItem
-              to="/HR/dashboard/leave"
+              to="/CEO/dashboard/leave"
               label="Leave"
               isActive={isActive("/dashboard/leave")}
               onClose={onClose}
@@ -117,28 +100,9 @@ function Sidebar({ isOpen, onClose }) {
                 <EventRoundedIcon style={{ color: "white", fontSize: 20 }} />
               }
             />
+            
             <SidebarItem
-              to="/HR/dashboard/payroll"
-              label="Payroll"
-              isActive={isActive("/dashboard/payroll")}
-              onClose={onClose}
-              icon={
-                <PaidRoundedIcon style={{ color: "white", fontSize: 20 }} />
-              }
-            />
-            <SidebarItem
-              to="/HR/dashboard/recruitment"
-              label="Recruitment"
-              isActive={isActive("/dashboard/recruitment")}
-              onClose={onClose}
-              icon={
-                <QueuePlayNextRoundedIcon
-                  style={{ color: "white", fontSize: 20 }}
-                />
-              }
-            />
-            <SidebarItem
-              to="/HR/dashboard/profile"
+              to=""
               label="Profile"
               isActive={isActive("/dashboard/profile")}
               onClose={onClose}
@@ -147,9 +111,9 @@ function Sidebar({ isOpen, onClose }) {
               }
             />
             <SidebarItem
-              to="/HR/dashboard/settings"
+              to=""
               label="Settings"
-              isActive={isActive("/dashboard/setting")}
+              isActive={isActive("/dashboard/settings")}
               onClose={onClose}
               icon={
                 <SettingsRoundedIcon style={{ color: "white", fontSize: 20 }} />
@@ -182,4 +146,4 @@ function SidebarItem({ to, icon, label, isActive, onClose }) {
   );
 }
 
-export default Sidebar;
+export default EmployeeSidebar;

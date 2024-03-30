@@ -10,6 +10,12 @@ async function getToDoList(userType, userEmail) {
     const db = await connectToMongoDB();
 
     // Access the UserType collection
+    if(userType==='HR'){
+        userType='HR'
+    }
+    else if(userType==='employee'){
+        userType='Employees'
+    }
     const userTypeCollection = db.collection(userType);
 
     // Find the user by email
