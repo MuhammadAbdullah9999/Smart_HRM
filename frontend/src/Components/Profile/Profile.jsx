@@ -6,9 +6,16 @@ import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
 import Button from "@mui/material/Button";
+import CeoSidebar from "../Ceo/Dashboard/CeoSidebar";
+import EmployeeSidebar from "../Employee/EmployeeSidebar";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
+import { useSelector } from "react-redux";
+
 
 const Profile = () => {
+  const data = useSelector((state) => state.EmployeeData.EmployeeData);
+  console.log(data);
+
   const [isEditingName, setIsEditingName] = useState(false);
   const [isEditingEmail, setIsEditingEmail] = useState(false);
   const [isEditingPhone, setIsEditingPhone] = useState(false);
@@ -52,8 +59,13 @@ const Profile = () => {
   return (
     <div className="flex">
       {/* Sidebar */}
-      <Sidebar />
-
+{data && data.userType === "business_owner" ? (
+          <CeoSidebar />
+        ) : data && data.userType === "employee" ? (
+          <EmployeeSidebar />
+        ) : (
+          <Sidebar />
+        )}
       {/* Main content */}
       <div className="flex-grow p-4 md:p-8">
         {/* Dashboard Overview */}
@@ -66,7 +78,7 @@ const Profile = () => {
             {/* Profile Picture */}
             <div className="flex justify-center items-center relative">
               <label htmlFor="profile-pic-upload">
-                <Avatar alt="Profile Picture" src={profileData.profilePic} sx={{ width: 120, height: 120 }} />
+              <Avatar alt="Profile Picture" src={profileData.profilePic} sx={{ width: 65, height: 65 }} />
                 {isEditingPic && (
                   <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2">
                     <input
@@ -100,7 +112,7 @@ const Profile = () => {
               <div className="flex items-center justify-between w-full mb-4">
                 <TextField
                   label="Name"
-                  value={profileData.name}
+                  value={data.user.name}
                   onChange={(e) => handleChangeProfileData("name", e.target.value)}
                   className="mt-2 mr-2"
                   style={{ width: "100%" }}
@@ -116,7 +128,7 @@ const Profile = () => {
               <div className="flex items-center justify-between w-full mb-4">
                 <TextField
                   label="Email"
-                  value={profileData.email}
+                  value={data.user.email}
                   onChange={(e) => handleChangeProfileData("email", e.target.value)}
                   className="mt-2 mr-2"
                   style={{ width: "100%" }}
@@ -133,7 +145,7 @@ const Profile = () => {
               <div className="flex items-center justify-between w-full mb-4">
                 <TextField
                   label="Phone Number"
-                  value={profileData.phoneNumber}
+                  value={data.user.contact}
                   onChange={(e) => {
                     const value = e.target.value.replace(/\D/g, ''); // Remove non-numeric characters
                     handleChangeProfileData("phoneNumber", value);
