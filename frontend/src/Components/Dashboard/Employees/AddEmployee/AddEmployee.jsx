@@ -14,7 +14,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 const AddEmployee = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const employeeData = useSelector((state) => state.EmployeeData);
+  const employeeData = useSelector((state) => state.EmployeeData.EmployeeData);
 
   const [formData, setFormData] = useState({
     organizationId: employeeData.user.organizationId,
@@ -180,7 +180,7 @@ const AddEmployee = () => {
         </div>
       </div>
       <div className="w-full mt-4 ml-72 mr-8">
-        <DashboardOverview pageName="AddEmployee"></DashboardOverview>
+        <DashboardOverview pageName="Add Employee"></DashboardOverview>
 
         <div className="w-full px-12 mr-4 p-6 pt-16 rounded-xl shadow-md grid grid-cols-1 md:grid-cols-1 gap-4 mt-4 bg-slate-200">
           <form onSubmit={handleSubmit}>

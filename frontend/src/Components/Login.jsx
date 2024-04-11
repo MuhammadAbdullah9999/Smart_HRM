@@ -70,12 +70,14 @@ const Login = () => {
       if (response.data) {
         console.log(response.data)
         if(response.data.userType === "business_owner"){
+          console.log(response.data)
           dispatch(setEmployeeData(response.data));
           setLoading(false);
           navigate(`/CEO/dashboard`);
           return;
         }
         else if(response.data.userType === "HR"){
+          console.log(response.data)
           dispatch(setJobs(response.data.jobs.jobs));
           dispatch(setEmployeeData(response.data));
           setUser(response.data);

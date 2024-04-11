@@ -11,7 +11,7 @@ import AddRoundedIcon from '@mui/icons-material/AddRounded';
 function Department() {
   const [departments, setDepartments] = useState([]);
   const [newDepartment, setNewDepartment] = useState("");
-  const employeeData = useSelector((state) => state.EmployeeData);
+  const employeeData = useSelector((state) => state.EmployeeData.EmployeeData);
 
   useEffect(() => {
     const uniqueDepartments = [

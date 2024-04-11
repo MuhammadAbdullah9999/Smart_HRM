@@ -25,7 +25,8 @@ function EmployeeSidebar({ isOpen, onClose }) {
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
-  const employeeData = useSelector((state) => state.EmployeeData);
+  const employeeData = useSelector((state) => state.EmployeeData.EmployeeData);
+  console.log(employeeData)
   const location = useLocation();
 
   const isActive = (pathname) => {
@@ -65,7 +66,7 @@ function EmployeeSidebar({ isOpen, onClose }) {
             className="w-12 h-12 rounded-full mb-1"
           />
           <div className="text-center">
-            <p className="text-white text-lg font-semibold mt-1">{employeeData.EmployeeData.user.name}</p>
+            <p className="text-white text-lg font-semibold mt-1">{employeeData.user.name}</p>
             <p className="text-gray-300 text-sm">Employee</p>
           </div>
         </div>
