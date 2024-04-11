@@ -16,10 +16,16 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import PeopleIcon from '@mui/icons-material/People';
 import CampaignIcon from '@mui/icons-material/Campaign';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setEmployeeData } from "../../../state";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 
 function CeoSidebar({ isOpen, onClose }) {
+  const navigate =useNavigate();
+  const dispatch = useDispatch();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -30,7 +36,11 @@ function CeoSidebar({ isOpen, onClose }) {
   const isActive = (pathname) => {
     return location.pathname === pathname;
   };
-
+  const handleLogout=()=>{
+    console.log('logout')
+    dispatch(setEmployeeData(null));
+    navigate("/login");
+  }
   return (
     <div className="h-[560px]">
       <div className="md:hidden">
@@ -137,9 +147,10 @@ function CeoSidebar({ isOpen, onClose }) {
               }
             />
             <SidebarItem
-              to=""
-              label="Settings"
-              isActive={isActive("/dashboard/settings")}
+              to="#"
+              onClick={handleLogout}
+              label="Logout"
+              isActive={isActive("#")}
               onClose={onClose}
               icon={
                 <SettingsRoundedIcon style={{ color: "white", fontSize: 20 }} />
@@ -153,21 +164,21 @@ function CeoSidebar({ isOpen, onClose }) {
 }
 
 // Sidebar Item Component
-function SidebarItem({ to, icon, label, isActive, onClose }) {
+function SidebarItem({ to, icon, label, isActive, onClose, onClick }) {
+  const content = (
+    <div className={`flex items-center justify-between text-white py-2 md:py-1.5 mb-1 hover:bg-blue-600 hover:rounded-2xl ${
+      isActive ? "bg-bg-color pr-3 rounded-2xl" : ""
+    }`}>
+      <div className="flex items-center ml-5">
+        <span className="mr-2">{icon}</span>
+        <span className="text-md ml-1">{label}</span>
+      </div>
+    </div>
+  );
+
   return (
-    <li className="w-full">
-      <Link
-        to={to}
-        className={`flex items-center justify-between text-white py-2 md:py-1.5 mb-1 hover:bg-blue-600 hover:rounded-2xl ${
-          isActive ? "bg-bg-color pr-3 rounded-2xl" : ""
-        }`}
-        onClick={onClose}
-      >
-        <div className="flex items-center ml-5">
-          <span className="mr-2 ">{icon}</span>
-          <span className="text-md ml-1">{label}</span>
-        </div>
-      </Link>
+    <li className="w-full" onClick={onClick ? onClick : onClose}>
+      {to ? <Link to={to} onClick={onClose}>{content}</Link> : content}
     </li>
   );
 }

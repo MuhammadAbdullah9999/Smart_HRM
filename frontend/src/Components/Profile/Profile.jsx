@@ -56,6 +56,44 @@ const Profile = () => {
     setIsEditingPhone(false);
   };
 
+  // Sample data array
+const attendanceRecords = [
+  { attendanceStatus: "absent", date: "2024-03-01" },
+  { attendanceStatus: "present", date: "2024-03-02" },
+  { attendanceStatus: "present", date: "2024-03-03" },
+  { attendanceStatus: "absent", date: "2024-03-04" },
+  { attendanceStatus: "present", date: "2024-03-05" }
+];
+
+function calculateAttendancePercentage(records) {
+  let totalDays = records.length;
+  let presentCount = 0;
+  let absentCount = 0;
+
+  // Count present and absent days
+  records.forEach(record => {
+      if (record.attendanceStatus === "present") {
+          presentCount++;
+      } else if (record.attendanceStatus === "absent") {
+          absentCount++;
+      }
+  });
+
+  // Calculate percentages
+  let presentPercentage = (presentCount / totalDays) * 100;
+  // let absentPercentage = (absentCount / totalDays) * 100;
+
+  return {
+      presentPercentage: presentPercentage.toFixed(0) + '%',
+      // absentPercentage: absentPercentage.toFixed(0) + '%'
+  };
+}
+
+// Compute the attendance percentages
+const percentages = calculateAttendancePercentage(data.user.attendance);
+console.log(percentages);
+
+
   return (
     <div className="flex">
       {/* Sidebar */}
@@ -176,19 +214,19 @@ const Profile = () => {
             {/* Attendance Box */}
             <div className="border border-gray-300 rounded-md p-4 bg-white shadow-md mb-4">
               <h3 className="text-lg font-semibold mb-2">Attendance</h3>
-              <p>{attendance}</p>
+              <p>{percentages.presentPercentage}</p>
             </div>
 
             {/* Leaves Box */}
             <div className="border border-gray-300 rounded-md p-4 bg-white shadow-md mb-4">
               <h3 className="text-lg font-semibold mb-2">Leaves</h3>
-              <p>{leaves}</p>
+              <p>{data.user.leaves}</p>
             </div>
 
             {/* Salary Box */}
             <div className="border border-gray-300 rounded-md p-4 bg-white shadow-md">
-              <h3 className="text-lg font-semibold mb-2">Salary</h3>
-              <p>{salary}</p>
+              <h3 className="text-lg font-semibold mb-2">Base Salary</h3>
+              <p>Rs. {data.user.salary}</p>
             </div>
           </div>
         </div>

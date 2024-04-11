@@ -13,6 +13,7 @@ import Person2RoundedIcon from "@mui/icons-material/Person2Rounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
+import LogoutIcon from '@mui/icons-material/Logout';
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -159,13 +160,13 @@ function Sidebar({ isOpen, onClose }) {
               }
             />
             <SidebarItem
-              // to="/HR/dashboard/Logout"  
+              to="#"  
               onClick={handleLogout}
               label="Logout"
-              isActive={isActive("/dashboard/Logout")}
+              isActive={isActive("#")}
               onClose={onClose}
               icon={
-                <SettingsRoundedIcon style={{ color: "white", fontSize: 20 }} />
+                <LogoutIcon style={{ color: "white", fontSize: 20 }} />
               }
             />
           </ul>

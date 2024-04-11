@@ -10,10 +10,17 @@ import Person2RoundedIcon from "@mui/icons-material/Person2Rounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
+import LogoutIcon from '@mui/icons-material/Logout';
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setEmployeeData } from "../../state";
 
 function EmployeeSidebar({ isOpen, onClose }) {
+  const navigate =useNavigate();
+  const dispatch = useDispatch();
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -24,6 +31,11 @@ function EmployeeSidebar({ isOpen, onClose }) {
   const isActive = (pathname) => {
     return location.pathname === pathname;
   };
+  const handleLogout=()=>{
+    console.log('logout')
+    dispatch(setEmployeeData(null));
+    navigate("/login");
+  }
 
   return (
     <div className="h-[560px]">
@@ -95,7 +107,7 @@ function EmployeeSidebar({ isOpen, onClose }) {
             />
             
             <SidebarItem
-              to=""
+              to="/Employee/dashboard/profile"
               label="Profile"
               isActive={isActive("/dashboard/profile")}
               onClose={onClose}
@@ -104,12 +116,13 @@ function EmployeeSidebar({ isOpen, onClose }) {
               }
             />
             <SidebarItem
-              to=""
-              label="Settings"
-              isActive={isActive("/dashboard/settings")}
+              to="#"
+              onClick={handleLogout}
+              label="Logout"
+              isActive={isActive("#")}
               onClose={onClose}
               icon={
-                <SettingsRoundedIcon style={{ color: "white", fontSize: 20 }} />
+                <LogoutIcon style={{ color: "white", fontSize: 20 }} />
               }
             />
           </ul>
@@ -120,21 +133,21 @@ function EmployeeSidebar({ isOpen, onClose }) {
 }
 
 // Sidebar Item Component
-function SidebarItem({ to, icon, label, isActive, onClose }) {
+function SidebarItem({ to, icon, label, isActive, onClose, onClick }) {
+  const content = (
+    <div className={`flex items-center justify-between text-white py-2 md:py-1.5 mb-1 hover:bg-blue-600 hover:rounded-2xl ${
+      isActive ? "bg-bg-color pr-3 rounded-2xl" : ""
+    }`}>
+      <div className="flex items-center ml-5">
+        <span className="mr-2">{icon}</span>
+        <span className="text-md ml-1">{label}</span>
+      </div>
+    </div>
+  );
+
   return (
-    <li className="w-full">
-      <Link
-        to={to}
-        className={`flex items-center justify-between text-white py-2 md:py-1.5 mb-1 hover:bg-blue-600 hover:rounded-2xl ${
-          isActive ? "bg-bg-color pr-3 rounded-2xl" : ""
-        }`}
-        onClick={onClose}
-      >
-        <div className="flex items-center ml-5">
-          <span className="mr-2 ">{icon}</span>
-          <span className="text-md ml-1">{label}</span>
-        </div>
-      </Link>
+    <li className="w-full" onClick={onClick ? onClick : onClose}>
+      {to ? <Link to={to} onClick={onClose}>{content}</Link> : content}
     </li>
   );
 }
