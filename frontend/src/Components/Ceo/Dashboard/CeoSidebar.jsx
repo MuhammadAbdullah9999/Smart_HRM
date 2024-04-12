@@ -70,7 +70,7 @@ function CeoSidebar({ isOpen, onClose }) {
           />
           <div className="text-center">
             <p className="text-white text-lg font-semibold mt-1">{employeeData.user.name}</p>
-            <p className="text-gray-300 text-sm">CEO</p>
+            <p className="text-gray-300 text-sm">HR Manager</p>
           </div>
         </div>
 
