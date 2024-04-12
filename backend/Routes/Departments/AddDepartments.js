@@ -8,7 +8,8 @@ router.post('/AddDepartment', async (req, res) => {
 
     try {
         await addDepartments(organizationId, department);
-        res.status(200).json({ message: 'Department added successfully' });
+        const departments = await getDepartments(organizationId);
+        res.status(200).json({ message: 'Department added successfully',departments });
     } catch (error) {
         res.status(500).json({ error: 'Failed to add department', details: error.message });
     }

@@ -7,7 +7,7 @@ const router = express.Router();
 router.post("/", async (req, res) => {
   const { email, password } = req.body;
   const result = await authenticateUser(email, password);
-  console.log(result);
+  // console.log(result);
   if (!result.user) {
     res.status(500).json(result);
   } else {

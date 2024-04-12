@@ -16,7 +16,7 @@ async function countEmployeesInOrganization(organizationId) {
   }
 }
 async function countHrsInOrganization(organizationId) {
-  console.log(organizationId)
+  // console.log(organizationId)
   try {
     const db = await connectToMongoDB();
     const hrCollection = db.collection("HR");

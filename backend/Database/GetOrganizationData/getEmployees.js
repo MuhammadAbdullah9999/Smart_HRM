@@ -2,7 +2,7 @@ const { connectToMongoDB, closeMongoDBConnection } = require("../connectDB");
 const {ObjectId}=require('mongodb')
 
 async function getEmployees(organizationId,userId,userType) {
-    console.log(organizationId,userId,userType)
+    // console.log(organizationId,userId,userType)
   try {
     const db = await connectToMongoDB();
 
@@ -31,7 +31,7 @@ if(userType==='HR'){
         .toArray();
     }
 
-      console.log(employeeData);
+      // console.log(employeeData);
     return {
       employeeData: employeeData,
     };

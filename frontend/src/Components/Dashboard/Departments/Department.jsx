@@ -17,24 +17,31 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import { useDispatch } from "react-redux";
+import { setEmployeeData } from "../../../state";
 
 function Department() {
+  const dispatch=useDispatch();
+
   const [departments, setDepartments] = useState([]);
   const [newDepartment, setNewDepartment] = useState("");
   const employeeData = useSelector((state) => state.EmployeeData.EmployeeData);
+  console.log(employeeData)
   useEffect(() => {
     const getDepartments=async()=>{
       const response=await axios.get(`http://localhost:5000/Departments/GetDepartments/${employeeData.user.organizationId}`);
       console.log(response)
     }
     getDepartments();
-    const uniqueDepartments = new Set(
-      employeeData.employeeData.map((employee) => employee.department)
-    );
-    setDepartments([...uniqueDepartments]);
+    // const uniqueDepartments = new Set(
+    //   employeeData.employeeData.map((employee) => employee.department)
+    // );
+    // setDepartments([...uniqueDepartments]);
+    setDepartments(employeeData.departments.uniqueDepartmentsArray)
   }, [employeeData.employeeData]);
 
   const countEmployeesByDepartment = (department) => {
+    console.log(departments)
     return employeeData.employeeData.filter(
       (employee) => employee.department === department
     ).length;
@@ -50,7 +57,14 @@ function Department() {
           department: newDepartment,
         }
       );
-      console.log(response);
+      console.log(response.data.departments);
+      dispatch(setEmployeeData({ 
+        ...employeeData, 
+        departments: { 
+            ...employeeData.departments, 
+            uniqueDepartmentsArray: response.data.departments 
+        } 
+    }));
       setDepartments([...departments, newDepartment]);
       setNewDepartment("");
     } catch (error) {
