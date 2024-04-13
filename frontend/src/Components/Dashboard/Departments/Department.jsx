@@ -19,37 +19,41 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import { useDispatch } from "react-redux";
 import { setEmployeeData } from "../../../state";
+import CircularProgress from '@mui/material/CircularProgress';
 
 function Department() {
-  const dispatch=useDispatch();
-
+  const dispatch = useDispatch();
   const [departments, setDepartments] = useState([]);
   const [newDepartment, setNewDepartment] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const employeeData = useSelector((state) => state.EmployeeData.EmployeeData);
-  console.log(employeeData)
   useEffect(() => {
-    const getDepartments=async()=>{
-      const response=await axios.get(`http://localhost:5000/Departments/GetDepartments/${employeeData.user.organizationId}`);
-      console.log(response)
-    }
-    getDepartments();
-    // const uniqueDepartments = new Set(
-    //   employeeData.employeeData.map((employee) => employee.department)
-    // );
-    // setDepartments([...uniqueDepartments]);
+    const getDepartments = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(`http://localhost:5000/Departments/GetDepartments/${employeeData.user.organizationId}`);
+        console.log(response);
+        setDepartments(response.data.departments);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching departments:", error);
+      }
+    };
     setDepartments(employeeData.departments.uniqueDepartmentsArray)
-  }, [employeeData.employeeData]);
+    // getDepartments();
+  }, [employeeData.user.organizationId]);
 
   const countEmployeesByDepartment = (department) => {
-    console.log(departments)
     return employeeData.employeeData.filter(
-      (employee) => employee.department === department
+      (employee) => employee.department.toLowerCase() === department.toLowerCase()
     ).length;
   };
-
+  
   const handleAddDepartment = async () => {
     if (!newDepartment.trim()) return; // Prevent adding empty departments
     try {
+      setLoading(true);
       const response = await axios.post(
         "http://localhost:5000/Departments/AddDepartment",
         {
@@ -58,13 +62,14 @@ function Department() {
         }
       );
       console.log(response.data.departments);
-      dispatch(setEmployeeData({ 
-        ...employeeData, 
-        departments: { 
-            ...employeeData.departments, 
-            uniqueDepartmentsArray: response.data.departments 
-        } 
-    }));
+      setLoading(false);
+      dispatch(setEmployeeData({
+        ...employeeData,
+        departments: {
+          ...employeeData.departments,
+          uniqueDepartmentsArray: response.data.departments
+        }
+      }));
       setDepartments([...departments, newDepartment]);
       setNewDepartment("");
     } catch (error) {
@@ -74,8 +79,27 @@ function Department() {
 
   const handleDeleteDepartment = async (department) => {
     try {
-      const response = await axios.delete(`/api/departments/${department}`);
-      setDepartments(departments.filter((dept) => dept !== department));
+      const employeesInDepartment = employeeData.employeeData.filter(
+        (employee) => employee.department === department
+      );
+
+      if (employeesInDepartment.length > 0) {
+        alert(`Department '${department}' cannot be deleted as it has ${employeesInDepartment.length} employee(s).`);
+      } else {
+        setLoading(true);
+        const response = await axios.delete(`http://localhost:5000/Departments/DeleteDepartment/${employeeData.user.organizationId}/${department}`);
+        console.log(response);
+        setLoading(false);
+        dispatch(setEmployeeData({
+          ...employeeData,
+          departments: {
+            ...employeeData.departments,
+            uniqueDepartmentsArray: response.data.departments
+          }
+        }));
+        setDepartments(response.data.departments);
+        // setDepartments(departments.filter((dept) => dept !== department));
+      }
     } catch (error) {
       console.error("Error deleting department:", error);
     }
@@ -86,46 +110,44 @@ function Department() {
     console.log(`Editing ${department}`);
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleAddDepartment();
+    }
+  };
+
   return (
     <div className="flex">
       <Sidebar />
+
       <div className="flex-1 p-6">
+        {loading && <div className="absolute inset-0 backdrop-filter backdrop-blur-sm z-10"></div>}
         <DashboardOverview pageName="Departments" />
         <div className="flex flex-col gap-12 justify-center items-left">
-          {/* Department table */}
+          {loading && <div className="absolute top-1/2 left-[60%] transform -translate-x-[50%] -translate-y-1/2 z-20">
+            <CircularProgress style={{ color: 'blue' }} />
+          </div>}
           <TableContainer component={Paper}>
             <Table className="min-w-full">
               <TableHead>
                 <TableRow>
                   <TableCell align="center">
-                    <Typography
-                      variant="subtitle1"
-                      style={{ fontFamily: "Montserrat", fontWeight: "bold" }}
-                    >
+                    <Typography variant="subtitle1" style={{ fontFamily: "Montserrat", fontWeight: "bold" }}>
                       Department
                     </Typography>
                   </TableCell>
                   <TableCell align="center">
-                    <Typography
-                      variant="subtitle1"
-                      style={{ fontFamily: "Montserrat", fontWeight: "bold" }}
-                    >
+                    <Typography variant="subtitle1" style={{ fontFamily: "Montserrat", fontWeight: "bold" }}>
                       Number of Employees
                     </Typography>
                   </TableCell>
                   <TableCell align="center">
-                    <Typography
-                      variant="subtitle1"
-                      style={{ fontFamily: "Montserrat", fontWeight: "bold" }}
-                    >
+                    <Typography variant="subtitle1" style={{ fontFamily: "Montserrat", fontWeight: "bold" }}>
                       Edit
                     </Typography>
                   </TableCell>
                   <TableCell align="center">
-                    <Typography
-                      variant="subtitle1"
-                      style={{ fontFamily: "Montserrat", fontWeight: "bold" }}
-                    >
+                    <Typography variant="subtitle1" style={{ fontFamily: "Montserrat", fontWeight: "bold" }}>
                       Delete
                     </Typography>
                   </TableCell>
@@ -135,34 +157,22 @@ function Department() {
                 {departments.map((dept) => (
                   <TableRow key={dept} className="text-center">
                     <TableCell align="center">
-                      <Typography
-                        variant="body1"
-                        style={{ fontFamily: "Montserrat" }}
-                      >
+                      <Typography variant="body1" style={{ fontFamily: "Montserrat" }}>
                         {dept}
                       </Typography>
                     </TableCell>
                     <TableCell align="center">
-                      <Typography
-                        variant="body1"
-                        style={{ fontFamily: "Montserrat" }}
-                      >
+                      <Typography variant="body1" style={{ fontFamily: "Montserrat" }}>
                         {countEmployeesByDepartment(dept)}
                       </Typography>
                     </TableCell>
                     <TableCell align="center">
-                      <IconButton
-                        color="primary"
-                        onClick={() => handleEditDepartment(dept)}
-                      >
+                      <IconButton color="primary" onClick={() => handleEditDepartment(dept)}>
                         <EditIcon />
                       </IconButton>
                     </TableCell>
                     <TableCell align="center">
-                      <IconButton
-                        color="primary"
-                        onClick={() => handleDeleteDepartment(dept)}
-                      >
+                      <IconButton color="primary" onClick={() => handleDeleteDepartment(dept)}>
                         <DeleteIcon />
                       </IconButton>
                     </TableCell>
@@ -172,7 +182,6 @@ function Department() {
             </Table>
           </TableContainer>
 
-          {/* Add department section */}
           <div className="bg-gray-100 rounded-xl p-4 w-10/12 md:w-11/12 shadow-md shadow-gray-200">
             <h2 className="text-xl font-bold m-2">Add Department</h2>
             <div className="flex items-center mt-5 mb-8">
@@ -183,14 +192,13 @@ function Department() {
                 value={newDepartment}
                 autoComplete="off"
                 onChange={(e) => setNewDepartment(e.target.value)}
+                onKeyDown={handleKeyDown} 
                 placeholder="Enter new department..."
                 className="mr-5 h-10 p-3 border rounded-xl outline-none w-2/4"
               />
               <div
                 onClick={handleAddDepartment}
-                className={`bg-blue-500 text-white p-2 rounded-full cursor-pointer hover:bg-blue-800 flex items-center ${
-                  !newDepartment.trim() ? "opacity-50 cursor-not-allowed" : ""
-                }`}
+                className={`bg-blue-500 text-white p-2 rounded-full cursor-pointer hover:bg-blue-800 flex items-center ${!newDepartment.trim() ? "opacity-50 cursor-not-allowed" : ""}`}
                 style={{ fontSize: "0.4rem", padding: "0.4rem" }}
                 disabled={!newDepartment.trim()}
               >

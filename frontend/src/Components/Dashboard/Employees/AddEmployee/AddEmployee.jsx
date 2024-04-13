@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import axios from "axios";
 import validator from "validator";
 import InputField from "../../../Styles/InputField";
@@ -15,7 +15,22 @@ const AddEmployee = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const employeeData = useSelector((state) => state.EmployeeData.EmployeeData);
-
+  const [departments,setDepartments]=useState([]);
+  useEffect(() => {
+    const getDepartments = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(`http://localhost:5000/Departments/GetDepartments/${employeeData.user.organizationId}`);
+        console.log(response);
+        setDepartments(response.data.departments);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching departments:", error);
+      }
+    };
+    // setDepartments(employeeData.departments.uniqueDepartmentsArray)
+    getDepartments();
+  }, [employeeData.user.organizationId]);
   const [formData, setFormData] = useState({
     organizationId: employeeData.user.organizationId,
     hrEmail: employeeData.user.email,
@@ -221,7 +236,7 @@ const AddEmployee = () => {
                 focusColor="black"
                 top="6"
               />
-              <InputField
+              {/* <InputField
                 label="Department"
                 type="text"
                 id="department"
@@ -232,7 +247,35 @@ const AddEmployee = () => {
                 onChange={handleInputChange}
                 focusColor="black"
                 top="6"
-              />
+              /> */}
+              <div className="mb-4 relative">
+            <label
+              htmlFor="numberOfHrs"
+              className={`absolute transition-all duration-300 ${
+                formData.numberOfHrs ? "text-sm text-white -top-6 left-1" : "top-2 left-3 text-gray-500 text-xs md:text-sm lg:text-sm"
+              }`}
+            >
+              {/* {formData.department ? "Select Departments" : ""} */}
+            </label>
+            <select
+              id="department"
+              name="department"
+              className={`p-2 border rounded w-full outline-none ${
+                formData.department ? "text-black" : "text-gray-500"
+              } bg-white`}
+              autoComplete="off"
+              value={formData.department}
+              onChange={handleInputChange}
+            >
+              <option value="">Select Departments</option>
+              {departments.map((option, index) => (
+                <option key={index} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+            
+          </div>
               <InputField
                 label="Date of Birth"
                 type="text"
