@@ -21,14 +21,7 @@ function Leave() {
   const [loading, setLoading] = useState(false);
   const data = useSelector((state) => state.EmployeeData.EmployeeData);
   console.log(data);
-  // useEffect(() => {
-  //   if (data.userType === "employee") {
-  //     setEmployees([data.user]);
-  //   } else {
-  //     setEmployees(data.employeeData);
-  //     setHrEmail(data.user.email);
-  //   }
-  // }, [data.employeeData]);
+
   useEffect(() => {
     setLoading(true);
     const getEmployees = async () => {
@@ -43,12 +36,9 @@ function Leave() {
     getEmployees();
   }, []);
 
-  console.log(employees);
-  // Function to handle the approval or rejection of leave request
   // Function to handle the approval or rejection of leave request
   const handleLeaveAction = async (employeeId, leaveId, action) => {
     try {
-      // Get the organizationId from the employee data
       const organizationId = employees.find(
         (emp) => emp._id === employeeId
       )?.organizationId;
@@ -74,12 +64,7 @@ function Leave() {
   };
 
   return (
-    <div className={`flex gap-4 w-full`}>
-      {/* {loading && (
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          <CircularProgress color="inherit" />
-        </div>
-      )} */}
+    <div className="flex gap-4 w-full">
       <div>
         {data && data.userType === "business_owner" ? (
           <CeoSidebar />
@@ -96,14 +81,18 @@ function Leave() {
             <AddIcon></AddIcon>Apply Leave
           </button>
         </Link>
-        <div className="flex justify-between gap-8 w-full h-[77%] ">
-          <div className="flex flex-col w-1/3 border border-black rounded-md shadow-lg min-h-full">
+        <div className="flex justify-between gap-8 w-full h-[77%]">
+          {/* Leave Calendar Section */}
+          <div className="flex flex-col w-1/3 border border-black rounded-md shadow-lg min-h-full relative">
             <div className="font-bold">
               <p className="p-4">Leave Calendar</p>
               <hr className="border border-black"></hr>
             </div>
-
-            {/* Display approved leave requests on Leave Calendar */}
+            {loading && (
+              <div className="absolute inset-0 backdrop-filter backdrop-blur-sm z-10 flex items-center justify-center">
+                <CircularProgress style={{ color: "blue" }} />
+              </div>
+            )}
             {employees &&
               employees.length > 0 &&
               employees.map(
@@ -122,13 +111,7 @@ function Leave() {
                               </span>
                             </div>
                             <div className="self-center">
-                              <div
-                              // className={`rounded-lg p-2 ${
-                              //   leave.status === "Approved"
-                              //     ? "bg-gray-500"
-                              //     : "bg-bg-color"
-                              // } text-white`}
-                              >
+                              <div>
                                 <p>
                                   <span className="font-bold">Days: </span>
                                   {leave.leaveDays}
@@ -142,13 +125,19 @@ function Leave() {
                   )
               )}
           </div>
+
+          {/* Leave Requests Section */}
           <div className="w-2/3">
-            <div className="flex flex-col w-full border border-black rounded-md shadow-lg min-h-full">
+            <div className="flex flex-col w-full border border-black rounded-md shadow-lg min-h-full relative">
               <div className="font-bold">
                 <p className="p-4">Leave Requests</p>
                 <hr className="border border-black"></hr>
               </div>
-              {/* Display pending leave requests in the Leave Requests section */}
+              {loading && (
+              <div className="absolute inset-0 backdrop-filter backdrop-blur-sm z-10 flex items-center justify-center">
+                <CircularProgress style={{ color: "blue" }} />
+              </div>
+            )}
               {employees &&
                 employees.length > 0 &&
                 employees.map(
@@ -170,40 +159,36 @@ function Leave() {
                                 <p className="text-sm">{leave.leaveDate}</p>
                               </div>
                               <div className="self-center">
-                                <div className="flex gap-2">
-                                  {data.userType === "employee" ? (
-                                    <button>Pending</button>
-                                  ) : (
-                                    <div>
-                                      <button
-                                        onClick={() =>
-                                          handleLeaveAction(
-                                            employee._id,
-                                            leave._id,
-                                            "Approved"
-                                          )
-                                        }
-                                        className="p-2 text-sm bg-green-500 text-white rounded-lg active:text-green-600 active:bg-white"
-                                      >
-                                        <DoneIcon fontSize="small"></DoneIcon>
-                                        Approve
-                                      </button>
-                                      <button
-                                        onClick={() =>
-                                          handleLeaveAction(
-                                            employee._id,
-                                            leave._id,
-                                            "reject"
-                                          )
-                                        }
-                                        className="p-2 text-sm bg-red-500 text-white rounded-lg active:text-red-600 active:bg-white"
-                                      >
-                                        <ClearIcon fontSize="small"></ClearIcon>
-                                        Reject
-                                      </button>
-                                    </div>
-                                  )}
-                                </div>
+                                {data.userType !== "employee" && (
+                                  <div className="flex gap-2">
+                                    <button
+                                      onClick={() =>
+                                        handleLeaveAction(
+                                          employee._id,
+                                          leave._id,
+                                          "Approved"
+                                        )
+                                      }
+                                      className="p-2 text-sm bg-green-500 text-white rounded-lg active:text-green-600 active:bg-white"
+                                    >
+                                      <DoneIcon fontSize="small"></DoneIcon>
+                                      Approve
+                                    </button>
+                                    <button
+                                      onClick={() =>
+                                        handleLeaveAction(
+                                          employee._id,
+                                          leave._id,
+                                          "reject"
+                                        )
+                                      }
+                                      className="p-2 text-sm bg-red-500 text-white rounded-lg active:text-red-600 active:bg-white"
+                                    >
+                                      <ClearIcon fontSize="small"></ClearIcon>
+                                      Reject
+                                    </button>
+                                  </div>
+                                )}
                               </div>
                             </div>
                             <hr className="border"></hr>
@@ -211,14 +196,6 @@ function Leave() {
                         )
                     )
                 )}
-              {loading && (
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20">
-                  <CircularProgress style={{ color: "blue" }} />
-                </div>
-              )}
-              {loading && (
-                <div className="absolute inset-0 backdrop-filter backdrop-blur-sm z-10"></div>
-              )}
             </div>
           </div>
         </div>

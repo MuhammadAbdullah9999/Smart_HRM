@@ -28,20 +28,20 @@ function Department() {
   const [loading, setLoading] = useState(false);
 
   const employeeData = useSelector((state) => state.EmployeeData.EmployeeData);
+
   useEffect(() => {
     const getDepartments = async () => {
       try {
         setLoading(true);
         const response = await axios.get(`http://localhost:5000/Departments/GetDepartments/${employeeData.user.organizationId}`);
-        console.log(response);
         setDepartments(response.data.departments);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching departments:", error);
       }
     };
-    setDepartments(employeeData.departments.uniqueDepartmentsArray)
     // getDepartments();
+    setDepartments(employeeData.departments.uniqueDepartmentsArray)
   }, [employeeData.user.organizationId]);
 
   const countEmployeesByDepartment = (department) => {
@@ -61,7 +61,6 @@ function Department() {
           department: newDepartment,
         }
       );
-      console.log(response.data.departments);
       setLoading(false);
       dispatch(setEmployeeData({
         ...employeeData,
@@ -70,7 +69,7 @@ function Department() {
           uniqueDepartmentsArray: response.data.departments
         }
       }));
-      setDepartments([...departments, newDepartment]);
+      setDepartments(response.data.departments);
       setNewDepartment("");
     } catch (error) {
       console.error("Error adding department:", error);
@@ -88,7 +87,6 @@ function Department() {
       } else {
         setLoading(true);
         const response = await axios.delete(`http://localhost:5000/Departments/DeleteDepartment/${employeeData.user.organizationId}/${department}`);
-        console.log(response);
         setLoading(false);
         dispatch(setEmployeeData({
           ...employeeData,
@@ -98,7 +96,6 @@ function Department() {
           }
         }));
         setDepartments(response.data.departments);
-        // setDepartments(departments.filter((dept) => dept !== department));
       }
     } catch (error) {
       console.error("Error deleting department:", error);
@@ -119,14 +116,9 @@ function Department() {
   return (
     <div className="flex">
       <Sidebar />
-
       <div className="flex-1 p-6">
-        {loading && <div className="absolute inset-0 backdrop-filter backdrop-blur-sm z-10"></div>}
         <DashboardOverview pageName="Departments" />
         <div className="flex flex-col gap-12 justify-center items-left">
-          {loading && <div className="absolute top-1/2 left-[60%] transform -translate-x-[50%] -translate-y-1/2 z-20">
-            <CircularProgress style={{ color: 'blue' }} />
-          </div>}
           <TableContainer component={Paper}>
             <Table className="min-w-full">
               <TableHead>
@@ -182,6 +174,7 @@ function Department() {
             </Table>
           </TableContainer>
 
+          {/* Add Department Section */}
           <div className="bg-gray-100 rounded-xl p-4 w-10/12 md:w-11/12 shadow-md shadow-gray-200">
             <h2 className="text-xl font-bold m-2">Add Department</h2>
             <div className="flex items-center mt-5 mb-8">
@@ -206,6 +199,13 @@ function Department() {
               </div>
             </div>
           </div>
+
+          {/* Loading Indicator */}
+          {loading && (
+            <div className="absolute inset-0 backdrop-filter backdrop-blur-sm z-20 flex justify-center items-center">
+              <CircularProgress style={{ color: 'blue' }} />
+            </div>
+          )}
         </div>
       </div>
     </div>
