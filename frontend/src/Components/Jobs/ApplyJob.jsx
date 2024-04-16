@@ -25,11 +25,27 @@ function ApplyJob() {
   }, [orgId,jobId]);
 
   const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+  
+    // Check if the input is for the phone number field
+    if (name === 'phoneNumber') {
+      // Validate the input to allow only numeric characters
+      if (/^[0-9]*$/.test(value) || value === '') {
+        // Update the form data state if input is valid or empty
+        setFormData({
+          ...formData,
+          [name]: value,
+        });
+      }
+    } else {
+      // For other input fields, directly update the form data state
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
   };
+  
 
   const handleFileChange = (e) => {
     setFormData({
@@ -44,36 +60,37 @@ function ApplyJob() {
 
   const validateForm = () => {
     let newErrors = {};
-
+  
     if (validator.isEmpty(formData.name)) {
       newErrors = { ...newErrors, name: 'Name is required' };
     }
-
+  
     if (!validator.isEmail(formData.email)) {
       newErrors = { ...newErrors, email: 'Invalid email address' };
     }
-
+  
     if (!validator.isLength(formData.password, { min: 6 })) {
       newErrors = {
         ...newErrors,
         password: 'Password must be at least 6 characters',
       };
     }
-
+  
+    // Validate phone number field
     if (!validator.isMobilePhone(formData.phoneNumber, 'any', { strictMode: false })) {
       newErrors = { ...newErrors, phoneNumber: 'Invalid phone number' };
     }
-
+  
     // Check if CV is empty
     if (!formData.cv) {
       newErrors = { ...newErrors, cv: 'CV is required' };
     }
-
+  
     setErrors(newErrors);
-
+  
     return Object.keys(newErrors).length === 0;
   };
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setApiError('')

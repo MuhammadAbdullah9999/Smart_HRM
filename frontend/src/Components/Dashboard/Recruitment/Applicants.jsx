@@ -145,9 +145,9 @@ function Applicants() {
                     <p className="text-sm">{applicant.phoneNumber}</p>
                   </div>
                   <div className="flex justify-end mt-2">
-                    <button className="p-2 text-sm mr-2 bg-sec-color text-white rounded-lg active:text-sec-color active:bg-white">
+                    {/* <button className="p-2 text-sm mr-2 bg-sec-color text-white rounded-lg active:text-sec-color active:bg-white">
                       View CV
-                    </button>
+                    </button> */}
                     <button
                       className="p-2 text-sm bg-sec-color text-white rounded-lg active:text-sec-color active:bg-white"
                       onClick={() => handlePdfClick(applicant.cv)}

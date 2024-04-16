@@ -200,7 +200,7 @@ const AddEmployee = () => {
         <div className="w-full px-12 mr-4 p-6 pt-16 rounded-xl shadow-md grid grid-cols-1 md:grid-cols-1 gap-4 mt-4 bg-slate-200">
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-2 gap-4">
-              <InputField
+              {/* <InputField
                 label="Employee ID"
                 type="text"
                 id="employeeId"
@@ -211,7 +211,7 @@ const AddEmployee = () => {
                 onChange={handleInputChange}
                 focusColor="black"
                 top="6"
-              />
+              /> */}
               <InputField
                 label="Name"
                 type="text"
@@ -336,7 +336,7 @@ const AddEmployee = () => {
                 focusColor="black"
                 top="6"
               />
-              <InputField
+              {/* <InputField
                 label="Allowances"
                 type="text"
                 id="allowances"
@@ -347,7 +347,7 @@ const AddEmployee = () => {
                 onChange={handleInputChange}
                 focusColor="black"
                 top="6"
-              />
+              /> */}
               <div className="">
                 <label className="block text-sm font-medium text-gray-700">
                   Image

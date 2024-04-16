@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 function Recruitment() {
   const [job, setJob] = useState([]);
   const jobs = useSelector((state) => state.Jobs.jobs);
+  // console.log(jobs);
 
   useEffect(() => {
     setJob(jobs);
@@ -18,6 +19,7 @@ function Recruitment() {
       <div className="w-full p-4">
         <DashboardOverview pageName="Recruitment"></DashboardOverview>
         <div className="flex mt-4">
+        
           {job.map((job) => (
             <div
               key={job._id}
@@ -33,7 +35,7 @@ function Recruitment() {
                 <button className="p-2 self-end rounded-md bg-sec-color text-white">
                   View
                 </button>
-              </Link>{" "}
+              </Link>
             </div>
           ))}
         </div>

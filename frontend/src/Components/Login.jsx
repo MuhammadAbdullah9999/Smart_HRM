@@ -76,6 +76,7 @@ const Login = () => {
           return;
         }
         else if(response.data.userType === "HR"){
+          console.log(response.data)
           dispatch(setJobs(response.data.jobs.jobs));
           dispatch(setEmployeeData(response.data));
           setUser(response.data);

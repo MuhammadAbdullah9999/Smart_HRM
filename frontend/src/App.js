@@ -84,7 +84,7 @@ function App() {
           <Route path="/:userType/dashboard/recruitment" element={<Recruitment></Recruitment>}></Route>
           <Route path="/:userType/dashboard/recruitment/applicants/:jobId/:organizationId" element={<Applicants></Applicants>}></Route>
 
-          <Route path="/:userType/ApplyJob/:orgId/:jobTitle/:jobDescription/:orgName/:jobId" element={<ApplyJob></ApplyJob>}></Route>
+          <Route path="/ApplyJob/:orgId/:jobTitle/:jobDescription/:orgName/:jobId" element={<ApplyJob></ApplyJob>}></Route>
           <Route path="/CEO/Dashboard" element={<CeoDashboard></CeoDashboard>}></Route>
           <Route path="/reset-password/:userType/:token" element={<ForgotPassword></ForgotPassword>}></Route>
           <Route path="/CEO/dashboard/Announcements" element={<Announcements></Announcements>}></Route>
