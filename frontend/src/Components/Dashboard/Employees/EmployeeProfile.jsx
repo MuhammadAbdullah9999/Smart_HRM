@@ -241,35 +241,39 @@ function EmployeeProfile() {
     const currentYear = currentDate.getFullYear(); // Get current year
 
     // Filter attendance records for the current month and year
-    const attendanceForCurrentMonthAndYear = attendance.filter((record) => {
-      const recordDate = new Date(record.date);
-      const recordMonth = recordDate.getMonth();
-      const recordYear = recordDate.getFullYear();
-      return recordMonth === currentMonth && recordYear === currentYear;
-    });
-
-    const totalWorkingDays = attendanceForCurrentMonthAndYear.length;
-    const presentDays = attendanceForCurrentMonthAndYear.filter(
-      (record) => record.attendanceStatus === "present"
-    ).length;
-    console.log(totalWorkingDays, presentDays);
-    const attendancePercentage = (presentDays / totalWorkingDays) * 100;
-    const legalDays = (totalWorkingDays * 80) / 100;
-    const daysOfDeduction = legalDays - presentDays;
-    if (presentDays < legalDays) {
-      const deductionValue = Math.floor(daysOfDeduction * 2000);
-      console.log(deductionValue);
-      setInputValues({
-        ...inputValues,
-
-        deduction: deductionValue,
-        deductionReason: "Short Attendance",
+    if(attendance){
+      const attendanceForCurrentMonthAndYear = attendance.filter((record) => {
+        const recordDate = new Date(record.date);
+        const recordMonth = recordDate.getMonth();
+        const recordYear = recordDate.getFullYear();
+        return recordMonth === currentMonth && recordYear === currentYear;
       });
+      const totalWorkingDays = attendanceForCurrentMonthAndYear.length;
+      const presentDays = attendanceForCurrentMonthAndYear.filter(
+        (record) => record.attendanceStatus === "present"
+      ).length;
+      console.log(totalWorkingDays, presentDays);
+      const attendancePercentage = (presentDays / totalWorkingDays) * 100;
+      const legalDays = (totalWorkingDays * 80) / 100;
+      const daysOfDeduction = legalDays - presentDays;
+      if (presentDays < legalDays) {
+        const deductionValue = Math.floor(daysOfDeduction * 2000);
+        console.log(deductionValue);
+        setInputValues({
+          ...inputValues,
+  
+          deduction: deductionValue,
+          deductionReason: "Short Attendance",
+        });
+      }
+      console.log(
+        `Attendance percentage for the current month: ${attendancePercentage}%`
+      );
     }
+    
 
-    console.log(
-      `Attendance percentage for the current month: ${attendancePercentage}%`
-    );
+
+   
   }, []);
 
   return (
