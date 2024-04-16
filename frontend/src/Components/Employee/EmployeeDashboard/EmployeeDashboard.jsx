@@ -61,7 +61,7 @@ function EmployeeDashboard() {
             <DashboardContent data={employeeData} />
           </div>
           <div>
-            <div className="mt-12 border border-black shadow-lg w-11/12 m-auto flex flex-col gap-4 rounded-lg self-end">
+          <div className="border border-gray-200 shadow-gray-300 shadow-lg w-11/12 m-auto flex flex-col gap-4 rounded-lg self-end">
               <div className="flex flex-col items-center px-4 mt-4">
                 <h1 className="font-bold md:text-xl sm:text-lg">
                   Notice Board
@@ -71,8 +71,8 @@ function EmployeeDashboard() {
                 </p>
               </div>
 
-              <hr className="border-black"></hr>
-              <div className="flex justify-between px-6">
+              <hr className="border-gray-400"></hr>
+              <div className="flex justify-between px-6 mb-10">
                 <h2 className="font-bold">Title</h2>
                 <h2 className="font-bold">Date</h2>
               </div>

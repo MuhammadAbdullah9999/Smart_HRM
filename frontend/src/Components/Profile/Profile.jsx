@@ -112,18 +112,18 @@ console.log(percentages);
         {/* Profile and Additional Information Sections */}
         <div className="flex flex-col md:flex-row md:space-x-8">
           {/* Profile Section */}
-          <div className="flex-grow md:w-2/5 border border-gray-300 rounded-md p-4 mb-4 md:mb-0">
+          <div className="flex-grow md:w-2/5 border border-gray-300 rounded-md p-4 md:mb-0">
             {/* Profile Picture */}
             <div className="flex justify-center items-center relative">
               <label htmlFor="profile-pic-upload">
-              <Avatar alt="Profile Picture" src={profileData.profilePic} sx={{ width: 65, height: 65 }} />
+              <Avatar alt="Profile Picture" src={profileData.profilePic} sx={{ width: 70, height: 70 }} />
                 {isEditingPic && (
-                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2">
+                  <div className="mb-2">
                     <input
                       accept="image/*"
                       id="profile-pic-upload"
                       type="file"
-                      style={{ display: "none" }}
+                      style={{ display: "none"}}
                       onChange={handleProfilePicChange}
                     />
                   </div>
@@ -131,9 +131,9 @@ console.log(percentages);
                 {!isEditingPic && (
                   <IconButton
                     onClick={() => setIsEditingPic(true)}
-                    className="absolute bottom-0 left-1/2 transform -translate-x-1/2"
+                    className="absolute bottom-8 left-16 transform -translate-x-1/3"
                   >
-                    <EditIcon />
+                    <EditIcon style={{color: "black"}} />
                   </IconButton>
                 )}
               </label>
@@ -144,7 +144,7 @@ console.log(percentages);
             </div>
             {/* Personal Info */}
             <hr className="my-4" />
-            <h3 className="text-lg font-semibold mb-2">Personal Info</h3>
+            <h3 className="text-lg font-semibold mb-4">Personal Info</h3>
             {/* Profile Details */}
             <div className="flex flex-col items-center md:text-left">
               <div className="flex items-center justify-between w-full mb-4">

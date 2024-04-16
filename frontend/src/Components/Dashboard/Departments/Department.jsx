@@ -191,7 +191,7 @@ function Department() {
               />
               <div
                 onClick={handleAddDepartment}
-                className={`bg-blue-500 text-white p-2 rounded-full cursor-pointer hover:bg-blue-800 flex items-center ${!newDepartment.trim() ? "opacity-50 cursor-not-allowed" : ""}`}
+                className={`bg-bg-color text-white p-2 rounded-full cursor-pointer hover:bg-blue-800 flex items-center ${!newDepartment.trim() ? "opacity-50 cursor-not-allowed" : ""}`}
                 style={{ fontSize: "0.4rem", padding: "0.4rem" }}
                 disabled={!newDepartment.trim()}
               >

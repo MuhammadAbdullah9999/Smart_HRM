@@ -31,6 +31,7 @@ import Profile from "./Components/Profile/Profile";
 import Setting from "./Components/Setting/Setting";
 import LeaveApplication from "./Components/LeaveApplication/LeaveApplication";
 import EmployeeDashboard from "./Components/Employee/EmployeeDashboard/EmployeeDashboard";
+import PostJob from "./Components/Jobs/PostJob";
 
 function App() {
   return (
@@ -82,6 +83,7 @@ function App() {
           <Route path="/:userType/dashboard/leave" element={<Leave></Leave>}></Route>
           <Route path="/:userType/dashboard/payroll" element={<Payroll></Payroll>}></Route>
           <Route path="/:userType/dashboard/recruitment" element={<Recruitment></Recruitment>}></Route>
+          <Route path="/:userType/dashboard/recruitment/postjob" element={<PostJob></PostJob>}></Route>
           <Route path="/:userType/dashboard/recruitment/applicants/:jobId/:organizationId" element={<Applicants></Applicants>}></Route>
 
           <Route path="/:userType/ApplyJob/:orgId/:jobTitle/:jobDescription/:orgName/:jobId" element={<ApplyJob></ApplyJob>}></Route>
