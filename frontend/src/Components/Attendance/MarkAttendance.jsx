@@ -7,12 +7,7 @@ import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import CancelIcon from "@mui/icons-material/Cancel";
-<<<<<<< HEAD
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-=======
 import { useSelector, useDispatch } from "react-redux";
->>>>>>> frontend
 import { setEmployeeData } from "../../state";
 import validator from "validator";
 import { useNavigate } from "react-router-dom";
