@@ -8,8 +8,9 @@ const {
 } = require("../../Database/GetOrganizationData/getCeoAndEmployee");
 
 async function addAttendance(employeeData) {
+  // console.log(employeeData)
   const { email, organizationId } = employeeData[0];
-  console.log(email, organizationId);
+  // console.log(email, organizationId);
   const loginType = employeeData[0].loginType;
   try {
     const db = await connectToMongoDB();

@@ -11,89 +11,32 @@ import { useSelector } from "react-redux";
 
 const Attendance = () => {
   const { employeeId } = useParams();
-  let employeeData = useSelector((state) => state.EmployeeData.EmployeeData);
+  const employeeData = useSelector((state) => state.EmployeeData.EmployeeData);
+  const [selectedMonth, setSelectedMonth] = useState(
+    new Date().toLocaleString("en-US", { month: "long" })
+  );
 
-  let employee='';
+  const employee = employeeData.userType === "employee" ? employeeData.user : 
+    employeeData.employeeData.find((emp) => emp._id === employeeId);
 
-  if(employeeData.userType==='employee'){
-    employee=employeeData.user;
-  }
-  else{
-    employee = employeeData.employeeData.find(
-      (employee) => employee._id === employeeId
-    );
-  }
-  // console.log(employeeData);
-    
+  const currentMonthAttendance =
+    employee.attendance?.filter(
+      (entry) => entry.month.toLowerCase() === selectedMonth.toLowerCase()
+    ) || [];
 
-  // console.log(employee);
-  const currentMonth = new Date()
-    .toLocaleString("default", { month: "long" })
-    .toLowerCase();
+  const presentDays = currentMonthAttendance.filter(
+    (entry) => entry.attendanceStatus.toLowerCase() === "present"
+  ).length;
+  const absentDays = currentMonthAttendance.filter(
+    (entry) => entry.attendanceStatus.toLowerCase() === "absent"
+  ).length;
 
-    const [employeeID] = useState("EMP001");
-    // const [attendancePercentage] = useState(70); // Hardcoded attendance percentage
-    const [selectedMonth, setSelectedMonth] = useState(currentMonth);
-  
-    const currentMonthAttendance =
-        employee.attendance?.filter(
-          (entry) => entry.month.toLowerCase() === selectedMonth
-        ) || [];
-
-  console.log(currentMonthAttendance);
-
-        const presentDays = currentMonthAttendance.filter(
-          (entry) => entry.attendanceStatus.toLowerCase() === "present"
-        ).length;
-        const absentDays = currentMonthAttendance.filter(
-          (entry) => entry.attendanceStatus.toLowerCase() === "absent"
-        ).length;
-  
-        const totalDays = currentMonthAttendance.length;
-        const attendancePercentage = (presentDays / totalDays) * 100;
-        
-
-  const attendanceDetails = [
-    {
-      date: "2024-01-01",
-      checkIn: "09:00 AM",
-      checkOut: "06:00 PM",
-      status: "Present",
-    },
-    {
-      date: "2024-01-02",
-      checkIn: "09:15 AM",
-      checkOut: "05:45 PM",
-      status: "Present",
-    },
-    {
-      date: "2024-01-01",
-      checkIn: "09:00 AM",
-      checkOut: "06:00 PM",
-      status: "Absent",
-    },
-    {
-      date: "2024-01-02",
-      checkIn: "09:15 AM",
-      checkOut: "05:45 PM",
-      status: "Present",
-    },
-    // Add more details for other days
-  ];
+  const totalDays = currentMonthAttendance.length;
+  const attendancePercentage = Math.floor((presentDays / totalDays) * 100); // Calculate integer part
 
   const months = [
-    "January",
-    "February",
-    "march",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
+    "January", "February", "March", "April", "May", "June", "July",
+    "August", "September", "October", "November", "December"
   ];
 
   const pieChartData = {
@@ -108,6 +51,12 @@ const Attendance = () => {
     },
   };
 
+  // Function to extract last two words from employeeId
+  const getLastTwoWords = (str) => {
+    const words = str.split(" ");
+    return words.slice(-2).join(" ");
+  };
+
   return (
     <div className="flex flex-col h-full p-4 mt-2">
       {/* Include DashboardOverview for page name and date */}
@@ -117,7 +66,7 @@ const Attendance = () => {
       <div className="flex flex-col md:flex-row pt-6 mb-8">
         <div className="flex flex-col justify-center items-center w-full md:w-1/3 rounded-xl mb-4 md:mb-0 mr-0 md:mr-4 border border-gray-200 shadow-md shadow-gray-300 hover:shadow-blue-300 cursor-pointer">
           <p className="text-xl font-extrabold text-center p-2 rounded-md">
-            <EventAvailableIcon /> {employeeID}
+            <EventAvailableIcon /> {getLastTwoWords(employeeId)}
           </p>
           <p className="text-md text-center text-gray-500">Employee ID</p>
         </div>
@@ -134,7 +83,7 @@ const Attendance = () => {
           </div>
 
           {/* Pie Chart Section - Hidden for tablets */}
-          <div className="flex items-center justify-center hidden md:flex lg:flex xl:flex">
+          <div className="flex items-center justify-center md-hidden md:flex lg:flex xl:flex">
             <ReactApexChart
               type="donut"
               height={90}

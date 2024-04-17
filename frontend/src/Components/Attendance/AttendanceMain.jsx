@@ -16,24 +16,26 @@ function AttendanceMain() {
   const [searchTerm, setSearchTerm] = useState("");
   const [attendanceData, setAttendanceData] = useState([]);
   const data = useSelector((state) => state.EmployeeData.EmployeeData);
-
+console.log(data)
   useEffect(() => {
     setEmployees(data.employeeData);
     const currentMonth = new Date()
       .toLocaleString("default", { month: "long" })
       .toLowerCase();
     const updatedEmployees = data.employeeData.map((employee) => {
-      const currentMonthAttendance =
-        employee.attendance?.filter(
-          (entry) => entry.month.toLowerCase() === currentMonth
-        ) || [];
-
+      const currentMonthAttendance = employee.attendance?.filter((entry) => {
+        // Check if entry.month exists and is a non-null string before applying toLowerCase()
+        return entry.month && typeof entry.month === 'string' && entry.month.toLowerCase() === currentMonth;
+      }) || [];
+      
       const presentDays = currentMonthAttendance.filter(
         (entry) => entry.attendanceStatus.toLowerCase() === "present"
       ).length;
+      
       const absentDays = currentMonthAttendance.filter(
         (entry) => entry.attendanceStatus.toLowerCase() === "absent"
       ).length;
+      
 
       const totalDays = currentMonthAttendance.length;
       // console.log(presentDays,totalDays)
