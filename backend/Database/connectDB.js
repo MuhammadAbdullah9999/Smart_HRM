@@ -1,6 +1,5 @@
-require('dotenv').config();
-
 const { MongoClient } = require('mongodb');
+require('dotenv').config();
 
 let client; // Declare the client variable at the module level
 
@@ -9,7 +8,12 @@ async function connectToMongoDB() {
         const uri = process.env.DB_URI;
         const dbName = process.env.DB_NAME;
 
-        client = new MongoClient(uri);
+        // Configure MongoClient options with serverSelectionTimeoutMS
+        const options = {
+            serverSelectionTimeoutMS: 50000, // Example: 5000 milliseconds (5 seconds)
+        };
+
+        client = new MongoClient(uri, options); // Pass options to MongoClient constructor
 
         await client.connect();
 

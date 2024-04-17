@@ -25,6 +25,7 @@ const ToDoList=require('./Routes/ToDoList/ToDoList');
 const Announcements=require('./Routes/Announcements/Announcements');
 const GetEmployee=require('./Routes/GetEmployee/GetEmployee')
 const AddDepartments=require('./Routes/Departments/AddDepartments');
+const DeleteUser=require('./Routes/DeleteUser/DeleteUser');
 const app = express();
 
 app.use(cors({credentials: true }));
@@ -55,6 +56,7 @@ app.use('/ToDoList',ToDoList);
 app.use('/Announcement',Announcements);
 app.use('/GetEmployees',GetEmployee);
 app.use('/Departments',AddDepartments)
+app.use('/DeleteUser',DeleteUser);
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
