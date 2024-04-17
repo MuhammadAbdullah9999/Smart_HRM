@@ -16,7 +16,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-sec-color h-3/4 text-white px-12">
+    <footer className="bg-sec-color h-3/4 text-white px-12" id="contact">
       <div className="container mx-auto text-center pt-20 flex flex-col justify-center items-center">
         {/* Centered Heading */}
         <h2 className="text-3xl font-thin mb-4 text-white">
@@ -53,11 +53,15 @@ const Footer = () => {
 
         {/* Right Section */}
         <div className="flex justify-center items-center lg:w-1/2 lg:pl-8 bg-sec-color ">
-          <form>
+          <form action="https://formspree.io/f/xrgnrzod"
+            method="POST">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
+              <label htmlFor="name" className="block text-sm font-medium mb-1">
+                  Name
+              </label>
                 <InputField
-                  label="Name"
+                  label="username"
                   type="text"
                   id="name"
                   name="username"
@@ -68,8 +72,11 @@ const Footer = () => {
               </div>
               <div>
                 {/* Email */}
+                <label htmlFor="email" className="block text-sm font-medium mb-1">
+                  Email
+                  </label>
                 <InputField
-                  label="Email"
+                  label="abc@gmail.com"
                   type="email"
                   id="email"
                   name="email"
@@ -79,7 +86,7 @@ const Footer = () => {
                 />
               </div>
               <div className="col-span-2">
-                <label htmlFor="message" className="block text-sm font-medium">
+                <label htmlFor="message" className="block text-sm font-medium mb-1">
                   Message
                 </label>
                 <textarea

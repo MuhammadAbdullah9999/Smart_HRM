@@ -77,22 +77,23 @@ function Leave() {
       <div className="w-full p-4">
         <DashboardOverview pageName="Leave"></DashboardOverview>
         <Link to="/dashboard/leave/applyLeave">
-          <button className="bg-bg-color p-2 rounded-lg text-white shadow-md mb-4 active:bg-white active:text-bg-color">
+          <button className="bg-bg-color px-3 py-2 rounded-3xl text-white mb-4 border-none font-bold text-center cursor-pointer transition duration-400 hover:shadow-lg hover:shadow-gray-400 active:transform active:scale-97 active:shadow-lg">
             <AddIcon></AddIcon>Apply Leave
           </button>
         </Link>
         <div className="flex justify-between gap-8 w-full h-[77%]">
           {/* Leave Calendar Section */}
-          <div className="flex flex-col w-1/3 border border-black rounded-md shadow-lg min-h-full relative">
-            <div className="font-bold">
-              <p className="p-4">Leave Calendar</p>
-              <hr className="border border-black"></hr>
+          <div className="flex flex-col w-1/3 border border-gray-300 rounded-md shadow-lg shadow-gray-300 min-h-full relative">
+            <div className="font-bold bg-white">
+              <p className="p-4 sticky top-0 z-10 bg-white">Leave Calendar</p>
+              <hr className="border border-gray-300"></hr>
             </div>
             {loading && (
               <div className="absolute inset-0 backdrop-filter backdrop-blur-sm z-10 flex items-center justify-center">
                 <CircularProgress style={{ color: "blue" }} />
               </div>
             )}
+            <div className="overflow-y-auto">
             {employees &&
               employees.length > 0 &&
               employees.map(
@@ -102,7 +103,7 @@ function Leave() {
                   employee.leaveRequest.map(
                     (leave) =>
                       leave.status === "Approved" && (
-                        <div key={leave._id}>
+                        <div key={leave._id} >
                           <div className="flex justify-between w-full gap-2 p-4">
                             <div>
                               <p className="font-bold">{employee.name}</p>
@@ -124,14 +125,15 @@ function Leave() {
                       )
                   )
               )}
+              </div>
           </div>
 
           {/* Leave Requests Section */}
           <div className="w-2/3">
-            <div className="flex flex-col w-full border border-black rounded-md shadow-lg min-h-full relative">
+            <div className="flex flex-col w-full border border-gray-300 rounded-md shadow-lg shadow-gray-300 min-h-full relative">
               <div className="font-bold">
                 <p className="p-4">Leave Requests</p>
-                <hr className="border border-black"></hr>
+                <hr className="border border-gray-300"></hr>
               </div>
               {loading && (
               <div className="absolute inset-0 backdrop-filter backdrop-blur-sm z-10 flex items-center justify-center">

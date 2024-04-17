@@ -32,16 +32,16 @@ function Home(props) {
           <nav className="hidden md:flex items-center gap-5">
             <ul className="flex gap-4 h-10">
               <li className="flex items-center">
-                <a href="#" className="text-white text-md hover:text-xl w-20 inline-block h-full flex items-center justify-center hover:border-b-2 border-bg-color">Home</a>
+                <a href="#home" className="text-white text-md hover:text-xl w-20 inline-block h-full flex items-center justify-center hover:border-b-2 border-bg-color">Home</a>
               </li>
               <li className="flex items-center">
-                <a href="#" className="text-white text-md hover:text-xl w-20 inline-block h-full flex items-center justify-center hover:border-b-2 border-bg-color">Pricing</a>
+                <a href="#pricing" className="text-white text-md hover:text-xl w-20 inline-block h-full flex items-center justify-center hover:border-b-2 border-bg-color">Pricing</a>
               </li>
               <li className="flex items-center">
                 <Link to='/Jobs' className="text-white text-md hover:text-xl w-20 inline-block h-full flex items-center justify-center hover:border-b-2 border-bg-color">Jobs</Link>
               </li>
               <li className="flex items-center">
-                <a href="#" className="text-white text-md hover:text-xl w-20 inline-block h-full flex items-center justify-center hover:border-b-2 border-bg-color">Contact</a>
+                <a href="#contact" className="text-white text-md hover:text-xl w-20 inline-block h-full flex items-center justify-center hover:border-b-2 border-bg-color">Contact</a>
               </li>
             </ul>
           </nav>
@@ -60,7 +60,7 @@ function Home(props) {
       </header>
 
         {/* Main Section with Image */}
-        <main className="flex-grow flex items-center justify-center">
+        <main className="flex-grow flex items-center justify-center" id="home">
         <div className="w-1/2 text-center">
           <animated.h2 style={fadeIn} className="text-white lg:text-5xl font-bold md:text-4xl sm:text-3xl text-2xl leading-8">
             The easy way to <span className="text-bg-color">streamline</span> your HR & Recruitment

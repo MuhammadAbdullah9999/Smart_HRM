@@ -34,10 +34,10 @@ function Pricing(props) {
   });
 
   return (
-    <div ref={ref} className="text-center mt-12">
+    <div ref={ref} className="text-center mt-12" id="pricing">
       <animated.h1 style={fadeIn} className="text-black text-4xl font-bold">Our Pricing</animated.h1>
       <div className='w-full flex justify-center mt-14'>
-        <animated.div style={fadeIn} className="w-full md:w-2/4 lg:w-1/3 xl:w-1/4 cursor-pointer mx-4 bg-white flex flex-col justify-center items-center py-6 border-2 border-black rounded-xl shadow-lg shadow-sec-color">
+        <animated.div style={fadeIn} className="w-full md:w-2/4 lg:w-1/3 xl:w-1/3 cursor-pointer mx-4 bg-white flex flex-col justify-center items-center py-6 border-2 border-black rounded-xl shadow-lg shadow-sec-color">
 
           <animated.h2 style={fadeIn} className="text-bg-color text-3xl font-extrabold self-center mb-4">
             Free
