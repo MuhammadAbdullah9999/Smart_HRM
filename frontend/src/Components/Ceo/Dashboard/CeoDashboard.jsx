@@ -75,7 +75,7 @@ function CeoDashboard() {
             ></Card>
             <Card
               cardText="Leave Request"
-              cardNumber="10"
+              cardNumber="0"
               bgColor="blue-500"
             ></Card>
           </div>

@@ -318,7 +318,7 @@ const handleDeleteEmployee=async()=>{
       <div className="w-full p-16">
         {/* Dashboard overview */}
         <DashboardOverview pageName="Employee Profile" />
-        {loading && <div className="absolute top-12 inset-0 backdrop-filter backdrop-blur-sm z-10"></div>}
+        {/* {loading && <div className="absolute top-12 inset-0 backdrop-filter backdrop-blur-sm z-10"></div>} */}
 
         {/* Employee profile details */}
         <div className="mt-10">

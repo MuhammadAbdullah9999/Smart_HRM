@@ -2,6 +2,7 @@ const express = require('express');
 
 const {addHR}=require('../../Database/AddUser/addHR');
 const {verifyEmailDomain}=require('../utilities/VerifyEmailDomain')
+const {getCeoAndEmployee}=require('../../Database/GetOrganizationData/getCeoAndEmployee')
 
 const router=express.Router();
 
@@ -16,9 +17,9 @@ router.post('/', async (req, res) => {
 //          return;
 //     }
    try {
-        const {message,error} = await addHR(organizationId, name, email, password, salary, position, contact, dateOfBirth, department, employeeId, allowances, leaves);
-        if(message){
-            res.status(200).json({message:message}).send();
+        const {data,error} = await addHR(organizationId, name, email, password, salary, position, contact, dateOfBirth, department, employeeId, allowances, leaves);
+        if(data){
+            res.status(200).json({data:data}).send();
         }
         else if(error){
             res.status(500).send({error:error});

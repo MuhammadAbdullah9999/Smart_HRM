@@ -25,7 +25,7 @@ function Recruitment() {
             <AddIcon></AddIcon>Post Job
           </button>
         </Link>
-          {job.map((job) => (
+          {job && job.map((job) => (
             <div
               key={job._id}
               className="flex flex-col gap-4 w-[40%] p-4 rounded-lg border border-gray-300 shadow-lg shadow-gray-200"

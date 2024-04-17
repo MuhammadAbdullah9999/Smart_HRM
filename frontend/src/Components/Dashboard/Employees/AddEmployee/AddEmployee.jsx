@@ -162,14 +162,15 @@ const AddEmployee = () => {
 });
 
       if (response.data) {
+        console.log(response.data)
         setLoading(false);
         dispatch(setEmployeeData(response.data.data));
         setApiError("");
         if(employeeData.userType==='business_owner'){
-          navigate('/CEO/dashboard')
+          navigate('/CEO/dashboard/employees')
         }
         else{
-          navigate("/HR/dashboard");
+          navigate("/HR/dashboard/employees");
         }
       }
   
@@ -214,7 +215,7 @@ const AddEmployee = () => {
         </div>
       </div>
       <div className="w-full mt-4 ml-72 mr-8">
-        <DashboardOverview pageName="Add Employee"></DashboardOverview>
+        <DashboardOverview pageName={employeeData && employeeData.userType === "business_owner" ?"Add HR":'Add Employee'}></DashboardOverview>
 
         <div className="w-full px-12 mr-4 p-6 pt-16 rounded-xl shadow-md grid grid-cols-1 md:grid-cols-1 gap-4 mt-4 bg-slate-200">
           <form onSubmit={handleSubmit}>
@@ -402,7 +403,7 @@ const AddEmployee = () => {
                 className="flex justify-center m-auto sm:col-span-2 bg-blue-600 text-white px-4 py-2 rounded-lg cursor-pointer lg:mt-6 md:mt-4"
               >
                 <Add className="mr-1"></Add>
-                <p className="text-1xl font-bold">Add Employee</p>
+                <p className="text-1xl font-bold">{employeeData.userType==='business_owner'?'Add HR':'Add Employee'}e</p>
               </button>
             </div>
           </form>

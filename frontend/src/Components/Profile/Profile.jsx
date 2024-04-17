@@ -11,7 +11,6 @@ import EmployeeSidebar from "../Employee/EmployeeSidebar";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
 import { useSelector } from "react-redux";
 
-
 const Profile = () => {
   const data = useSelector((state) => state.EmployeeData.EmployeeData);
   console.log(data);
@@ -56,54 +55,47 @@ const Profile = () => {
     setIsEditingPhone(false);
   };
 
-  // Sample data array
-const attendanceRecords = [
-  { attendanceStatus: "absent", date: "2024-03-01" },
-  { attendanceStatus: "present", date: "2024-03-02" },
-  { attendanceStatus: "present", date: "2024-03-03" },
-  { attendanceStatus: "absent", date: "2024-03-04" },
-  { attendanceStatus: "present", date: "2024-03-05" }
-];
+  // Function to calculate attendance percentages
+  const calculateAttendancePercentage = (records) => {
+    if (!records || records.length === 0) {
+      return { presentPercentage: "0%" }; // Return 0% if no attendance records exist
+    }
 
-function calculateAttendancePercentage(records) {
-  let totalDays = records.length;
-  let presentCount = 0;
-  let absentCount = 0;
+    let totalDays = records.length;
+    let presentCount = 0;
+    let absentCount = 0;
 
-  // Count present and absent days
-  records.forEach(record => {
+    // Count present and absent days
+    records.forEach((record) => {
       if (record.attendanceStatus === "present") {
-          presentCount++;
+        presentCount++;
       } else if (record.attendanceStatus === "absent") {
-          absentCount++;
+        absentCount++;
       }
-  });
+    });
 
-  // Calculate percentages
-  let presentPercentage = (presentCount / totalDays) * 100;
-  // let absentPercentage = (absentCount / totalDays) * 100;
+    // Calculate percentages
+    let presentPercentage = (presentCount / totalDays) * 100;
 
-  return {
-      presentPercentage: presentPercentage.toFixed(0) + '%',
-      // absentPercentage: absentPercentage.toFixed(0) + '%'
+    return {
+      presentPercentage: presentPercentage.toFixed(0) + "%",
+    };
   };
-}
 
-// Compute the attendance percentages
-const percentages = calculateAttendancePercentage(data.user.attendance);
-console.log(percentages);
-
+  // Compute the attendance percentages if attendance data exists
+  const percentages = calculateAttendancePercentage(data?.user?.attendance);
+  console.log(percentages);
 
   return (
     <div className="flex">
       {/* Sidebar */}
-{data && data.userType === "business_owner" ? (
-          <CeoSidebar />
-        ) : data && data.userType === "employee" ? (
-          <EmployeeSidebar />
-        ) : (
-          <Sidebar />
-        )}
+      {data && data.userType === "business_owner" ? (
+        <CeoSidebar />
+      ) : data && data.userType === "employee" ? (
+        <EmployeeSidebar />
+      ) : (
+        <Sidebar />
+      )}
       {/* Main content */}
       <div className="flex-grow p-4 md:p-8">
         {/* Dashboard Overview */}
@@ -116,14 +108,18 @@ console.log(percentages);
             {/* Profile Picture */}
             <div className="flex justify-center items-center relative">
               <label htmlFor="profile-pic-upload">
-              <Avatar alt="Profile Picture" src={profileData.profilePic} sx={{ width: 70, height: 70 }} />
+                <Avatar
+                  alt="Profile Picture"
+                  src={profileData.profilePic}
+                  sx={{ width: 70, height: 70 }}
+                />
                 {isEditingPic && (
                   <div className="mb-2">
                     <input
                       accept="image/*"
                       id="profile-pic-upload"
                       type="file"
-                      style={{ display: "none"}}
+                      style={{ display: "none" }}
                       onChange={handleProfilePicChange}
                     />
                   </div>
@@ -133,7 +129,7 @@ console.log(percentages);
                     onClick={() => setIsEditingPic(true)}
                     className="absolute bottom-8 left-16 transform -translate-x-1/3"
                   >
-                    <EditIcon style={{color: "black"}} />
+                    <EditIcon style={{ color: "black" }} />
                   </IconButton>
                 )}
               </label>
@@ -150,7 +146,7 @@ console.log(percentages);
               <div className="flex items-center justify-between w-full mb-4">
                 <TextField
                   label="Name"
-                  value={data.user.name}
+                  value={data?.user?.name}
                   onChange={(e) => handleChangeProfileData("name", e.target.value)}
                   className="mt-2 mr-2"
                   style={{ width: "100%" }}
@@ -166,7 +162,7 @@ console.log(percentages);
               <div className="flex items-center justify-between w-full mb-4">
                 <TextField
                   label="Email"
-                  value={data.user.email}
+                  value={data?.user?.email}
                   onChange={(e) => handleChangeProfileData("email", e.target.value)}
                   className="mt-2 mr-2"
                   style={{ width: "100%" }}
@@ -183,9 +179,9 @@ console.log(percentages);
               <div className="flex items-center justify-between w-full mb-4">
                 <TextField
                   label="Phone Number"
-                  value={data.user.contact}
+                  value={data?.user?.contact}
                   onChange={(e) => {
-                    const value = e.target.value.replace(/\D/g, ''); // Remove non-numeric characters
+                    const value = e.target.value.replace(/\D/g, ""); // Remove non-numeric characters
                     handleChangeProfileData("phoneNumber", value);
                   }}
                   className="mt-2 mr-2"
@@ -220,13 +216,13 @@ console.log(percentages);
             {/* Leaves Box */}
             <div className="border border-gray-300 rounded-md p-4 bg-white shadow-md mb-4">
               <h3 className="text-lg font-semibold mb-2">Leaves</h3>
-              <p>{data.user.leaves}</p>
+              <p>{data?.user?.leaves}</p>
             </div>
 
             {/* Salary Box */}
             <div className="border border-gray-300 rounded-md p-4 bg-white shadow-md">
               <h3 className="text-lg font-semibold mb-2">Base Salary</h3>
-              <p>Rs. {data.user.salary}</p>
+              <p>Rs. {data?.user?.salary}</p>
             </div>
           </div>
         </div>
@@ -242,7 +238,9 @@ const isValidEmail = (email) => {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 };
 
-// Function to check if phone number is valid (10 digits)
+// Function to check if phone number is valid (11 digits)
 const isValidPhoneNumber = (phoneNumber) => {
   return /^\d{11}$/.test(phoneNumber);
 };
+
+// export default Profile;
