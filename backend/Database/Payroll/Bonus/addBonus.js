@@ -6,12 +6,20 @@ async function addBonus(
     bonusReason,
     month,
     year,
-    bonusAmount
+    bonusAmount,
+    userType
   ) {
 
     try {
       const db = await connectToMongoDB();
-      const collection = db.collection("Employees");
+      let col=''
+        if(userType === 'business_owner'){
+            col="HR"
+        }
+        else{
+            col='Employees'
+        }
+      const collection = db.collection(col);
   
       // Check if the employee document exists
       const employee = await collection.findOne({

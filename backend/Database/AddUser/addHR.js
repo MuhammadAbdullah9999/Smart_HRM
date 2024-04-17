@@ -16,7 +16,7 @@ const addHR = async (
   leaves
 ) => {
   try {
-    const db = connectToMongoDB();
+    const db = await connectToMongoDB();
     const col = db.collection("HR");
 
     const existingHR = await col.findOne({ email: email });
@@ -37,7 +37,7 @@ const addHR = async (
       employeeId: employeeId,
       department: department,
       position: position,
-      allowances: allowances || {},
+      allowances: allowances || [],
       leaves: leaves || 0,
       email: email,
       password: hashedPassword,

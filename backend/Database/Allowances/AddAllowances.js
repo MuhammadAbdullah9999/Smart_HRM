@@ -1,11 +1,18 @@
 const { connectToMongoDB,closeMongoDBConnection } = require('../connectDB');
 const {ObjectId}=require('mongodb');
 
-async function addAllowances(employeeId, allowanceType, allowanceAmount) {
+async function addAllowances(employeeId, allowanceType, allowanceAmount,userType) {
     console.log(employeeId)
     try {
         const db = await connectToMongoDB();
-        const collection = db.collection('Employees');
+        let col=''
+        if(userType === 'business_owner'){
+            col="HR"
+        }
+        else{
+            col='Employees'
+        }
+        const collection = db.collection(col);
 
         // Find employee by ID
         const employee = await collection.findOne({ _id: new ObjectId(employeeId) });

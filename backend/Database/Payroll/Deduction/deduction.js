@@ -1,13 +1,20 @@
 const { connectToMongoDB, closeMongoDBConnection } = require('../../connectDB');
 const { ObjectId } = require('mongodb');
 
-async function addDeductionToEmployee(employeeId, month, year, deductionReason, deductionAmount) {
+async function addDeductionToEmployee(employeeId, month, year, deductionReason, deductionAmount,userType) {
     try {
         // Connect to MongoDB Atlas
         const db = await connectToMongoDB();
 
         // Get the employee collection
-        const employeeCollection = db.collection('Employees');
+        let col=''
+        if(userType === 'business_owner'){
+            col="HR"
+        }
+        else{
+            col='Employees'
+        }
+        const employeeCollection = db.collection(col);
 
         // Find the employee document based on employeeId
         const employee = await employeeCollection.findOne({ _id: new ObjectId(employeeId) });

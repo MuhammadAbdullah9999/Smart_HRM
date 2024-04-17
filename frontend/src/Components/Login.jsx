@@ -62,6 +62,8 @@ const Login = () => {
       return;
     }
     try {
+      setErrors({});
+      setApiError('')
       const response = await axios.post(
         "http://localhost:5000/Login",
         formData

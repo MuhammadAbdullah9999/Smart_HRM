@@ -1,4 +1,5 @@
-import { useState,useEffect } from "react";
+
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import validator from "validator";
 import InputField from "../../../Styles/InputField";
@@ -10,34 +11,21 @@ import { useDispatch } from "react-redux";
 import { setEmployeeData } from "../../../../state";
 import { useNavigate } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
+import CeoSidebar from "../../../Ceo/Dashboard/CeoSidebar";
 
 const AddEmployee = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const employeeData = useSelector((state) => state.EmployeeData.EmployeeData);
-  const [departments,setDepartments]=useState([]);
-  useEffect(() => {
-    const getDepartments = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get(`http://localhost:5000/Departments/GetDepartments/${employeeData.user.organizationId}`);
-        console.log(response);
-        setDepartments(response.data.departments);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching departments:", error);
-      }
-    };
-    // setDepartments(employeeData.departments.uniqueDepartmentsArray)
-    getDepartments();
-  }, [employeeData.user.organizationId]);
+  console.log(employeeData)
+  const [departments, setDepartments] = useState([]);
   const [formData, setFormData] = useState({
-    organizationId: employeeData.user.organizationId,
+    organizationId: employeeData.userType==='business_owner'?employeeData.user._id: employeeData.user.organizationId,
     hrEmail: employeeData.user.email,
     employeeId: "021",
-    name: "usama",
+    name:"usama",
     position: "software engineer",
-    department: "development",
+    department: employeeData.userType === "business_owner" ? "human resource" : "",
     dateOfBirth: "12-04-1977",
     contact: "0321111222333",
     email: "usama@devsinc.com",
@@ -46,11 +34,28 @@ const AddEmployee = () => {
     allowances: "0",
     image: null,
   });
-
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState("");
   const [image, setImage] = useState(null);
+
+  useEffect(() => {
+    const getDepartments = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(`http://localhost:5000/Departments/GetDepartments/${employeeData.user.organizationId}`);
+        setDepartments(response.data.departments);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching departments:", error);
+      }
+    };
+
+    // Fetch departments only if user is not a business owner
+    if (employeeData.userType !== "business_owner") {
+      getDepartments();
+    }
+  }, [employeeData.user.organizationId, employeeData.userType]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -66,22 +71,24 @@ const AddEmployee = () => {
       image: "",
     });
   };
+
   const handleImageChange = (e) => {
     const selectedImage = e.target.files[0];
     setImage(selectedImage);
-
+  
     setErrors({
       ...errors,
       image: "",
     });
   };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     // Perform form validation
     let hasErrors = false;
-
+  
     if (!validator.isEmail(formData.email)) {
       setErrors((prevErrors) => ({
         ...prevErrors,
@@ -89,7 +96,7 @@ const AddEmployee = () => {
       }));
       hasErrors = true;
     }
-
+  
     // Check for empty fields
     Object.entries(formData).forEach(([field, value]) => {
       if (value === "" && field !== "allowances") {
@@ -100,7 +107,7 @@ const AddEmployee = () => {
         hasErrors = true;
       }
     });
-
+  
     // Validate numeric input for salary and allowances
     if (formData.salary && !validator.isNumeric(formData.salary)) {
       setErrors((prevErrors) => ({
@@ -109,55 +116,63 @@ const AddEmployee = () => {
       }));
       hasErrors = true;
     }
-
-    if (formData.allowances && !validator.isNumeric(formData.allowances)) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        allowances: "Please enter a valid numeric value",
-      }));
-      hasErrors = true;
-    }
-    if (!image) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        image: "Please select an image",
-      }));
-      hasErrors = true;
-    }
-
+  
+    // if (formData.allowances && !validator.isNumeric(formData.allowances)) {
+    //   setErrors((prevErrors) => ({
+    //     ...prevErrors,
+    //     allowances: "Please enter a valid numeric value",
+    //   }));
+    //   hasErrors = true;
+    // }
+    // if (!image) {
+    //   setErrors((prevErrors) => ({
+    //     ...prevErrors,
+    //     image: "Please select an image",
+    //   }));
+    //   hasErrors = true;
+    // }
+  
     if (hasErrors) {
       return;
     }
-
+  
     try {
       setApiError("");
       setLoading(true);
+  
+      // const formDataWithImage = new FormData();
+      // formDataWithImage.append("image", image); // Append the image correctly
+      
+      
+      // Object.entries(formData).forEach(([key, value]) => {
+      //   formDataWithImage.append(key, value);
+      // });
 
-      const formDataWithImage = new FormData();
-      formDataWithImage.append("image", image); // Append the image correctly
-
-      Object.entries(formData).forEach(([key, value]) => {
-        formDataWithImage.append(key, value);
-      });
-
-      const response = await axios.post(
-        "http://localhost:5000/AddEmployee",
-        formDataWithImage,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      console.log("FormData with Image:", formData);
+      let apiUrl = "http://localhost:5000/AddEmployee";
+  
+      if (employeeData.userType === "business_owner") {
+        apiUrl = "http://localhost:5000/AddHR"; // Use AddHR endpoint for business owners
+      }
+  
+     const response = await axios.post(apiUrl, formData, {
+  // headers: {
+  //   "Content-Type": "multipart/form-data",
+  // },
+});
 
       if (response.data) {
         setLoading(false);
         dispatch(setEmployeeData(response.data.data));
         setApiError("");
-        console.log(response.data.data);
-        navigate("/HR/dashboard");
+        if(employeeData.userType==='business_owner'){
+          navigate('/CEO/dashboard')
+        }
+        else{
+          navigate("/HR/dashboard");
+        }
       }
-
+  
       setFormData({
         employeeId: "",
         name: "",
@@ -177,7 +192,7 @@ const AddEmployee = () => {
       setApiError(error.response.data.error);
     }
   };
-
+  
   return (
     <div
       className={`flex gap-12 ${
@@ -191,7 +206,11 @@ const AddEmployee = () => {
       )}
       <div>
         <div className="fixed">
-          <Sidebar />
+        {employeeData && employeeData.userType === "business_owner" ? (
+        <CeoSidebar />
+      ) : (
+        <Sidebar />
+      )}
         </div>
       </div>
       <div className="w-full mt-4 ml-72 mr-8">
@@ -257,23 +276,30 @@ const AddEmployee = () => {
             >
               {/* {formData.department ? "Select Departments" : ""} */}
             </label>
-            <select
-              id="department"
-              name="department"
-              className={`p-2 border rounded w-full outline-none ${
-                formData.department ? "text-black" : "text-gray-500"
-              } bg-white`}
-              autoComplete="off"
-              value={formData.department}
-              onChange={handleInputChange}
-            >
-              <option value="">Select Departments</option>
-              {departments.map((option, index) => (
-                <option key={index} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
+            {employeeData.userType === "business_owner" ? (
+  <div className="p-2 border rounded w-full bg-gray-100">
+    <p className="text-black">Human Resource</p>
+  </div>
+) : (
+  <select
+    id="department"
+    name="department"
+    className={`p-2 border rounded w-full outline-none ${
+      formData.department ? "text-black" : "text-gray-500"
+    } bg-white`}
+    autoComplete="off"
+    value={formData.department}
+    onChange={handleInputChange}
+  >
+    <option value="">Select Departments</option>
+    {departments.map((option, index) => (
+      <option key={index} value={option}>
+        {option}
+      </option>
+    ))}
+  </select>
+)}
+
             
           </div>
               <InputField
@@ -348,7 +374,11 @@ const AddEmployee = () => {
                 focusColor="black"
                 top="6"
               /> */}
+<<<<<<< HEAD
               <div className="">
+=======
+              {/* <div className="">
+>>>>>>> frontend
                 <label className="block text-sm font-medium text-gray-700">
                   Image
                 </label>
@@ -361,7 +391,7 @@ const AddEmployee = () => {
                 {errors.image && (
                   <p className="text-red-800 font-bold mt-1">{errors.image}</p>
                 )}
-              </div>
+              </div> */}
             </div>
             <div className="">
               {apiError && (

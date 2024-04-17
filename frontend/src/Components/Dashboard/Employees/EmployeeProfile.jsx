@@ -8,17 +8,23 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { setEmployeeData } from "../../../state/index";
 import axios from "axios";
+import CircularProgress from '@mui/material/CircularProgress';
+import { useNavigate } from "react-router-dom";
+
 
 function EmployeeProfile() {
   const dispatch = useDispatch();
+  const navigate=useNavigate();
 
   const employeesData = useSelector((state) => state.EmployeeData.EmployeeData);
   const { employeeId } = useParams();
-
+console.log(employeesData)
   // Find the employee with the matching employeeId
   const employeeData = employeesData.employeeData.find(
     (employee) => employee._id === employeeId
   );
+
+  const [loading, setLoading] = useState(false);
   const [editMode, setEditMode] = useState({
     basicSalary: false,
     homeAllowance: false,
@@ -183,6 +189,7 @@ function EmployeeProfile() {
       grossSalary: grossSalaryValue,
       month,
       year,
+      
     });
 
     // Prepare the data to be sent to the API
@@ -211,18 +218,23 @@ function EmployeeProfile() {
       month,
       year,
       email: employeesData.user.email,
-      organizationId: employeesData.user.organizationId,
+      organizationId: employeesData.userType==='business_owner'? employeesData.user._id:employeesData.user.organizationId,
+      userType:employeesData.userType
     };
 
     try {
       setApiError("");
+      setLoading(true);
       const response = await axios.post(
         "http://localhost:5000/UpdateEmployeeProfile",
         data
       );
+      console.log(response.data)
+      setLoading(false)
       dispatch(setEmployeeData(response.data));
       // console.log(response.data);
     } catch (error) {
+      setLoading(false)
       setApiError(error.response.data);
       console.error("Error updating employee profile:", error);
     }
@@ -236,18 +248,19 @@ function EmployeeProfile() {
     const attendance = employeeData ? employeeData.attendance : [];
 
     // Get the current month and date
-    const currentDate = new Date();
-    const currentMonth = currentDate.getMonth(); // Get current month (0-indexed)
-    const currentYear = currentDate.getFullYear(); // Get current year
-
-    // Filter attendance records for the current month and year
-    if(attendance){
+    if(employeeData.attendance){
+      const currentDate = new Date();
+      const currentMonth = currentDate.getMonth(); // Get current month (0-indexed)
+      const currentYear = currentDate.getFullYear(); // Get current year
+  
+      // Filter attendance records for the current month and year
       const attendanceForCurrentMonthAndYear = attendance.filter((record) => {
         const recordDate = new Date(record.date);
         const recordMonth = recordDate.getMonth();
         const recordYear = recordDate.getFullYear();
         return recordMonth === currentMonth && recordYear === currentYear;
       });
+  
       const totalWorkingDays = attendanceForCurrentMonthAndYear.length;
       const presentDays = attendanceForCurrentMonthAndYear.filter(
         (record) => record.attendanceStatus === "present"
@@ -266,16 +279,28 @@ function EmployeeProfile() {
           deductionReason: "Short Attendance",
         });
       }
+  
       console.log(
         `Attendance percentage for the current month: ${attendancePercentage}%`
       );
     }
-    
-
-
-   
+  
   }, []);
-
+const handleDeleteEmployee=async()=>{
+  console.log(employeeId);
+  const email= employeesData.user.email
+  const organizationId= employeesData.userType==='business_owner'? employeesData.user._id:employeesData.user.organizationId
+  try{
+    setLoading(true)
+    const response=await axios.delete(`http://localhost:5000/DeleteUser/${employeeId}/${employeesData.userType}/${email}/${organizationId}`)
+    console.log(response.data)
+    setLoading(false)
+    dispatch(setEmployeeData(response.data))
+    navigate(employeesData.userType==='business_owner'?'/CEO/dashboard/employees':'/HR/dashboard/employees')
+  }catch(error){
+    console.error(error);
+  }  
+}
   return (
     <div className="flex flex-col md:flex-row">
       {/* Back button */}
@@ -293,6 +318,7 @@ function EmployeeProfile() {
       <div className="w-full p-16">
         {/* Dashboard overview */}
         <DashboardOverview pageName="Employee Profile" />
+        {loading && <div className="absolute top-12 inset-0 backdrop-filter backdrop-blur-sm z-10"></div>}
 
         {/* Employee profile details */}
         <div className="mt-10">
@@ -538,6 +564,11 @@ function EmployeeProfile() {
                     onClick={() => toggleEditMode("grossSalary")}
                   />
                 </label>
+                {loading && (
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20">
+          <CircularProgress style={{ color: 'blue' }} />
+        </div>
+      )}
                 <input
                   type="text"
                   value={grossSalary}
@@ -566,11 +597,17 @@ function EmployeeProfile() {
             >
               Save Changes
             </button>
-            <button
+            {/* <button
               className="px-4 py-2 mr-4 bg-bg-color text-white rounded-lg hover:bg-blue-800"
               onClick={handleGeneratePayroll}
             >
               Generate Payroll
+            </button> */}
+            <button
+              className="px-4 py-2 mr-4 bg-red-500 text-white rounded-lg hover:bg-red-800"
+              onClick={handleDeleteEmployee}
+            >
+             {employeesData.userType==='business_owner'?'Delete HR':'Delete Employee'}
             </button>
           </div>
         </div>
