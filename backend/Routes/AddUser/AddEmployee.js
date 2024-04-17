@@ -28,14 +28,14 @@ router.post("/", upload.single("image"), async (req, res) => {
     leaves,
   } = req.body;
 
-  const organizationName = await getOrganizationName(organizationId);
+  // const organizationName = await getOrganizationName(organizationId);
 
-  const result = verifyEmailDomain(email, organizationName);
-  console.log(result);
-  if (!result) {
-    res.status(500).send({ error: "Email domain does not match organization name" });
-    return;
-  }
+  // const result = verifyEmailDomain(email, organizationName);
+  // console.log(result);
+  // if (!result) {
+  //   res.status(500).send({ error: "Email domain does not match organization name" });
+  //   return;
+  // }
 
   try {
     const image = req.file; // Access the uploaded image
