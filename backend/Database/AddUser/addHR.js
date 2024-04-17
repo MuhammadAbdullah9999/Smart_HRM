@@ -1,5 +1,6 @@
 const { generateHash } = require("../utilities/generatePasswordHash");
 const { connectToMongoDB, closeMongoDBConnection } = require("../connectDB");
+const {getCeoAndEmployee}=require('../../Database/GetOrganizationData/getCeoAndEmployee');
 
 const addHR = async (
   organizationId,
@@ -45,7 +46,9 @@ const addHR = async (
 
     const result = await col.insertOne(hrDocument);
     if (result) {
-      return { message: "HR added successfully", error: null };
+      const {userType,user,employeeData,noOfEmployees,noOfDepartments,noOfHRs}=await getCeoAndEmployee(email,organizationId)
+      const data={ userType, user, employeeData, noOfEmployees, noOfDepartments, noOfHRs }
+      return { data:data, error: null };
     }
   } catch (err) {
     console.log(err.stack);
