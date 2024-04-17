@@ -91,7 +91,7 @@ function CeoDashboard() {
               </div>
 
               <hr className="border-gray-400"></hr>
-              <div className="flex justify-between px-6 mb-10">
+              <div className="flex justify-between px-6 mb-4">
                 <h2 className="font-bold">Title</h2>
                 <h2 className="font-bold">Date</h2>
               </div>
@@ -101,7 +101,7 @@ function CeoDashboard() {
                 </div>
               )}
               {announcements.map((announcement, index) => (
-                <div key={index} className="flex justify-between px-4">
+                <div key={index} className="flex justify-between px-4 mb-4">
                   <p className="md:text-lg sm:text-sm">{announcement.title}</p>
                   <p className="md:text-lg sm:text-sm">{announcement.date}</p>
                 </div>

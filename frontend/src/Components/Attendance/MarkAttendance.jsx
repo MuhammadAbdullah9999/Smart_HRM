@@ -81,9 +81,9 @@ const MarkAttendance = () => {
       return {
         employeeId: employee.employeeId,
         name: employee.name,
-        checkInTime: "5:00 am",
-        checkOutTime: "3:00 am",
-        attendanceStatus: "present",
+        checkInTime: "",
+        checkOutTime: "",
+        attendanceStatus: "",
         month: month,
         email: email,
         organizationId: organizationId,

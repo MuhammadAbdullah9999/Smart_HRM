@@ -58,7 +58,7 @@ function CeoSidebar({ isOpen, onClose }) {
       >
         {/* Organization Name */}
         <h1 className="text-white text-lg font-semibold mb-2 mt-4 text-center">
-          DevTech Solutions
+        {employeeData.user.name}
         </h1>
 
         {/* HR Profile */}
@@ -69,8 +69,8 @@ function CeoSidebar({ isOpen, onClose }) {
             className="w-12 h-12 rounded-full mb-1"
           />
           <div className="text-center">
-            <p className="text-white text-lg font-semibold mt-1">{employeeData.user.name}</p>
-            <p className="text-gray-300 text-sm">HR Manager</p>
+            <p className="text-white text-lg font-semibold mt-1">Super Admin</p>
+            {/* <p className="text-gray-300 text-sm">Super Admin</p> */}
           </div>
         </div>
 

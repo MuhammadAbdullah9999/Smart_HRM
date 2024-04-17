@@ -5,15 +5,28 @@ import DashboardStat from "./DashboardCard";
 import axios from "axios";
 import { useSelector, useDispatch } from 'react-redux';
 import { setEmployeeData } from "../../state";
+import CircularProgress from '@mui/material/CircularProgress';
+
 
 function DashboardContent(props) {
     const employeeData = useSelector(state => state.EmployeeData.EmployeeData);
     
     const dispatch = useDispatch();
     const [apiError, setApiError] = useState('');
-    const [toDoList, setToDoList] = useState(employeeData.user.toDoList);
+    const [toDoList, setToDoList] = useState();
     const [newTask, setNewTask] = useState("");
+    const [loading, setLoading] = useState(false);
 
+    useEffect(()=>{
+        const getToDoList=async()=>{
+            const response=await axios.get(`http://localhost:5000/ToDoList/getToDoList/${employeeData.userType}/${employeeData.user.email}`);
+            console.log(response);
+            setToDoList(response.data.toDoList);
+        }
+        // getToDoList();
+        setToDoList(employeeData.user.toDoList);
+
+    },[])
     const handleAddToDo = async () => {
       if (newTask.trim() !== "") {
           try {
@@ -78,15 +91,19 @@ function DashboardContent(props) {
                 <DashboardStat label="Loan Requests" value="0" />
             </div>)}
             
-            {toDoList && 
-                <DashboardFunctionalities
+            {/* {toDoList?( */}
+
+                <DashboardFunctionalities 
                     toDoList={toDoList}
                     newTask={newTask}
                     setNewTask={setNewTask}
                     handleAddToDo={handleAddToDo}
                     handleDeleteToDo={handleDeleteToDo}
                 />
-            }
+            {/* ) :(
+                <CircularProgress></CircularProgress>
+            )
+            } */}
         </div>
     );
 }
