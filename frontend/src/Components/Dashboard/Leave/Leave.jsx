@@ -63,6 +63,13 @@ function Leave() {
     }
   };
 
+  // Function to validate date format
+  const isValidDate = (dateString) => {
+    // Regular expression to match YYYY-MM-DD format
+    const regex = /^\d{4}-\d{2}-\d{2}$/;
+    return regex.test(dateString);
+  };
+
   return (
     <div className="flex gap-4 w-full">
       <div>
@@ -94,38 +101,51 @@ function Leave() {
               </div>
             )}
             <div className="overflow-y-auto">
-            {employees &&
-              employees.length > 0 &&
-              employees.map(
-                (employee) =>
+              {employees &&
+                employees.length > 0 &&
+                employees.map((employee) =>
                   employee.leaveRequest &&
                   employee.leaveRequest.length > 0 &&
-                  employee.leaveRequest.map(
-                    (leave) =>
-                      leave.status === "Approved" && (
-                        <div key={leave._id} >
-                          <div className="flex justify-between w-full gap-2 p-4">
+                  employee.leaveRequest.map((leave) => (
+                    <div
+                      key={leave._id}
+                      style={{
+                        backgroundColor:
+                          leave.status === "Approved"
+                            ? "#08C754"
+                            : leave.status === "rejected"
+                            ? "#DB2626"
+                            : "#DB2626",
+                        color: "white",
+                      }}
+                    >
+                      {leave.status !== "pending" && (
+                        <div className="flex justify-between w-full gap-2 p-4">
+                          <div>
+                            <p className="font-bold">{employee.name}</p>
+                            <span className="text-sm">
+                              {leave.leaveReason}
+                            </span>
+                          </div>
+                          <div className="self-center">
                             <div>
-                              <p className="font-bold">{employee.name}</p>
-                              <span className="text-sm">
-                                {leave.leaveReason}
-                              </span>
-                            </div>
-                            <div className="self-center">
-                              <div>
-                                <p>
-                                  <span className="font-bold">Days: </span>
-                                  {leave.leaveDays}
-                                </p>
-                              </div>
+                              <p>
+                                <span className="font-bold">Date: </span>
+                                {isValidDate(leave.leaveDate) ? new Date(leave.leaveDate).toLocaleDateString() : leave.leaveDate}
+                              </p>
+                              <p>
+                                <span className="font-bold">Days: </span>
+                                {leave.leaveDays}
+                              </p>
                             </div>
                           </div>
-                          <hr className="border"></hr>
                         </div>
-                      )
-                  )
-              )}
-              </div>
+                      )}
+                      <hr className="border"></hr>
+                    </div>
+                  ))
+                )}
+            </div>
           </div>
 
           {/* Leave Requests Section */}
@@ -136,67 +156,65 @@ function Leave() {
                 <hr className="border border-gray-300"></hr>
               </div>
               {loading && (
-              <div className="absolute inset-0 backdrop-filter backdrop-blur-sm z-10 flex items-center justify-center">
-                <CircularProgress style={{ color: "blue" }} />
-              </div>
-            )}
+                <div className="absolute inset-0 backdrop-filter backdrop-blur-sm z-10 flex items-center justify-center">
+                  <CircularProgress style={{ color: "blue" }} />
+                </div>
+              )}
               {employees &&
                 employees.length > 0 &&
-                employees.map(
-                  (employee) =>
-                    employee.leaveRequest &&
-                    employee.leaveRequest.length > 0 &&
-                    employee.leaveRequest.map(
-                      (leave) =>
-                        leave.status === "pending" && (
-                          <div key={leave._id}>
-                            <div className="flex justify-between w-full gap-2 p-4">
-                              <div>
-                                <p className="font-bold">{employee.name}</p>
-                                <span className="text-sm">
-                                  {leave.leaveReason}
-                                </span>
-                              </div>
-                              <div className="self-center">
-                                <p className="text-sm">{leave.leaveDate}</p>
-                              </div>
-                              <div className="self-center">
-                                {data.userType !== "employee" && (
-                                  <div className="flex gap-2">
-                                    <button
-                                      onClick={() =>
-                                        handleLeaveAction(
-                                          employee._id,
-                                          leave._id,
-                                          "Approved"
-                                        )
-                                      }
-                                      className="p-2 text-sm bg-green-500 text-white rounded-lg active:text-green-600 active:bg-white"
-                                    >
-                                      <DoneIcon fontSize="small"></DoneIcon>
-                                      Approve
-                                    </button>
-                                    <button
-                                      onClick={() =>
-                                        handleLeaveAction(
-                                          employee._id,
-                                          leave._id,
-                                          "reject"
-                                        )
-                                      }
-                                      className="p-2 text-sm bg-red-500 text-white rounded-lg active:text-red-600 active:bg-white"
-                                    >
-                                      <ClearIcon fontSize="small"></ClearIcon>
-                                      Reject
-                                    </button>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                            <hr className="border"></hr>
+                employees.map((employee) =>
+                  employee.leaveRequest &&
+                  employee.leaveRequest.length > 0 &&
+                  employee.leaveRequest.map((leave) =>
+                    leave.status === "pending" ? (
+                      <div key={leave._id}>
+                        <div className="flex justify-between w-full gap-2 p-4">
+                          <div>
+                            <p className="font-bold">{employee.name}</p>
+                            <span className="text-sm">
+                              {leave.leaveReason}
+                            </span>
                           </div>
-                        )
-                    )
+                          <div className="self-center">
+                            <p className="text-sm">{leave.leaveDate}</p>
+                          </div>
+                          <div className="self-center">
+                            {data.userType !== "employee" && (
+                              <div className="flex gap-2">
+                                <button
+                                  onClick={() =>
+                                    handleLeaveAction(
+                                      employee._id,
+                                      leave._id,
+                                      "Approved"
+                                    )
+                                  }
+                                  className="p-2 text-sm bg-green-500 text-white rounded-lg active:text-green-600 active:bg-white"
+                                >
+                                  <DoneIcon fontSize="small"></DoneIcon>
+                                  Approve
+                                </button>
+                                <button
+                                  onClick={() =>
+                                    handleLeaveAction(
+                                      employee._id,
+                                      leave._id,
+                                      "reject"
+                                    )
+                                  }
+                                  className="p-2 text-sm bg-red-500 text-white rounded-lg active:text-red-600 active:bg-white"
+                                >
+                                  <ClearIcon fontSize="small"></ClearIcon>
+                                  Reject
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <hr className="border"></hr>
+                      </div>
+                    ) : null
+                  )
                 )}
             </div>
           </div>
