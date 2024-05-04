@@ -1,7 +1,8 @@
 const { connectToMongoDB, closeMongoDBConnection } = require("../connectDB");
 const {getUserData}=require('../Authentication/utilities/getUserData');
 const { countEmployeesInOrganization,countHrsInOrganization } = require("../GetOrganizationData/countEmployeeAndHRInOrg");
-const {countUniqueDepartments}=require('./countDepartments')
+const {countUniqueDepartments}=require('./countDepartments');
+const {countPendingLeaves}=require('../Leave/GetPendingLeavesCount')
 
 async function getCeoAndEmployee(ceoEmail, organizationId) {
   try {
@@ -16,6 +17,7 @@ async function getCeoAndEmployee(ceoEmail, organizationId) {
     );
     const hrCount = await countHrsInOrganization(organizationId);
     const departments = await countUniqueDepartments(organizationId);
+    const pendingLeavesRequest=await countPendingLeaves(organizationId,userType='business_owner')
 
     return {
       userType: "business_owner",
@@ -24,6 +26,7 @@ async function getCeoAndEmployee(ceoEmail, organizationId) {
       noOfEmployees: employeesCount,
       noOfHRs: hrCount,
       noOfDepartments: departments,
+      pendingLeaveRequests: pendingLeavesRequest
     };
   } catch (error) {
     throw error;

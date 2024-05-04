@@ -75,7 +75,7 @@ function CeoDashboard() {
             ></Card>
             <Card
               cardText="Leave Request"
-              cardNumber="0"
+              cardNumber={employeeData.pendingLeaveRequests}
               bgColor="blue-500"
             ></Card>
           </div>

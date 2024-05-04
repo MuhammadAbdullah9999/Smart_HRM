@@ -302,7 +302,9 @@ const handleDeleteEmployee=async()=>{
   }  
 }
   return (
-    <div className="flex flex-col md:flex-row">
+    <div className={`flex flex-col md:flex-row ${
+      loading ? "pointer-events-none opacity-60" : ""
+    }`}>
       {/* Back button */}
       {employeesData && employeesData.userType === "business_owner" ? (
         <Link to="/CEO/dashboard/Employees">

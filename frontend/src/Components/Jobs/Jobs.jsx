@@ -84,19 +84,27 @@ function Jobs() {
               {organization.jobArray && organization.jobArray.length > 0 ? (
                 organization.jobArray.map((job) => (
                   <div className="py-8" key={job.jobTitle}>
-                    <div className="flex justify-between flex-wrap bg-sec-color rounded-lg p-4 border border-gray-500 text-white shadow-lg">
+                    <div className="flex justify-between flex-wrap bg-sec-color rounded-lg p-4 border border-gray-500 text-slate-200 shadow-lg">
                       <div className="flex flex-col gap-4 sm:w-full md:w-9/12 ">
                         <h2>{organization.organizationName}</h2>
                         <p className="font-bold text-xl">{job.jobTitle}</p>
+                       
                         <p className="text-sm text-justify">
+                        <span className="font-bold">Job Description: </span>
                           {job.jobDescription
                             .split("\n")
                             .slice(0, 3)
                             .join("\n")}
                         </p>
-                        <p>Location: {job.location}</p>
-                        <p>Status: {job.status}</p>
+                        <p><span className="font-bold">Location:</span> {job.location}</p>
+                        <p><span className="font-bold">Status:</span> {job.status}</p>
+                        <p><span className="font-bold">Type: </span>{job.jobType}</p> {/* Display job type */}
+                        <p><span className="font-bold">Requirements:</span> {job.requirements}</p>{" "}
+                        {/* Display job requirements */}
+                        <p><span className="font-bold">No. of Positions:</span> {job.noOfPositions}</p>{" "}
+                        {/* Display number of positions */}
                       </div>
+
                       <div className="flex flex-col justify-center gap-4 lg:w-auto lg:mt-0 mt-4 w-full">
                         <div className="w-full">
                           <button className="w-full p-2 bg-white text-sec-color rounded-lg active:bg-sec-color active:text-white">
@@ -110,7 +118,11 @@ function Jobs() {
                               organization.organizationId
                             }/${encodeURIComponent(
                               job.jobTitle
-                            )}/${encodeURIComponent(job.jobDescription)}/${encodeURIComponent(organization.organizationName)}/${encodeURIComponent(job._id)}`}
+                            )}/${encodeURIComponent(
+                              job.jobDescription
+                            )}/${encodeURIComponent(
+                              organization.organizationName
+                            )}/${encodeURIComponent(job._id)}`}
                           >
                             <button className="w-full p-2 bg-white text-sec-color rounded-lg active:bg-sec-color active:text-white">
                               Open Now

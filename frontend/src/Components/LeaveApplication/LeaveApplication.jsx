@@ -5,8 +5,11 @@ import Sidebar from "../Dashboard/Sidebar";
 import EmployeeSidebar from "../Employee/EmployeeSidebar";
 import DashboardOverview from "../Dashboard/DashboardOverview";
 import { useSelector } from "react-redux";
+import CircularProgress from '@mui/material/CircularProgress';
+import { useNavigate } from "react-router-dom";
 
 function LeaveApplication() {
+  const navigate=useNavigate();
   const data = useSelector((state) => state.EmployeeData.EmployeeData);
 
   const [formData, setFormData] = useState({
@@ -17,11 +20,14 @@ function LeaveApplication() {
     leaveDays: "",
   });
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+
 
   const handleChange = (event) => {
     const { name, value } = event.target;
     setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
     setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
+
   };
 
   const validateForm = () => {
@@ -51,10 +57,14 @@ function LeaveApplication() {
       };
 
       try {
+        setLoading(true)
         const response = await axios.post('http://localhost:5000/requestleave', submissionData);
+        setLoading(false)
         console.log(response.data);
+        navigate(data.userType==='HR'?'/HR/dashboard/leave':'/employee/dashboard/leave')
         // Handle response data here, e.g., showing a success message to the user
       } catch (error) {
+        setLoading(false)
         console.error(error.response ? error.response.data : error.message);
         // Handle errors here, e.g., showing an error message to the user
       }
@@ -67,6 +77,7 @@ function LeaveApplication() {
       {data && data.userType === "employee" ? <EmployeeSidebar /> : <Sidebar />}
       <div className="flex flex-col w-full">
         <DashboardOverview pageName="Leave" />
+        {loading && <div className="absolute inset-0 backdrop-filter backdrop-blur-sm z-10"></div>}
         <h3 className="text-2xl font-bold text-center mt-4">Leave Application</h3>
         <div className="flex items-center justify-center w-full p-4">
           <div className="w-full overflow-auto p-4 border rounded-lg shadow max-h-[75vh]">
@@ -137,6 +148,11 @@ function LeaveApplication() {
               >
                 Submit Application
               </button>
+              {loading && (
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20">
+          <CircularProgress style={{ color: 'blue' }} />
+        </div>
+      )}
             </form>
           </div>
         </div>

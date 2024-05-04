@@ -27,10 +27,9 @@ if(userType==='HR'){
     }
     else if(userType==='business_owner'){
         employeeData = await employeeCollection
-        .find({ organizationId: organizationId })
+        .find({ organizationId: userId })
         .toArray();
     }
-
       // console.log(employeeData);
     return {
       employeeData: employeeData,

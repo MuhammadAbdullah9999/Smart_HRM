@@ -375,11 +375,7 @@ const AddEmployee = () => {
                 focusColor="black"
                 top="6"
               /> */}
-<<<<<<< HEAD
-              <div className="">
-=======
               {/* <div className="">
->>>>>>> frontend
                 <label className="block text-sm font-medium text-gray-700">
                   Image
                 </label>
@@ -403,7 +399,7 @@ const AddEmployee = () => {
                 className="flex justify-center m-auto sm:col-span-2 bg-blue-600 text-white px-4 py-2 rounded-lg cursor-pointer lg:mt-6 md:mt-4"
               >
                 <Add className="mr-1"></Add>
-                <p className="text-1xl font-bold">{employeeData.userType==='business_owner'?'Add HR':'Add Employee'}e</p>
+                <p className="text-1xl font-bold">{employeeData.userType==='business_owner'?'Add HR':'Add Employee'}</p>
               </button>
             </div>
           </form>

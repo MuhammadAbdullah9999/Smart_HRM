@@ -1,9 +1,16 @@
 const { connectToMongoDB, closeMongoDBConnection } = require("../connectDB");
 
-async function countPendingLeaves(organizationId) {
+async function countPendingLeaves(organizationId,userType) {
   try {
     const db = await connectToMongoDB();
-    const employeesCollection = db.collection("Employees");
+    let col=''
+    if(userType && userType==='business_owner'){
+      col='HR'
+    }
+    else{
+      col='Employees'
+    }
+    const employeesCollection = db.collection(col);
 
     const employees = await employeesCollection
       .find({ organizationId })

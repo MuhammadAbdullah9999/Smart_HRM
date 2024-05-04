@@ -51,6 +51,7 @@ function Leave() {
           status: action,
           organizationId,
           email: hrEmail,
+          
         }
       );
       if (response) {
@@ -76,11 +77,15 @@ function Leave() {
       </div>
       <div className="w-full p-4">
         <DashboardOverview pageName="Leave"></DashboardOverview>
-        <Link to="/dashboard/leave/applyLeave">
-          <button className="bg-bg-color px-3 py-2 rounded-3xl text-white mb-4 border-none font-bold text-center cursor-pointer transition duration-400 hover:shadow-lg hover:shadow-gray-400 active:transform active:scale-97 active:shadow-lg">
-            <AddIcon></AddIcon>Apply Leave
-          </button>
-        </Link>
+        {data.userType !== 'business_owner' && (
+  <Link to="/dashboard/leave/applyLeave">
+    <button className="bg-bg-color px-3 py-2 rounded-3xl text-white mb-4 border-none font-bold text-center cursor-pointer transition duration-400 hover:shadow-lg hover:shadow-gray-400 active:transform active:scale-97 active:shadow-lg">
+      <AddIcon />
+      Apply Leave
+    </button>
+  </Link>
+)}
+
         <div className="flex justify-between gap-8 w-full h-[77%]">
           {/* Leave Calendar Section */}
           <div className="flex flex-col w-1/3 border border-gray-300 rounded-md shadow-lg shadow-gray-300 min-h-full relative">
@@ -108,7 +113,8 @@ function Leave() {
                             <div>
                               <p className="font-bold">{employee.name}</p>
                               <span className="text-sm">
-                                {leave.leaveReason}
+                                {/* {leave.leaveReason} */}
+                                {leave.leaveDate}
                               </span>
                             </div>
                             <div className="self-center">
@@ -116,6 +122,7 @@ function Leave() {
                                 <p>
                                   <span className="font-bold">Days: </span>
                                   {leave.leaveDays}
+                                  
                                 </p>
                               </div>
                             </div>

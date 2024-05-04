@@ -1,10 +1,9 @@
 const {connectToMongoDB,closeMongoDBConnection}=require('../connectDB');
 const {ObjectId}=require('mongodb');
 
-async function addJob(organizationId, jobTitle, jobDescription, location) {
+async function addJob(organizationId, jobTitle, jobDescription, location ,jobType,requirements,noOfPositions) {
    
     try {
-        console.log('add job called');
 
         const db = await connectToMongoDB();
         const organizationsCollection = db.collection('Organizations');
@@ -22,6 +21,9 @@ async function addJob(organizationId, jobTitle, jobDescription, location) {
                 jobTitle,
                 jobDescription,
                 location,
+                jobType,
+                requirements,
+                noOfPositions,
                 status: 'Open'
             });
 
