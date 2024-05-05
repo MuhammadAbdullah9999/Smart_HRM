@@ -33,6 +33,7 @@ function Applicants() {
 
         setLoading(false);
         setApplicants(response.data);
+        console.log(response.data)
       } catch (error) {
         setApiError(error.response.data);
         setLoading(false);
@@ -82,6 +83,7 @@ function Applicants() {
       );
       setLoading(false);
       const filteredApplicants = response.data.ranking;
+      console.log(response.data);
 
       // Sort applicants based on ranking
       const sortedApplicants = filteredApplicants.sort(

@@ -43,6 +43,7 @@ async function GetApplicantsData(organizationId, jobId) {
         return {
           id: _id,
           name,
+          cv,
           phoneNumber,
           email,
           password,
