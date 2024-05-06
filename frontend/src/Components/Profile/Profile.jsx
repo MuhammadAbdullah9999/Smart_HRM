@@ -63,6 +63,35 @@ const Profile = () => {
     setChanged(false); // Reset changed state
   };
 
+  const calculateAttendancePercentage = (records) => {
+    if (!records || records.length === 0) {
+      return { presentPercentage: "0%" }; // Return 0% if no attendance records exist
+    }
+
+    let totalDays = records.length;
+    let presentCount = 0;
+    let absentCount = 0;
+
+    // Count present and absent days
+    records.forEach((record) => {
+      if (record.attendanceStatus === "present") {
+        presentCount++;
+      } else if (record.attendanceStatus === "absent") {
+        absentCount++;
+      }
+    });
+
+    // Calculate percentages
+    let presentPercentage = (presentCount / totalDays) * 100;
+
+    return {
+      presentPercentage: presentPercentage.toFixed(0) + "%",
+    };
+  };
+
+  // Compute the attendance percentages if attendance data exists
+  const percentages = calculateAttendancePercentage(data?.user?.attendance);
+
   return (
     <div className="flex">
       {/* Sidebar */}
@@ -167,13 +196,13 @@ const Profile = () => {
             {/* First Card */}
             <div className="hover:shadow-blue-200 shadow-gray-200 cursor-pointer border border-gray-300 rounded-md p-4 bg-white shadow-md">
               <h3 className="text-md font-light mb-4">Attendance</h3>
-              <p className="text-2xl">85%</p> {/* Placeholder for attendance data */}
+              <p className="text-2xl">{percentages.presentPercentage}</p> {/* Placeholder for attendance data */}
             </div>
 
             {/* Second Card */}
             <div className=" hover:shadow-blue-200 shadow-gray-200 cursor-pointer border border-gray-300 rounded-md p-4 bg-white shadow-md">
               <h3 className="text-md font-light mb-4">Leaves</h3>
-              <p  className="text-2xl font-thin">5</p> {/* Placeholder for leaves data */}
+              <p  className="text-2xl font-thin">{data?.user?.leaves}</p> {/* Placeholder for leaves data */}
             </div>
 
             {/* Third Card */}
