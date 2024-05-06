@@ -11,10 +11,13 @@ import EmployeeSidebar from "../Employee/EmployeeSidebar";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { setEmployeeData } from "../../state";
 
 const Profile = () => {
+  const dispatch=useDispatch();
   const data = useSelector((state) => state.EmployeeData.EmployeeData);
-  console.log(data);
+  // console.log(data);
 
   const [changed, setChanged] = useState(false); // New state to track if any field has been changed
 
@@ -50,8 +53,11 @@ const Profile = () => {
         "http://localhost:5000/UpdateUser",
         profileData
       );
-      console.log(response);
-    } catch (error) {
+      console.log("response is",response);
+      const updatedUserData = { ...data, user: response.data.user };
+
+      dispatch(setEmployeeData(updatedUserData));
+      } catch (error) {
       console.error(error);
     }
     setChanged(false); // Reset changed state
@@ -159,30 +165,30 @@ const Profile = () => {
           {/* Additional Information Section */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* First Card */}
-            <div className="border border-gray-300 rounded-md p-4 bg-white shadow-md">
-              <h3 className="text-lg font-semibold mb-4">Attendance</h3>
+            <div className="hover:shadow-blue-200 shadow-gray-200 cursor-pointer border border-gray-300 rounded-md p-4 bg-white shadow-md">
+              <h3 className="text-md font-light mb-4">Attendance</h3>
               <p className="text-2xl">85%</p> {/* Placeholder for attendance data */}
             </div>
 
             {/* Second Card */}
-            <div className="border border-gray-300 rounded-md p-4 bg-white shadow-md">
-              <h3 className="text-lg font-semibold mb-4">Leaves</h3>
-              <p  className="text-2xl">5</p> {/* Placeholder for leaves data */}
+            <div className=" hover:shadow-blue-200 shadow-gray-200 cursor-pointer border border-gray-300 rounded-md p-4 bg-white shadow-md">
+              <h3 className="text-md font-light mb-4">Leaves</h3>
+              <p  className="text-2xl font-thin">5</p> {/* Placeholder for leaves data */}
             </div>
 
             {/* Third Card */}
-            <div className="border border-gray-300 rounded-md p-4 bg-white shadow-md">
-              <h3 className="text-lg font-semibold mb-4">Base Salary</h3>
-              <p  className="text-2xl">{data.user.salary}</p> {/* Placeholder for salary data */}
+            <div className=" hover:shadow-blue-200 shadow-gray-200 cursor-pointer border border-gray-300 rounded-md p-4 bg-white shadow-md">
+              <h3 className="text-md font-light mb-4">Base Salary</h3>
+              <p  className="text-2xl font-light">{data.user.salary}</p> {/* Placeholder for salary data */}
             </div>
 
             {/* Fourth Card */}
             {data.user.Allowances.map((allowance, index) => (
               <div
                 key={index}
-                className="border border-gray-300 rounded-md p-4 bg-white shadow-md"
+                className=" hover:shadow-blue-200 shadow-gray-200 cursor-pointer border border-gray-300 rounded-md p-4 bg-white shadow-md"
               >
-                <h3 className="text-lg font-semibold mb-2">
+                <h3 className="text-md font-light mb-2">
                   {allowance.type} Allowance
                 </h3>
                 <p  className="text-2xl">{allowance.amount}</p> {/* Placeholder for allowance data */}
