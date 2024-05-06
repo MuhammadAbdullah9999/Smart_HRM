@@ -17,6 +17,9 @@ const addOrganization = async (
     const db = await connectToMongoDB();
     const col = db.collection("Organizations");
 
+    // Convert email to lowercase
+    email = email.toLowerCase();
+
     // Check if email or name is already registered
     const existingOrganization = await col.findOne({
       $or: [{ email: email }, { name: name }],

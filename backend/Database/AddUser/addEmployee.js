@@ -22,6 +22,9 @@ const addEmployee = async (
     const db = await connectToMongoDB();
     const col = db.collection("Employees");
 
+    // Convert email to lowercase
+    email = email.toLowerCase();
+
     // Check if employee with the same email already exists
     const existingEmployee = await col.findOne({ email: email });
     if (existingEmployee) {

@@ -10,26 +10,28 @@ const {getCeoAndEmployee}=require('../GetOrganizationData/getCeoAndEmployee');
 const authenticateUser = async (email, password) => {
   try {
     const db = await connectToMongoDB();
+    const lowerCaseEmail = email.toLowerCase(); // Convert email to lowercase
+    
     // Check if the email exists in the Organizations collection
     const orgCollection = db.collection("Organizations");
-    const orgUser = await orgCollection.findOne({ email: email });
+    const orgUser = await orgCollection.findOne({ email: lowerCaseEmail });
 
     if (orgUser && (await bcrypt.compare(password, orgUser.password))) {
       // const hrData = await getUserData("HR", orgUser._id.toString());
       // const employeesCount = await countEmployeesInOrganization(orgUser._id.toString());
       // const hrCount=await countHrsInOrganization(orgUser._id.toString());
       // const departments = await countUniqueDepartments(orgUser._id.toString());
-      const {userType,user,employeeData,noOfEmployees,noOfDepartments,noOfHRs,pendingLeaveRequests}=await getCeoAndEmployee(email,orgUser._id.toString())
+      const {userType,user,employeeData,noOfEmployees,noOfDepartments,noOfHRs,pendingLeaveRequests}=await getCeoAndEmployee(lowerCaseEmail,orgUser._id.toString())
       // return { userType: "business_owner", user: orgUser, employeeData: hrData,noOfEmployees:employeesCount,noOfHRs:hrCount,noOfDepartments:departments };
       return { userType, user, employeeData, noOfEmployees, noOfDepartments, noOfHRs,pendingLeaveRequests }
     }
 
     // Check if the email exists in the HRs collection
     const hrCollection = db.collection("HR");
-    const hrUser = await hrCollection.findOne({ email: email });
+    const hrUser = await hrCollection.findOne({ email: lowerCaseEmail });
 
     if (hrUser && (await bcrypt.compare(password, hrUser.password))) {
-      const { userType, user, employeeData, totalLeavesRequestPending, departments } = await getHrAndEmployee(hrUser.email, hrUser.organizationId);
+      const { userType, user, employeeData, totalLeavesRequestPending, departments } = await getHrAndEmployee(lowerCaseEmail, hrUser.organizationId);
       
       const jobs = await getJobsByOrganizationId(hrUser.organizationId);
     
@@ -45,7 +47,7 @@ const authenticateUser = async (email, password) => {
     
     // Check if the email exists in the Employees collection
     const empCollection = db.collection("Employees");
-    const empUser = await empCollection.findOne({ email: email });
+    const empUser = await empCollection.findOne({ email: lowerCaseEmail });
 
     if (empUser && (await bcrypt.compare(password, empUser.password))) {
       return { userType: "employee", user: empUser };
@@ -64,5 +66,8 @@ const authenticateUser = async (email, password) => {
     await closeMongoDBConnection();
   }
 };
+
+module.exports = { authenticateUser };
+
 
 module.exports = { authenticateUser };

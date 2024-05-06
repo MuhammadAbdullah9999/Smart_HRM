@@ -10,6 +10,7 @@ import CeoSidebar from "../Ceo/Dashboard/CeoSidebar";
 import EmployeeSidebar from "../Employee/EmployeeSidebar";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
 import { useSelector } from "react-redux";
+import axios from "axios";
 
 const Profile = () => {
   const data = useSelector((state) => state.EmployeeData.EmployeeData);
@@ -19,9 +20,11 @@ const Profile = () => {
 
   const [profileData, setProfileData] = useState({
     profilePic: "",
-    email: "samir@gmail.com",
-    phoneNumber: "03123456789",
+    email: data.user.email,
+    contact: data.user.contact,
     password: "", // New password field
+    userId: data.user._id,
+    userType: data.userType,
   });
 
   const handleChangeProfileData = (field, value) => {
@@ -40,8 +43,17 @@ const Profile = () => {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log("Updated Profile Data:", profileData);
+    try {
+      const response = await axios.put(
+        "http://localhost:5000/UpdateUser",
+        profileData
+      );
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
     setChanged(false); // Reset changed state
   };
 
@@ -80,7 +92,9 @@ const Profile = () => {
                   onChange={handleProfilePicChange}
                 />
                 <IconButton
-                  onClick={() => document.getElementById('profile-pic-upload').click()}
+                  onClick={() =>
+                    document.getElementById("profile-pic-upload").click()
+                  }
                   className="absolute bottom-8 left-16 transform -translate-x-1/3"
                 >
                   <PhotoCameraIcon style={{ color: "black" }} />
@@ -96,7 +110,9 @@ const Profile = () => {
                 <TextField
                   label="Email"
                   value={profileData.email}
-                  onChange={(e) => handleChangeProfileData("email", e.target.value)}
+                  onChange={(e) =>
+                    handleChangeProfileData("email", e.target.value)
+                  }
                   className="mt-2 mr-2"
                   style={{ width: "100%" }}
                 />
@@ -104,8 +120,10 @@ const Profile = () => {
               <div className="flex items-center justify-between w-full mb-4">
                 <TextField
                   label="Phone Number"
-                  value={profileData.phoneNumber}
-                  onChange={(e) => handleChangeProfileData("phoneNumber", e.target.value)}
+                  value={profileData.contact}
+                  onChange={(e) =>
+                    handleChangeProfileData("contact", e.target.value)
+                  }
                   className="mt-2 mr-2"
                   style={{ width: "100%" }}
                 />
@@ -116,7 +134,9 @@ const Profile = () => {
                   label="New Password"
                   type="password"
                   value={profileData.password}
-                  onChange={(e) => handleChangeProfileData("password", e.target.value)}
+                  onChange={(e) =>
+                    handleChangeProfileData("password", e.target.value)
+                  }
                   className="mt-2 mr-2"
                   style={{ width: "100%" }}
                 />
@@ -124,7 +144,12 @@ const Profile = () => {
               {/* Save Changes Button */}
               {/* Show save button if any field changes */}
               {changed && (
-                <Button variant="contained" color="primary" className="mt-4" onClick={handleSubmit}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className="mt-4"
+                  onClick={handleSubmit}
+                >
                   Save Changes
                 </Button>
               )}
@@ -132,24 +157,37 @@ const Profile = () => {
           </div>
 
           {/* Additional Information Section */}
-          <div className="flex flex-col space-y-4 md:w-3/5">
-            {/* Attendance Box */}
-            <div className="border border-gray-300 rounded-md p-4 bg-white shadow-md mb-4">
-              <h3 className="text-lg font-semibold mb-2">Attendance</h3>
-              <p>85%</p> {/* Placeholder for attendance data */}
-            </div>
-
-            {/* Leaves Box */}
-            <div className="border border-gray-300 rounded-md p-4 bg-white shadow-md mb-4">
-              <h3 className="text-lg font-semibold mb-2">Leaves</h3>
-              <p>5</p> {/* Placeholder for leaves data */}
-            </div>
-
-            {/* Salary Box */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* First Card */}
             <div className="border border-gray-300 rounded-md p-4 bg-white shadow-md">
-              <h3 className="text-lg font-semibold mb-2">Base Salary</h3>
-              <p>$5000</p> {/* Placeholder for salary data */}
+              <h3 className="text-lg font-semibold mb-4">Attendance</h3>
+              <p className="text-2xl">85%</p> {/* Placeholder for attendance data */}
             </div>
+
+            {/* Second Card */}
+            <div className="border border-gray-300 rounded-md p-4 bg-white shadow-md">
+              <h3 className="text-lg font-semibold mb-4">Leaves</h3>
+              <p  className="text-2xl">5</p> {/* Placeholder for leaves data */}
+            </div>
+
+            {/* Third Card */}
+            <div className="border border-gray-300 rounded-md p-4 bg-white shadow-md">
+              <h3 className="text-lg font-semibold mb-4">Base Salary</h3>
+              <p  className="text-2xl">{data.user.salary}</p> {/* Placeholder for salary data */}
+            </div>
+
+            {/* Fourth Card */}
+            {data.user.Allowances.map((allowance, index) => (
+              <div
+                key={index}
+                className="border border-gray-300 rounded-md p-4 bg-white shadow-md"
+              >
+                <h3 className="text-lg font-semibold mb-2">
+                  {allowance.type} Allowance
+                </h3>
+                <p  className="text-2xl">{allowance.amount}</p> {/* Placeholder for allowance data */}
+              </div>
+            ))}
           </div>
         </div>
       </div>

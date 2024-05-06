@@ -1,6 +1,6 @@
 const { generateHash } = require("../utilities/generatePasswordHash");
 const { connectToMongoDB, closeMongoDBConnection } = require("../connectDB");
-const {getCeoAndEmployee}=require('../../Database/GetOrganizationData/getCeoAndEmployee');
+const { getCeoAndEmployee } = require('../../Database/GetOrganizationData/getCeoAndEmployee');
 
 const addHR = async (
   organizationId,
@@ -19,6 +19,9 @@ const addHR = async (
   try {
     const db = await connectToMongoDB();
     const col = db.collection("HR");
+
+    // Convert email to lowercase
+    email = email.toLowerCase();
 
     const existingHR = await col.findOne({ email: email });
     if (existingHR) {
@@ -46,9 +49,9 @@ const addHR = async (
 
     const result = await col.insertOne(hrDocument);
     if (result) {
-      const {userType,user,employeeData,noOfEmployees,noOfDepartments,noOfHRs}=await getCeoAndEmployee(email,organizationId)
-      const data={ userType, user, employeeData, noOfEmployees, noOfDepartments, noOfHRs }
-      return { data:data, error: null };
+      const { userType, user, employeeData, noOfEmployees, noOfDepartments, noOfHRs } = await getCeoAndEmployee(email, organizationId);
+      const data = { userType, user, employeeData, noOfEmployees, noOfDepartments, noOfHRs };
+      return { data: data, error: null };
     }
   } catch (err) {
     console.log(err.stack);
@@ -56,6 +59,7 @@ const addHR = async (
     await closeMongoDBConnection();
   }
 };
+
 module.exports = {
   addHR,
 };
