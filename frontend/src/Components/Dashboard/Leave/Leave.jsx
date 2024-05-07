@@ -43,6 +43,7 @@ function Leave() {
         (emp) => emp._id === employeeId
       )?.organizationId;
       setLoading(true);
+
       const response = await axios.post(
         "http://localhost:5000/AcceptOrRejectLeave",
         {
@@ -51,11 +52,13 @@ function Leave() {
           status: action,
           organizationId,
           email: hrEmail,
+          userType:data.userType
           
         }
       );
       if (response) {
         setLoading(false);
+        // console(response.data);
         dispatch(setEmployeeData(response.data));
       }
     } catch (error) {

@@ -2,6 +2,7 @@ const { connectToMongoDB, closeMongoDBConnection } = require("../connectDB");
 const {
   getHrAndEmployee,
 } = require("../GetOrganizationData/GetHRandEmployee");
+const {getCeoAndEmployee}=require('../GetOrganizationData/getCeoAndEmployee')
 
 const { ObjectId } = require("mongodb");
 
@@ -10,11 +11,21 @@ async function acceptOrRejectLeave(
   leaveId,
   status,
   organizationId,
-  email
+  email,
+  userType
 ) {
+  let doc=''
+    if(userType==='HR'){
+      doc='Employees'
+    }
+    else{
+      doc='HR'
+    }
   try {
+    
+
     const db = await connectToMongoDB();
-    const employeeCollection = db.collection("Employees");
+    const employeeCollection = db.collection(doc);
 
     const result = await employeeCollection.updateOne(
       {
@@ -53,16 +64,21 @@ async function acceptOrRejectLeave(
         }
       }
     }
-z
-   const{
-      userType,
-      user,
-      employeeData,
-      totalLeavesRequestPending,
-      departments,
-    } = await getHrAndEmployee(email,organizationId);
-    // console.log(user,userType,employeeData,totalLeavesRequestPending,departments);
-    return({user, departments, employeeData, totalLeavesRequestPending, userType,error:null})
+if(userType==='HR'){
+  const{
+    userType,
+    user,
+    employeeData,
+    totalLeavesRequestPending,
+    departments,
+  } = await getHrAndEmployee(email,organizationId);
+  // console.log(user,userType,employeeData,totalLeavesRequestPending,departments);
+  return({user, departments, employeeData, totalLeavesRequestPending, resUserType:userType,error:null})
+}
+else{
+  const {userType,user,employeeData,noOfEmployees,noOfDepartments,noOfHRs,pendingLeaveRequests}=await getCeoAndEmployee(lowerCaseEmail,orgUser._id.toString())
+  return({user,employeeData,noOfEmployees,noOfDepartments,noOfHRs,pendingLeaveRequests,resUserType:userType,error:null})
+}
 
   } catch (error) {
     return { error: error };
