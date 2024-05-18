@@ -4,9 +4,9 @@ import CeoSidebar from "../Ceo/Dashboard/CeoSidebar";
 import DashboardOverview from "../Dashboard/DashboardOverview";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import CancelIcon from "@mui/icons-material/Cancel";
+import BeachAccessIcon from "@mui/icons-material/BeachAccess";
 import { useSelector, useDispatch } from "react-redux";
 import { setEmployeeData } from "../../state";
 import validator from "validator";
@@ -27,42 +27,38 @@ const MarkAttendance = () => {
 
   useEffect(() => {
     if (employeeData) {
-      const initialAttendance = employeeData.employeeData.map((employee) => ({
-        employeeId: employee._id,
-        name: employee.name,
-        checkInTime: "",
-        checkOutTime: "",
-        attendanceStatus: "",
-      }));
+      const initialAttendance = employeeData.employeeData.map((employee) => {
+        const leaveStatus = employee.leaveRequest && employee.leaveRequest.some((leave) => {
+          if (leave.status === "Approved") {
+            const [startDate, endDate] = leave.leaveDate.split(" to ");
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            const selected = new Date(selectedDate);
+            return selected >= start && selected <= end;
+          }
+          return false;
+        }) ? "onLeave" : "";
+        return {
+          employeeId: employee._id,
+          name: employee.name,
+          attendanceStatus: leaveStatus || "",
+        };
+      });
       setEmployeeAttendance(initialAttendance);
     }
-  }, [employeeData]);
+  }, [employeeData, selectedDate]);
 
   const handleSubmit = async () => {
     const validationErrors = {};
 
     // Validate selectedDate
-    if (!selectedDate) {
+    if (validator.isEmpty(selectedDate)) {
       validationErrors["selectedDate"] = "Date is required.";
     }
 
-    // Validate checkInTime and checkOutTime for each employee
+    // Validate attendanceStatus for each employee
     employeeAttendance.forEach((employee, index) => {
-      if (validator.isEmpty(employee.checkInTime)) {
-        validationErrors[`checkInTime_${index}`] = "Check-in time is required.";
-      }
-      if (validator.isEmpty(employee.checkOutTime)) {
-        validationErrors[`checkOutTime_${index}`] = "Check-out time is required.";
-      }
-      if (!validator.isEmpty(employee.checkInTime) && !validator.isEmpty(employee.checkOutTime)) {
-        const checkInTime = new Date(`${selectedDate}T${employee.checkInTime}`);
-        const checkOutTime = new Date(`${selectedDate}T${employee.checkOutTime}`);
-        if (checkOutTime <= checkInTime) {
-          validationErrors[`checkOutTime_${index}`] = "Check-out time should be after check-in time.";
-        }
-      }
-      // Validate attendanceStatus
-      if (!employee.attendanceStatus) {
+      if (validator.isEmpty(employee.attendanceStatus)) {
         validationErrors[`attendanceStatus_${index}`] = "Attendance status is required.";
       }
     });
@@ -79,7 +75,9 @@ const MarkAttendance = () => {
 
     // Prepare data for submission
     const attendanceData = employeeAttendance.map((employee) => ({
-      ...employee,
+      employeeId: employee.employeeId,
+      name: employee.name,
+      attendanceStatus: employee.attendanceStatus,
       date: selectedDate, // Include selected date
       month: month, // Include month obtained from selected date
       organizationId: employeeData.employeeData[0].organizationId,
@@ -165,13 +163,14 @@ const MarkAttendance = () => {
                   <EventAvailableIcon /> Name
                 </th>
                 <th className="border border-gray-300 p-2">
-                  <AccessTimeIcon /> Check In
+                  <CheckCircleOutlineIcon /> Present
                 </th>
                 <th className="border border-gray-300 p-2">
-                  <AccessTimeIcon /> Check Out
+                  <CancelIcon /> Absent
                 </th>
-                <th className="border border-gray-300 p-2"></th>
-                <th className="border border-gray-300 p-2"></th>
+                <th className="border border-gray-300 p-2">
+                  <BeachAccessIcon /> Leave
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -179,48 +178,6 @@ const MarkAttendance = () => {
                 <tr key={index}>
                   <td className="border border-gray-300 p-2 text-center">
                     {employee.name}
-                  </td>
-                  <td className="border border-gray-300 p-2">
-                    <input
-                      type="time"
-                      value={employee.checkInTime}
-                      onChange={(e) =>
-                        setEmployeeAttendance((prev) =>
-                          prev.map((emp, i) =>
-                            i === index ? { ...emp, checkInTime: e.target.value } : emp
-                          )
-                        )
-                      }
-                      className={`w-full border border-gray-300 p-1 rounded-lg text-center ${
-                        errors[`checkInTime_${index}`] ? "border-red-500" : ""
-                      }`}
-                    />
-                    {errors[`checkInTime_${index}`] && (
-                      <span className="text-red-500">
-                        {errors[`checkInTime_${index}`]}
-                      </span>
-                    )}
-                  </td>
-                  <td className="border border-gray-300 p-2">
-                    <input
-                      type="time"
-                      value={employee.checkOutTime}
-                      onChange={(e) =>
-                        setEmployeeAttendance((prev) =>
-                          prev.map((emp, i) =>
-                            i === index ? { ...emp, checkOutTime: e.target.value } : emp
-                          )
-                        )
-                      }
-                      className={`w-full border border-gray-300 p-1 rounded-lg text-center ${
-                        errors[`checkOutTime_${index}`] ? "border-red-500" : ""
-                      }`}
-                    />
-                    {errors[`checkOutTime_${index}`] && (
-                      <span className="text-red-500">
-                        {errors[`checkOutTime_${index}`]}
-                      </span>
-                    )}
                   </td>
                   <td className="border border-gray-300 p-2 text-center">
                     <CheckCircleOutlineIcon
@@ -260,13 +217,32 @@ const MarkAttendance = () => {
                       </span>
                     )}
                   </td>
+                  <td className="border border-gray-300 p-2 text-center">
+                    <BeachAccessIcon
+                      style={{
+                        color: employee.attendanceStatus === "onLeave" ? "orange" : "gray",
+                      }}
+                      onClick={() =>
+                        setEmployeeAttendance((prev) =>
+                          prev.map((emp, i) =>
+                            i === index ? { ...emp, attendanceStatus: "onLeave" } : emp
+                          )
+                        )
+                      }
+                    />
+                    {errors[`attendanceStatus_${index}`] && (
+                      <span className="text-red-500 block text-center">
+                        {errors[`attendanceStatus_${index}`]}
+                      </span>
+                    )}
+                  </td>
                 </tr>
               ))}
               {loading && (
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20">
-          <CircularProgress style={{ color: 'blue' }} />
-        </div>
-      )}
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20">
+                  <CircularProgress style={{ color: 'blue' }} />
+                </div>
+              )}
             </tbody>
           </table>
         </div>

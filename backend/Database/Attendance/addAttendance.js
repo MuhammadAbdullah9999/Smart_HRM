@@ -25,16 +25,16 @@ async function addAttendance(employeeData) {
           employeeId,
           month,
           date,
-          checkInTime,
-          checkOutTime,
+          // checkInTime,
+          // checkOutTime,
           attendanceStatus,
         } = employee;
         const attendance = {
           employeeId,
           month,
           date,
-          checkInTime,
-          checkOutTime,
+          // checkInTime,
+          // checkOutTime,
           attendanceStatus,
         };
 

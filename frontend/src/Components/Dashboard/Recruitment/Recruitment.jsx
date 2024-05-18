@@ -25,7 +25,9 @@ function Recruitment() {
             <AddIcon></AddIcon>Post Job
           </button>
         </Link>
+        <div className="flex gap-8">
           {job && job.map((job) => (
+            
             <div
               key={job._id}
               className="flex flex-col gap-4 w-[40%] p-4 rounded-lg border border-gray-300 shadow-lg shadow-gray-200"
@@ -42,7 +44,9 @@ function Recruitment() {
                 </button>
               </Link>
             </div>
+           
           ))}
+          </div>
         </div>
       </div>
     </div>
