@@ -30,11 +30,13 @@ function DashboardContent(props) {
     const handleAddToDo = async () => {
       if (newTask.trim() !== "") {
           try {
+            setLoading(true);
               const response = await axios.post('http://localhost:5000/ToDoList/addToDoList', {
                   userType: employeeData.userType,
                   email: employeeData.user.email,
                   task: newTask.trim()
               });
+              setLoading(false);
               console.log(response.data)
               setToDoList(response.data.toDoList);
               setNewTask("");
@@ -46,6 +48,7 @@ function DashboardContent(props) {
                   } 
               }));
           } catch (error) {
+            setLoading(false);
               setApiError(error.message);
               console.log(error);
           }
@@ -59,12 +62,14 @@ function DashboardContent(props) {
     setToDoList(updatedToDoList);
     
     try {
+        setLoading(true)
         const response = await axios.post('http://localhost:5000/ToDoList/deleteToDoList', {
             userType: employeeData.userType,
             email: employeeData.user.email,
             task: deletedTask.task
         });
         
+        setLoading(false)
         setToDoList(response.data.toDoList);
         setNewTask("");
         dispatch(setEmployeeData({ 
@@ -75,6 +80,7 @@ function DashboardContent(props) {
             } 
         }));
     } catch (error) {
+        setLoading(false)
         setApiError(error.message);
         console.log(error);
     }
@@ -99,6 +105,7 @@ function DashboardContent(props) {
                     setNewTask={setNewTask}
                     handleAddToDo={handleAddToDo}
                     handleDeleteToDo={handleDeleteToDo}
+                    loading={loading}
                 />
             {/* ) :(
                 <CircularProgress></CircularProgress>

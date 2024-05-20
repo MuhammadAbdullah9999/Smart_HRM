@@ -3,9 +3,10 @@ import React from "react";
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import { useSelector } from 'react-redux';
+import CircularProgress from '@mui/material/CircularProgress';
 
 
-function DashboardFunctionalities({ toDoList,newTask, setNewTask, handleAddToDo, handleDeleteToDo}) {
+function DashboardFunctionalities({ toDoList,newTask, setNewTask, handleAddToDo, handleDeleteToDo,loading}) {
   const employeeData = useSelector(state => state.EmployeeData.EmployeeData);
 
 
@@ -28,7 +29,10 @@ function DashboardFunctionalities({ toDoList,newTask, setNewTask, handleAddToDo,
       
 
       {/* To-Do List Section */}
-      <div className="bg-gray-100 rounded-xl p-4 shadow-md shadow-gray-200">
+      <div className={`bg-gray-100 rounded-xl p-4 shadow-md shadow-gray-200 ${loading?'opacity-70':''}`}>
+      {loading && (
+          <div className="absolute inset-0 backdrop-filter backdrop-blur-sm z-10"></div>
+        )}
         <h2 className="text-xl font-semibold mb-4">To-Do List</h2>
         <div className="flex items-center justify-center mt-5 mb-8">
           <input
@@ -60,6 +64,11 @@ function DashboardFunctionalities({ toDoList,newTask, setNewTask, handleAddToDo,
               </div>
             </li>
           ))}
+          {loading && (
+                <div className="relative top-1/2 left-1/2 transform -translate-x-[0%] -translate-y-1/2 z-20">
+                  <CircularProgress style={{ color: "blue" }} />
+                </div>
+              )}
         </ul>
       </div>
 
