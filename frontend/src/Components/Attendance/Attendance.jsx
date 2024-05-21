@@ -9,8 +9,9 @@ import ReactApexChart from "react-apexcharts";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-const Attendance = () => {
-  const { employeeId } = useParams();
+
+const Attendance = ({userType}) => {
+  // const { employeeId } = useParams();
   const employeeData = useSelector((state) => state.EmployeeData.EmployeeData);
   const currentYear = new Date().getFullYear();
   const [selectedMonth, setSelectedMonth] = useState(
@@ -18,10 +19,10 @@ const Attendance = () => {
   );
   const [selectedYear, setSelectedYear] = useState(currentYear);
 
-  const employee =
-    employeeData.userType === "employee"
-      ? employeeData.user
-      : employeeData.employeeData.find((emp) => emp._id === employeeId);
+  // const employee =
+  //   employeeData.userType === "employee"
+  //     ? employeeData.user
+  //     : employeeData.employeeData.find((emp) => emp._id === employeeId);
 
   const parseDate = (dateString) => {
     const date = new Date(dateString);
@@ -38,7 +39,7 @@ const Attendance = () => {
   };
 
   const currentMonthAttendance =
-    employee.attendance?.filter((entry) => {
+    employeeData.user.attendance?.filter((entry) => {
       const { year, month } = parseDate(entry.date);
       return (
         year === selectedYear &&
@@ -96,19 +97,19 @@ const Attendance = () => {
     },
   };
 
-  const getLastTwoWords = (str) => {
-    const words = str.split(" ");
-    return words.slice(-2).join(" ");
-  };
+  // const getLastTwoWords = (str) => {
+  //   const words = str.split(" ");
+  //   return words.slice(-2).join(" ");
+  // };
 
   return (
-    <div className="flex flex-col h-full p-4 mt-2">
-      <DashboardOverview pageName="Attendance" />
+    <div className="flex flex-col h-full px-4">
+     {userType==='employee'&& <DashboardOverview pageName="Attendance" />}
 
-      <div className="flex flex-col md:flex-row pt-6 mb-8">
+      <div className="flex flex-col md:flex-row pt-6 mb-6">
         <div className="flex flex-col justify-center items-center w-full md:w-1/3 rounded-xl mb-4 md:mb-0 mr-0 md:mr-4 border border-gray-200 shadow-md shadow-gray-300 hover:shadow-blue-300 cursor-pointer">
           <p className="text-xl font-extrabold text-center p-2 rounded-md">
-            <EventAvailableIcon /> {getLastTwoWords(employeeId)}
+            <EventAvailableIcon /> {employeeData.user.employeeId}
           </p>
           <p className="text-md text-center text-gray-500">Employee ID</p>
         </div>
@@ -126,7 +127,7 @@ const Attendance = () => {
           <div className="flex items-center justify-center">
             <ReactApexChart
               type="donut"
-              height={170}
+              height={150}
               options={pieChartOptions}
               series={pieChartData.series}
             />
@@ -135,13 +136,13 @@ const Attendance = () => {
 
         <div className="flex flex-col justify-center items-center w-full md:w-1/3 p-4 rounded-xl mb-4 md:mb-0 mr-0 md:mr-4 border border-gray-200 shadow-md shadow-gray-300 hover:shadow-blue-300 cursor-pointer">
           <div className="flex font-extrabold p-1 ">
-            <CalendarTodayIcon />
+            <CalendarTodayIcon fontSize="small" />
             <p className="">Month</p>
           </div>
           <select
             value={selectedMonth}
             onChange={(e) => setSelectedMonth(e.target.value)}
-            className="border border-gray-300 text-center p-2 rounded-lg w-10/12 mt-2"
+            className="border border-gray-300 text-center p-1 rounded-lg w-10/12 mt-2"
           >
             {months.map((month) => (
               <option key={month} value={month}>
@@ -149,14 +150,14 @@ const Attendance = () => {
               </option>
             ))}
           </select>
-          <div className="flex font-extrabold p-2 mt-4">
-            <CalendarTodayIcon />
+          <div className="flex font-extrabold p-1 mt-4">
+            <CalendarTodayIcon fontSize="small" />
             <p className="ml-2">Year</p>
           </div>
           <select
             value={selectedYear}
             onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-            className="border border-gray-300 text-center p-2 rounded-lg w-10/12 mt-2"
+            className="border border-gray-300 text-center p-1 rounded-lg w-10/12 mt-2"
           >
             {years.map((year) => (
               <option key={year} value={year}>
@@ -170,7 +171,7 @@ const Attendance = () => {
       <p className="text-xl font-semibold mb-4">
         Attendance Details for {selectedMonth} {selectedYear}
       </p>
-      <div className="flex flex-col border border-black bg-transparent rounded-md p-4 overflow-y-auto">
+      <div className={`flex flex-col border border-black bg-transparent rounded-md p-4 ${employeeData.userType='employee'?'h-[34%]':'h-[20%]'} overflow-y-auto`}>
         <div className="flex flex-row justify-evenly font-semibold mb-2 border-b-2">
           <div className="w-1/5 text-center">
             <CalendarTodayIcon /> Date

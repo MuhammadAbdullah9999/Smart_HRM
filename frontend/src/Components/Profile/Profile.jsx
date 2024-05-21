@@ -103,21 +103,20 @@ const Profile = () => {
   };
   const percentages = calculateAttendancePercentage(data?.user?.attendance);
 
-  let leaveCount=0;
-  data.user.leaveRequest.map((leave)=>{
-    if(leave.status.toLowerCase()==="approved"){
-      
-    // const currentMonth = new Date().getMonth();
-    const currentYear = new Date().getFullYear();
+  let leaveCount = 0;
+  data?.user?.leaveRequest?.map((leave) => {
+    if (leave.status.toLowerCase() === "approved") {
+      // const currentMonth = new Date().getMonth();
+      const currentYear = new Date().getFullYear();
 
-    const leaveDates = leave.leaveDate.split(" to ");
-    const leaveStartDate = new Date(leaveDates[0]);
-    // const leaveEndDate = new Date(leaveDates[1]);
-    if(leaveStartDate.getFullYear()===currentYear){
-      leaveCount++;
+      const leaveDates = leave.leaveDate.split(" to ");
+      const leaveStartDate = new Date(leaveDates[0]);
+      // const leaveEndDate = new Date(leaveDates[1]);
+      if (leaveStartDate.getFullYear() === currentYear) {
+        leaveCount++;
+      }
     }
-    }
-  })
+  });
   return (
     <div className="flex">
       {data && data.userType === "business_owner" ? (
@@ -217,20 +216,32 @@ const Profile = () => {
               <h3 className="text-md font-light mb-4">Base Salary</h3>
               <p className="text-2xl font-light">{data.user.salary}</p>
             </div>
-            {data.user.Allowances.map((allowance, index) => (
+            {data?.user?.Allowances && data.user.Allowances.length > 0 ? (
+              data.user.Allowances.map((allowance, index) => (
+                <div
+                  key={index}
+                  className="hover:shadow-blue-200 shadow-gray-200 cursor-pointer border border-gray-300 rounded-md p-4 bg-white shadow-md"
+                >
+                  <h3 className="text-md font-light mb-2">
+                    {allowance.type} Allowance
+                  </h3>
+                  <p className="text-2xl">{allowance.amount}</p>
+                </div>
+              ))
+            ) : (
               <div
-                key={index}
-                className="hover:shadow-blue-200 shadow-gray-200 cursor-pointer border border-gray-300 rounded-md p-4 bg-white shadow-md"
-              >
-                <h3 className="text-md font-light mb-2">
-                  {allowance.type} Allowance
-                </h3>
-                <p className="text-2xl">{allowance.amount}</p>
-              </div>
-            ))}
+  
+                  className="hover:shadow-blue-200 shadow-gray-200 cursor-pointer border border-gray-300 rounded-md p-4 bg-white shadow-md"
+                >
+                  <h3 className="text-md font-light mb-2">
+                    Allowances
+                  </h3>
+                  <p className="text-2xl">No Allowances to Show !!!</p>
+                </div>
+            )}
           </div>
         </div>
-      </div>  
+      </div>
     </div>
   );
 };

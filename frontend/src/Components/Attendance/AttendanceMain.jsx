@@ -4,42 +4,50 @@ import { useSelector } from "react-redux";
 import AddIcon from "@mui/icons-material/Add";
 import AttendanceCard from "../Styles/AttendanceCard";
 import DashboardOverview from "../Dashboard/DashboardOverview";
-import InputField from "../Styles/InputField";
-import EnhancedTable from "../Styles/Table";
 import { Link } from "react-router-dom";
-import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import CeoSidebar from "../Ceo/Dashboard/CeoSidebar";
+import Switch from "@mui/material/Switch";
+import Attendance from "./Attendance";
 
 function AttendanceMain() {
   const [employees, setEmployees] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [attendanceData, setAttendanceData] = useState([]);
+  const [showDetailedAttendance, setShowDetailedAttendance] = useState(false);
   const data = useSelector((state) => state.EmployeeData.EmployeeData);
-console.log(data)
+  
   useEffect(() => {
     setEmployees(data.employeeData);
     const currentMonth = new Date()
       .toLocaleString("default", { month: "long" })
       .toLowerCase();
     const updatedEmployees = data.employeeData.map((employee) => {
-      const currentMonthAttendance = employee.attendance?.filter((entry) => {
-        // Check if entry.month exists and is a non-null string before applying toLowerCase()
-        return entry.month && typeof entry.month === 'string' && entry.month.toLowerCase() === currentMonth;
-      }) || [];
-      
+      const currentMonthAttendance =
+        employee.attendance?.filter((entry) => {
+          // Check if entry.month exists and is a non-null string before applying toLowerCase()
+          return (
+            entry.month &&
+            typeof entry.month === "string" &&
+            entry.month.toLowerCase() === currentMonth
+          );
+        }) || [];
+
       const presentDays = currentMonthAttendance.filter(
-        (entry) => entry.attendanceStatus.toLowerCase() === "present" || entry.attendanceStatus.toLowerCase()==="onleave"
+        (entry) =>
+          entry.attendanceStatus.toLowerCase() === "present" ||
+          entry.attendanceStatus.toLowerCase() === "onleave"
       ).length;
-      
+
       const absentDays = currentMonthAttendance.filter(
         (entry) => entry.attendanceStatus.toLowerCase() === "absent"
       ).length;
-      
 
       const totalDays = currentMonthAttendance.length;
       // console.log(presentDays,totalDays)
-      const attendancePercentage = parseFloat(((presentDays / totalDays) * 100).toFixed(1));
+      const attendancePercentage = parseFloat(
+        ((presentDays / totalDays) * 100).toFixed(1)
+      );
 
       return {
         ...employee,
@@ -52,7 +60,7 @@ console.log(data)
 
     setEmployees(updatedEmployees);
     setAttendanceData(updatedEmployees);
-  }, [data.EmployeeData]);
+  }, [data.employeeData]);
 
   const filteredEmployees = employees.filter((employee) => {
     const nameMatch = employee.name
@@ -72,14 +80,13 @@ console.log(data)
         ) : (
           <Sidebar></Sidebar>
         )}
-        {/* <Sidebar /> */}
       </div>
       <div className="flex flex-col md:ml-72 w-full">
         <div className="sm:ml-20 md:ml-0 w-full pr-8 mt-6">
-          <DashboardOverview pageName="Attendance" />
+        <DashboardOverview pageName="Attendance" />
 
           <div className="flex justify-between rounded-md w-full my-3">
-            <div className="flex items-center w-3/4">
+            <div className="flex items-center justify-start w-3/4">
               <input
                 label="Search Employee"
                 type="text"
@@ -98,6 +105,14 @@ console.log(data)
               >
                 <SearchRoundedIcon />
               </div>
+              <div className="ml-auto flex items-center">
+                <Switch 
+                  label="HR" 
+                  checked={showDetailedAttendance} 
+                  onChange={() => setShowDetailedAttendance(!showDetailedAttendance)} 
+                />
+                <p>My Attendance</p>
+              </div>
             </div>
 
             <div className="flex items-center">
@@ -114,29 +129,29 @@ console.log(data)
           </div>
         </div>
 
-        <div className="flex justify-center gap-8 h-full w-full p-4 flex-wrap">
-          {filteredEmployees.length > 0 ? (
-            filteredEmployees.map((employee, index) => (
-              <div className="w-72" key={index}>
-                <AttendanceCard
-                  Id={index + 1}
-                  Name={employee.name}
-                  Month={employee.currentMonth}
-                  Percentage={employee.attendancePercentage}
-                  employeeId={employee._id}
-                  // Image={employee.image}
-                />
-              </div>
-            ))
-          ) : (
-            <p>No employees attendance found</p>
-          )}
-        </div>
+        {showDetailedAttendance ? (
+          
+          <Attendance userType={data.userType} />
+        ) : (
+          <div className="flex justify-center gap-8 h-full w-full p-4 flex-wrap">
+            {filteredEmployees.length > 0 ? (
+              filteredEmployees.map((employee, index) => (
+                <div className="w-72" key={index}>
+                  <AttendanceCard
+                    Id={index + 1}
+                    Name={employee.name}
+                    Month={employee.currentMonth}
+                    Percentage={employee.attendancePercentage}
+                    employeeId={employee._id}
+                  />
+                </div>
+              ))
+            ) : (
+              <p>No employees attendance found</p>
+            )}
+          </div>
+        )}
 
-        {/* <div className="mr-4">
-       
-          <EnhancedTable employeeData={filteredEmployees}></EnhancedTable>
-        </div> */}
       </div>
     </div>
   );

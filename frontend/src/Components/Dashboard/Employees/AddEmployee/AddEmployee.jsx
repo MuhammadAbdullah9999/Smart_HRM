@@ -4,9 +4,8 @@ import validator from "validator";
 import InputField from "../../../Styles/InputField";
 import Sidebar from "../../Sidebar";
 import Add from "@mui/icons-material/Add";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import DashboardOverview from "../../DashboardOverview";
-import { useDispatch } from "react-redux";
 import { setEmployeeData } from "../../../../state";
 import { useNavigate } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -17,22 +16,23 @@ const AddEmployee = () => {
   const navigate = useNavigate();
   const employeeData = useSelector((state) => state.EmployeeData.EmployeeData);
   const [departments, setDepartments] = useState([]);
+  const [positions, setPositions] = useState(["Software Engineer", "HR Manager", "Sales Associate"]); // Example positions
   const [formData, setFormData] = useState({
     organizationId:
       employeeData.userType === "business_owner"
         ? employeeData.user._id
         : employeeData.user.organizationId,
     hrEmail: employeeData.user.email,
-    employeeId: "021",
-    name: "usama",
-    position: "software engineer",
+    employeeId: "",
+    name: "",
+    position: "",
     department:
       employeeData.userType === "business_owner" ? "human resource" : "",
-    dateOfBirth: "12-04-1977",
-    contact: "0321111222333",
-    email: "usama@devsinc.com",
-    password: "123456",
-    salary: "50000",
+    dateOfBirth: "",
+    contact: "",
+    email: "",
+    password: "",
+    salary: "",
     allowances: "0",
     image: null,
   });
@@ -85,6 +85,18 @@ const AddEmployee = () => {
       image: "",
     });
   };
+  const handleNumericInputChange = (e) => {
+    const { name, value } = e.target;
+
+    // Remove non-numeric characters from the input value
+    const numericValue = value.replace(/\D/g, "");
+
+    // Update the form data state
+    setFormData({
+      ...formData,
+      [name]: numericValue,
+    });
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -99,6 +111,7 @@ const AddEmployee = () => {
       }));
       hasErrors = true;
     }
+    
 
     // Check for empty fields
     Object.entries(formData).forEach(([field, value]) => {
@@ -111,14 +124,7 @@ const AddEmployee = () => {
       }
     });
 
-    // Validate numeric input for salary and allowances
-    if (formData.salary && !validator.isNumeric(formData.salary)) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        salary: "Please enter a valid numeric value",
-      }));
-      hasErrors = true;
-    }
+
 
     if (employeeData.userType !== "business_owner" && formData.department === "") {
       setErrors((prevErrors) => ({
@@ -228,6 +234,18 @@ const AddEmployee = () => {
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-2 gap-4">
               <InputField
+                label="Employee ID"
+                type="text"
+                id="employeeId"
+                name="employeeId"
+                autoComplete="off"
+                value={formData.employeeId}
+                error={errors.employeeId}
+                onChange={handleInputChange}
+                focusColor="black"
+                top="6"
+              />
+              <InputField
                 label="Name"
                 type="text"
                 id="name"
@@ -239,18 +257,36 @@ const AddEmployee = () => {
                 focusColor="black"
                 top="6"
               />
-              <InputField
-                label="Position"
-                type="text"
-                id="position"
-                name="position"
-                autoComplete="off"
-                value={formData.position}
-                error={errors.position}
-                onChange={handleInputChange}
-                focusColor="black"
-                top="6"
-              />
+              <div className="mb-4 relative">
+                <label
+                  htmlFor="position"
+                  className={`absolute transition-all duration-300 ${
+                    formData.position
+                      ? "text-sm text-white -top-6 left-1"
+                      : "top-2 left-3 text-gray-500 text-xs md:text-sm lg:text-sm"
+                  }`}
+                ></label>
+                <select
+                  id="position"
+                  name="position"
+                  className={`p-2 border rounded w-full outline-none ${
+                    formData.position ? "text-black" : "text-gray-500"
+                  } bg-white`}
+                  autoComplete="off"
+                  value={formData.position}
+                  onChange={handleInputChange}
+                >
+                  <option value="">Select Position</option>
+                  {positions.map((option, index) => (
+                    <option key={index} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+                {errors.position && (
+                  <p className="text-red-800 font-bold mt-1">{errors.position}</p>
+                )}
+              </div>
               <div className="mb-4 relative">
                 <label
                   htmlFor="department"
@@ -288,8 +324,8 @@ const AddEmployee = () => {
                 )}
               </div>
               <InputField
-                label="Date of Birth"
-                type="text"
+                // label="Date of Birth"
+                type="date"
                 id="dateOfBirth"
                 name="dateOfBirth"
                 autoComplete="off"
@@ -307,7 +343,7 @@ const AddEmployee = () => {
                 autoComplete="off"
                 value={formData.contact}
                 error={errors.contact}
-                onChange={handleInputChange}
+                onChange={handleNumericInputChange}
                 focusColor="black"
                 top="6"
               />
@@ -343,7 +379,7 @@ const AddEmployee = () => {
                 autoComplete="off"
                 value={formData.salary}
                 error={errors.salary}
-                onChange={handleInputChange}
+                onChange={handleNumericInputChange}
                 focusColor="black"
                 top="6"
               />
