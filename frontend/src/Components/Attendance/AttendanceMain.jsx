@@ -29,7 +29,7 @@ console.log(data)
       }) || [];
       
       const presentDays = currentMonthAttendance.filter(
-        (entry) => entry.attendanceStatus.toLowerCase() === "present"
+        (entry) => entry.attendanceStatus.toLowerCase() === "present" || entry.attendanceStatus.toLowerCase()==="onleave"
       ).length;
       
       const absentDays = currentMonthAttendance.filter(

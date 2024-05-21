@@ -4,7 +4,6 @@ import DashboardOverview from "../Dashboard/DashboardOverview";
 import Avatar from "@mui/material/Avatar";
 import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
-import EditIcon from "@mui/icons-material/Edit";
 import Button from "@mui/material/Button";
 import CeoSidebar from "../Ceo/Dashboard/CeoSidebar";
 import EmployeeSidebar from "../Employee/EmployeeSidebar";
@@ -15,24 +14,23 @@ import { useDispatch } from "react-redux";
 import { setEmployeeData } from "../../state";
 
 const Profile = () => {
-  const dispatch=useDispatch();
+  const dispatch = useDispatch();
   const data = useSelector((state) => state.EmployeeData.EmployeeData);
-  // console.log(data);
 
-  const [changed, setChanged] = useState(false); // New state to track if any field has been changed
+  const [changed, setChanged] = useState(false);
 
   const [profileData, setProfileData] = useState({
     profilePic: "",
     email: data.user.email,
     contact: data.user.contact,
-    password: "", // New password field
+    password: "",
     userId: data.user._id,
     userType: data.userType,
   });
 
   const handleChangeProfileData = (field, value) => {
     setProfileData({ ...profileData, [field]: value });
-    setChanged(true); // Set changed state to true when any input field changes
+    setChanged(true);
   };
 
   const handleProfilePicChange = (event) => {
@@ -53,52 +51,75 @@ const Profile = () => {
         "http://localhost:5000/UpdateUser",
         profileData
       );
-      console.log("response is",response);
+      console.log("response is", response);
       const updatedUserData = { ...data, user: response.data.user };
 
       dispatch(setEmployeeData(updatedUserData));
-      } catch (error) {
+    } catch (error) {
       console.error(error);
     }
-    setChanged(false); // Reset changed state
+    setChanged(false);
   };
-  let presentCount = 0;
-  let absentCount = 0;
-  
+
+  const filterCurrentMonthAttendance = (records) => {
+    const currentMonth = new Date().getMonth();
+    const currentYear = new Date().getFullYear();
+    return records.filter((record) => {
+      const recordDate = new Date(record.date);
+      return (
+        recordDate.getMonth() === currentMonth &&
+        recordDate.getFullYear() === currentYear
+      );
+    });
+  };
+
   const calculateAttendancePercentage = (records) => {
     if (!records || records.length === 0) {
-      return { presentPercentage: "0%" }; // Return 0% if no attendance records exist
+      return { presentPercentage: "0%", absentCount: 0 };
     }
-  
-    let totalDays = records.length;
 
-  
-    // Count present and absent days
-    records.forEach((record) => {
-      if (record.attendanceStatus === "present") {
+    const filteredRecords = filterCurrentMonthAttendance(records);
+    const totalDays = filteredRecords.length;
+    let presentCount = 0;
+    let absentCount = 0;
+
+    filteredRecords.forEach((record) => {
+      if (
+        record.attendanceStatus.toLowerCase() === "present" ||
+        record.attendanceStatus.toLowerCase() === "onleave"
+      ) {
         presentCount++;
-      } else if (record.attendanceStatus === "absent") {
+      } else if (record.attendanceStatus.toLowerCase() === "absent") {
         absentCount++;
       }
     });
-  
-    // Calculate percentages
-    let presentPercentage = (presentCount / totalDays) * 100;
-    let absentPercentage = (absentCount / totalDays) * 100;
-  
+
+    const presentPercentage = totalDays ? (presentCount / totalDays) * 100 : 0;
+
     return {
       presentPercentage: presentPercentage.toFixed(0) + "%",
-      absentPercentage: absentPercentage.toFixed(0) + "%",
+      absentCount,
     };
   };
-  
-
-  // Compute the attendance percentages if attendance data exists
   const percentages = calculateAttendancePercentage(data?.user?.attendance);
 
+  let leaveCount=0;
+  data.user.leaveRequest.map((leave)=>{
+    if(leave.status.toLowerCase()==="approved"){
+      
+    // const currentMonth = new Date().getMonth();
+    const currentYear = new Date().getFullYear();
+
+    const leaveDates = leave.leaveDate.split(" to ");
+    const leaveStartDate = new Date(leaveDates[0]);
+    // const leaveEndDate = new Date(leaveDates[1]);
+    if(leaveStartDate.getFullYear()===currentYear){
+      leaveCount++;
+    }
+    }
+  })
   return (
     <div className="flex">
-      {/* Sidebar */}
       {data && data.userType === "business_owner" ? (
         <CeoSidebar />
       ) : data && data.userType === "employee" ? (
@@ -106,16 +127,10 @@ const Profile = () => {
       ) : (
         <Sidebar />
       )}
-      {/* Main content */}
       <div className="flex-grow p-4 md:p-8">
-        {/* Dashboard Overview */}
         <DashboardOverview pageName="Profile" />
-
-        {/* Profile and Additional Information Sections */}
         <div className="flex flex-col md:flex-row md:space-x-8">
-          {/* Profile Section */}
           <div className="flex-grow md:w-2/5 border border-gray-300 rounded-md p-4 md:mb-0">
-            {/* Profile Picture */}
             <div className="flex justify-center items-center relative">
               <label htmlFor="profile-pic-upload">
                 <Avatar
@@ -140,10 +155,8 @@ const Profile = () => {
                 </IconButton>
               </label>
             </div>
-            {/* Personal Info */}
             <hr className="my-4" />
             <h3 className="text-lg font-semibold mb-4">Personal Info</h3>
-            {/* Profile Details */}
             <div className="flex flex-col items-center md:text-left">
               <div className="flex items-center justify-between w-full mb-4">
                 <TextField
@@ -167,7 +180,6 @@ const Profile = () => {
                   style={{ width: "100%" }}
                 />
               </div>
-              {/* New Password Field */}
               <div className="flex items-center justify-between w-full mb-4">
                 <TextField
                   label="New Password"
@@ -180,8 +192,6 @@ const Profile = () => {
                   style={{ width: "100%" }}
                 />
               </div>
-              {/* Save Changes Button */}
-              {/* Show save button if any field changes */}
               {changed && (
                 <Button
                   variant="contained"
@@ -194,42 +204,33 @@ const Profile = () => {
               )}
             </div>
           </div>
-
-          {/* Additional Information Section */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* First Card */}
             <div className="hover:shadow-blue-200 shadow-gray-200 cursor-pointer border border-gray-300 rounded-md p-4 bg-white shadow-md">
               <h3 className="text-md font-light mb-4">Attendance</h3>
-              <p className="text-2xl">{percentages.presentPercentage}</p> {/* Placeholder for attendance data */}
+              <p className="text-2xl">{percentages.presentPercentage}</p>
             </div>
-
-            {/* Second Card */}
-            <div className=" hover:shadow-blue-200 shadow-gray-200 cursor-pointer border border-gray-300 rounded-md p-4 bg-white shadow-md">
+            <div className="hover:shadow-blue-200 shadow-gray-200 cursor-pointer border border-gray-300 rounded-md p-4 bg-white shadow-md">
               <h3 className="text-md font-light mb-4">Leaves</h3>
-              <p  className="text-2xl font-thin">{absentCount}</p> {/* Placeholder for leaves data */}
+              <p className="text-2xl font-thin">{leaveCount}</p>
             </div>
-
-            {/* Third Card */}
-            <div className=" hover:shadow-blue-200 shadow-gray-200 cursor-pointer border border-gray-300 rounded-md p-4 bg-white shadow-md">
+            <div className="hover:shadow-blue-200 shadow-gray-200 cursor-pointer border border-gray-300 rounded-md p-4 bg-white shadow-md">
               <h3 className="text-md font-light mb-4">Base Salary</h3>
-              <p  className="text-2xl font-light">{data.user.salary}</p> {/* Placeholder for salary data */}
+              <p className="text-2xl font-light">{data.user.salary}</p>
             </div>
-
-            {/* Fourth Card */}
             {data.user.Allowances.map((allowance, index) => (
               <div
                 key={index}
-                className=" hover:shadow-blue-200 shadow-gray-200 cursor-pointer border border-gray-300 rounded-md p-4 bg-white shadow-md"
+                className="hover:shadow-blue-200 shadow-gray-200 cursor-pointer border border-gray-300 rounded-md p-4 bg-white shadow-md"
               >
                 <h3 className="text-md font-light mb-2">
                   {allowance.type} Allowance
                 </h3>
-                <p  className="text-2xl">{allowance.amount}</p> {/* Placeholder for allowance data */}
+                <p className="text-2xl">{allowance.amount}</p>
               </div>
             ))}
           </div>
         </div>
-      </div>
+      </div>  
     </div>
   );
 };
