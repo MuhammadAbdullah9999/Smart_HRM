@@ -171,7 +171,7 @@ const Attendance = ({userType}) => {
       <p className="text-xl font-semibold mb-4">
         Attendance Details for {selectedMonth} {selectedYear}
       </p>
-      <div className={`flex flex-col border border-black bg-transparent rounded-md p-4 ${employeeData.userType='employee'?'h-[34%]':'h-[20%]'} overflow-y-auto`}>
+      <div className={`flex flex-col border border-black bg-transparent rounded-md p-4 overflow-y-auto`}>
         <div className="flex flex-row justify-evenly font-semibold mb-2 border-b-2">
           <div className="w-1/5 text-center">
             <CalendarTodayIcon /> Date

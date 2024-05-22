@@ -12,10 +12,8 @@ function CeoDashboard() {
 
   const [announcements, setAnnouncements] = useState([]);
   const [loading, setLoading] = useState(false);
-  // const [apiError, setApiError] = useState("");
 
   useEffect(() => {
-    // Fetch announcements initially
     const fetchAnnouncements = async () => {
       try {
         setLoading(true);
@@ -29,13 +27,12 @@ function CeoDashboard() {
             response.data.announcement.announcements
           );
 
-          // Filter announcements for the current month
-          const currentMonth = new Date().getMonth() + 1; // Get current month (1-12)
+          // Filter announcements for the current month and whose date has not passed
+          const currentDate = new Date();
           const filteredAnnouncements =
             response.data.announcement.announcements.filter((announcement) => {
-              const announcementMonth =
-                new Date(announcement.date).getMonth() + 1; // Get month of announcement date
-              return announcementMonth === currentMonth; // Filter announcements for the current month
+              const announcementDate = new Date(announcement.date);
+              return announcementDate >= currentDate; // Filter announcements whose date has not passed
             });
 
           setAnnouncements(filteredAnnouncements);

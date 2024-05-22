@@ -15,10 +15,14 @@ async function getEmployees(organizationId,userId,userType) {
     }
     const employeeCollection = db.collection(col);
     let employeeData;
+    let hrData;
 if(userType==='HR'){
     employeeData = await employeeCollection
     .find({ organizationId: organizationId })
     .toArray();
+
+    const hrCollection=db.collection('HR');
+    hrData=await hrCollection.find({ _id:new ObjectId(userId) }).toArray();
 }
     else if(userType==='employee'){
         employeeData = await employeeCollection
@@ -31,9 +35,18 @@ if(userType==='HR'){
         .toArray();
     }
       // console.log(employeeData);
-    return {
-      employeeData: employeeData,
-    };
+      if(userType==='HR'){
+        return{
+          employeeData,
+          hrData
+        }
+      }
+      else{
+        return {
+          employeeData: employeeData,
+        };
+      }
+   
   } catch (error) {
     console.error("Error connecting to MongoDB Atlas:", error);
     throw error;

@@ -1,36 +1,81 @@
-// src/components/Dashboard/DashboardFunctionalities.jsx
-import React from "react";
+import React, { useState, useEffect } from "react";
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import { useSelector } from 'react-redux';
 import CircularProgress from '@mui/material/CircularProgress';
+import axios from 'axios';
 
-
-function DashboardFunctionalities({ toDoList,newTask, setNewTask, handleAddToDo, handleDeleteToDo,loading}) {
+function DashboardFunctionalities({ toDoList, newTask, setNewTask, handleAddToDo, handleDeleteToDo, loading }) {
   const employeeData = useSelector(state => state.EmployeeData.EmployeeData);
 
+  const [announcements, setAnnouncements] = useState([]);
+  const [announcementLoading, setAnnouncementLoading] = useState(false);
+  const organizationId = employeeData.user.organizationId;
+
+  useEffect(() => {
+    // Fetch announcements initially
+    const fetchAnnouncements = async () => {
+      try {
+        setAnnouncementLoading(true);
+        const response = await axios.get(
+          `http://localhost:5000/Announcement/GetAnnouncements/${organizationId}`
+        );
+        if (response) {
+          setAnnouncementLoading(false);
+          console.log(
+            "Announcements:",
+            response.data.announcement.announcements
+          );
+
+          // Filter announcements whose date has not passed
+          const currentDate = new Date();
+          const filteredAnnouncements =
+            response.data.announcement.announcements.filter((announcement) => {
+              const announcementDate = new Date(announcement.date);
+              return announcementDate >= currentDate; // Filter announcements whose date has not passed
+            });
+
+          setAnnouncements(filteredAnnouncements);
+        }
+      } catch (error) {
+        setAnnouncementLoading(false);
+        console.error("Error fetching announcements:", error);
+      }
+    };
+
+    fetchAnnouncements();
+  }, [organizationId]);
 
   return (
-    <div className={`mt-8 grid grid-cols-1 md:grid-cols-${employeeData.userType==='employee'?'1':'2'} gap-4 rounded-lg`}>
+    <div className={`mt-8 grid grid-cols-1 md:grid-cols-${employeeData.userType === 'employee' ? '1' : '2'} gap-4 rounded-lg`}>
       {/* Notifications Section */}
-      {employeeData.userType==='employee'?'':(<div className="bg-gray-100 rounded-xl p-4 shadow-md shadow-gray-200">
-        <h2 className="text-xl font-semibold mb-4">Notifications</h2>
-        <ul>
-          <li className="flex items-center mb-2">
-            <span className="bg-green-500 w-4 h-4 mr-2 rounded-full"></span>
-            New Employee Joined
-          </li>
-          <li className="flex items-center mb-2">
-            <span className="bg-yellow-500 w-4 h-4 mr-2 rounded-full"></span>
-            Upcoming Meeting
-          </li>
-        </ul>
-      </div>)}
-      
+      {employeeData.userType !== 'employee' && (
+        <div className="bg-gray-100 rounded-xl p-4 shadow-md shadow-gray-200">
+          <h2 className="text-xl font-semibold mb-4">Announcements</h2>
+          {announcementLoading ? (
+            <div className="text-center">
+              <CircularProgress />
+            </div>
+          ) : (
+            <ul>
+              {announcements.length === 0 ? (
+                <li>No new announcements</li>
+              ) : (
+                announcements.map((announcement, index) => (
+                  <li key={index} className="flex items-center mb-2">
+                    <span className="bg-blue-500 w-4 h-4 mr-2 rounded-full"></span>
+                    {announcement.title} - {new Date(announcement.date).toLocaleDateString()}
+                  </li>
+                ))
+              )}
+            </ul>
+          )}
+        </div>
+      )}
 
       {/* To-Do List Section */}
-      <div className={`bg-gray-100 rounded-xl p-4 shadow-md shadow-gray-200 ${loading?'opacity-70':''}`}>
-      {loading && (
+      <div className={`bg-gray-100 rounded-xl p-4 shadow-md shadow-gray-200 ${loading ? 'opacity-70' : ''}`}>
+        {loading && (
           <div className="absolute inset-0 backdrop-filter backdrop-blur-sm z-10"></div>
         )}
         <h2 className="text-xl font-semibold mb-4">To-Do List</h2>
@@ -65,13 +110,12 @@ function DashboardFunctionalities({ toDoList,newTask, setNewTask, handleAddToDo,
             </li>
           ))}
           {loading && (
-                <div className="relative top-1/2 left-1/2 transform -translate-x-[0%] -translate-y-1/2 z-20">
-                  <CircularProgress style={{ color: "blue" }} />
-                </div>
-              )}
+            <div className="relative top-1/2 left-1/2 transform -translate-x-[0%] -translate-y-1/2 z-20">
+              <CircularProgress style={{ color: "blue" }} />
+            </div>
+          )}
         </ul>
       </div>
-
     </div>
   );
 }

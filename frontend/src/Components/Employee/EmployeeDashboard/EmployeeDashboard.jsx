@@ -8,11 +8,10 @@ import DashboardContent from "../../Dashboard/DashboardContent";
 function EmployeeDashboard() {
   const employeeData = useSelector((state) => state.EmployeeData.EmployeeData);
   console.log(employeeData);
-  const organizationId=employeeData.user.organizationId;
+  const organizationId = employeeData.user.organizationId;
 
   const [announcements, setAnnouncements] = useState([]);
   const [loading, setLoading] = useState(false);
-//   const [apiError, setApiError] = useState("");
 
   useEffect(() => {
     // Fetch announcements initially
@@ -29,13 +28,12 @@ function EmployeeDashboard() {
             response.data.announcement.announcements
           );
 
-          // Filter announcements for the current month
-          const currentMonth = new Date().getMonth() + 1; // Get current month (1-12)
+          // Filter announcements whose date has not passed
+          const currentDate = new Date();
           const filteredAnnouncements =
             response.data.announcement.announcements.filter((announcement) => {
-              const announcementMonth =
-                new Date(announcement.date).getMonth() + 1; // Get month of announcement date
-              return announcementMonth === currentMonth; // Filter announcements for the current month
+              const announcementDate = new Date(announcement.date);
+              return announcementDate >= currentDate; // Filter announcements whose date has not passed
             });
 
           setAnnouncements(filteredAnnouncements);
@@ -47,21 +45,18 @@ function EmployeeDashboard() {
     };
 
     fetchAnnouncements();
-  }, [employeeData]);
+  }, [organizationId]);
 
   return (
     <div className="flex flex-col md:flex-row h-screen md:gap-8">
       <EmployeeSidebar />
-      <div className="w-full ">
-        {/* <div className="p-4">
-          <DashboardOverview pageName="Dashboard"></DashboardOverview>
-        </div> */}
+      <div className="w-full">
         <div className="flex flex-col h-[70%] justify-between">
           <div className="">
             <DashboardContent data={employeeData} />
           </div>
           <div>
-          <div className="border border-gray-200 shadow-gray-300 shadow-lg w-11/12 m-auto flex flex-col gap-4 rounded-lg self-end">
+            <div className="border border-gray-200 shadow-gray-300 shadow-lg w-11/12 m-auto flex flex-col gap-4 rounded-lg self-end">
               <div className="flex flex-col items-center px-4 mt-4">
                 <h1 className="font-bold md:text-xl sm:text-lg">
                   Notice Board
@@ -72,7 +67,7 @@ function EmployeeDashboard() {
               </div>
 
               <hr className="border-gray-400"></hr>
-              <div className="flex justify-between px-6 mb-10">
+              <div className="flex justify-between px-6 mb-2">
                 <h2 className="font-bold">Title</h2>
                 <h2 className="font-bold">Date</h2>
               </div>
