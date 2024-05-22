@@ -2,10 +2,9 @@ const { connectToMongoDB, closeMongoDBConnection } = require('../connectDB');
 const { sendEmail } = require('./SendMail/sendMail');
 const { getOrganizationName } = require('../GetOrganizationData/GetOrganizationName');
 
-async function calculatePayroll(organizationId, year, month,userType) {
+async function calculatePayroll(organizationId, year, month, userType) {
     const organizationName = await getOrganizationName(organizationId);
 
-  
     try {
         const db = await connectToMongoDB();
         let employeesCollection;
@@ -18,7 +17,6 @@ async function calculatePayroll(organizationId, year, month,userType) {
         }
 
         const payrollCollection = db.collection('payroll');
-
 
         // Check if organization has no employees
         const employeeCount = await employeesCollection.countDocuments({ organizationId });
@@ -37,8 +35,8 @@ async function calculatePayroll(organizationId, year, month,userType) {
         const payrollPromises = employees.map(async (employee) => {
             const { _id, name, email, salary, bonuses, Allowances, deductions } = employee;
 
-            // Convert salary to integer
-            const parsedSalary = parseInt(salary);
+            // Convert salary to integer and handle null values
+            const parsedSalary = parseInt(salary) || 0;
 
             // Check if bonuses array exists and has items
             const bonus = bonuses && bonuses.length > 0
@@ -47,23 +45,23 @@ async function calculatePayroll(organizationId, year, month,userType) {
 
             // Check if Allowances array exists
             const totalAllowances = Allowances && Allowances.length > 0
-                ? Allowances.reduce((total, allowance) => total + parseInt(allowance.amount), 0)
+                ? Allowances.reduce((total, allowance) => total + parseInt(allowance.amount) || 0, 0)
                 : 0;
 
             // Check if deductions array exists
             const totalDeductions = deductions && deductions.length > 0
-                ? deductions.reduce((total, deduction) => total + parseInt(deduction.deductionAmount), 0)
+                ? deductions.reduce((total, deduction) => total + parseInt(deduction.deductionAmount) || 0, 0)
                 : 0;
 
-            // Convert bonus amount to integer
-            const bonusAmount = bonus ? parseInt(bonus.bonusAmount) : 0;
+            // Convert bonus amount to integer and handle null values
+            const bonusAmount = bonus ? parseInt(bonus.bonusAmount) || 0 : 0;
 
             // Calculate total pay after converting all values to integers
             const totalPay = parsedSalary + bonusAmount + totalAllowances - totalDeductions;
 
-            // Extract types of allowances
-            const allowanceTypes = Allowances && Allowances.length > 0
-                ? Allowances.map((allowance) => allowance.type)
+            // Extract types and amounts of allowances
+            const allowanceDetails = Allowances && Allowances.length > 0
+                ? Allowances.map((allowance) => ({ type: allowance.type, amount: parseInt(allowance.amount) || 0 }))
                 : [];
 
             // Extract types of deductions
@@ -82,7 +80,7 @@ async function calculatePayroll(organizationId, year, month,userType) {
                 employeeId: _id,
                 employeeName: name,
                 email,
-                employeeType:userType==='business_owner'?'HR':'Employee',
+                employeeType: userType === 'business_owner' ? 'HR' : 'Employee',
                 salary: parsedSalary,
                 month,
                 year,
@@ -90,7 +88,7 @@ async function calculatePayroll(organizationId, year, month,userType) {
                 bonus: bonusAmount,
                 allowances: {
                     total: totalAllowances,
-                    types: allowanceTypes,
+                    details: allowanceDetails, // Include allowance details
                 },
                 deductions: {
                     total: totalDeductions,
@@ -119,7 +117,7 @@ async function calculatePayroll(organizationId, year, month,userType) {
 
         // Send sample email with data for the first employee
         if (payroll.length > 0) {
-            await sendEmail("hafizzabdullah999@gmail.com", `Payroll ${month} ${year}`, payroll[0]);
+            await sendEmail("hafizzabdullah999@gmail.com", `Payroll ${month} ${year}`, payroll[1]);
         }
 
         return { data: payroll, message, error: null };

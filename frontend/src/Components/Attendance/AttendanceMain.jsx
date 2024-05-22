@@ -9,6 +9,9 @@ import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import CeoSidebar from "../Ceo/Dashboard/CeoSidebar";
 import Switch from "@mui/material/Switch";
 import Attendance from "./Attendance";
+import * as XLSX from "xlsx";
+import { saveAs } from 'file-saver';
+import DownloadIcon from '@mui/icons-material/Download';
 
 function AttendanceMain() {
   const [employees, setEmployees] = useState([]);
@@ -16,7 +19,7 @@ function AttendanceMain() {
   const [attendanceData, setAttendanceData] = useState([]);
   const [showDetailedAttendance, setShowDetailedAttendance] = useState(false);
   const data = useSelector((state) => state.EmployeeData.EmployeeData);
-  
+
   useEffect(() => {
     setEmployees(data.employeeData);
     const currentMonth = new Date()
@@ -25,7 +28,6 @@ function AttendanceMain() {
     const updatedEmployees = data.employeeData.map((employee) => {
       const currentMonthAttendance =
         employee.attendance?.filter((entry) => {
-          // Check if entry.month exists and is a non-null string before applying toLowerCase()
           return (
             entry.month &&
             typeof entry.month === "string" &&
@@ -44,7 +46,6 @@ function AttendanceMain() {
       ).length;
 
       const totalDays = currentMonthAttendance.length;
-      // console.log(presentDays,totalDays)
       const attendancePercentage = parseFloat(
         ((presentDays / totalDays) * 100).toFixed(1)
       );
@@ -72,6 +73,32 @@ function AttendanceMain() {
     return nameMatch || departmentMatch;
   });
 
+  const handleDownloadAttendance = () => {
+    const workbook = XLSX.utils.book_new();
+    const currentYear = new Date().getFullYear();
+
+    const worksheetData = [
+      ["Employee ID", "Name", "Month", "Present Days", "Absent Days", "Attendance Percentage"],
+    ];
+
+    attendanceData.forEach(employee => {
+      worksheetData.push([
+        employee._id,
+        employee.name,
+        employee.currentMonth,
+        employee.presentDays,
+        employee.absentDays,
+        employee.attendancePercentage
+      ]);
+    });
+
+    const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+    XLSX.utils.book_append_sheet(workbook, worksheet, `Attendance ${currentYear}`);
+    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+    const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+    saveAs(blob, `Attendance_${currentYear}.xlsx`);
+  };
+
   return (
     <div className="flex">
       <div className="fixed">
@@ -83,7 +110,7 @@ function AttendanceMain() {
       </div>
       <div className="flex flex-col md:ml-72 w-full">
         <div className="sm:ml-20 md:ml-0 w-full pr-8 mt-6">
-        <DashboardOverview pageName="Attendance" />
+          <DashboardOverview pageName="Attendance" />
 
           <div className="flex justify-between rounded-md w-full my-3">
             <div className="flex items-center justify-start w-3/4">
@@ -115,22 +142,27 @@ function AttendanceMain() {
               </div>
             </div>
 
-            <div className="flex items-center">
+            <div className="flex flex-col gap-2 ">
               <Link to="/HR/dashboard/Attendance/mark-attendance">
                 <button className="bg-bg-color px-3 py-2 rounded-3xl border-none font-bold text-center cursor-pointer transition duration-400 hover:shadow-lg hover:shadow-gray-400 active:transform active:scale-97 active:shadow-lg">
                   <AddIcon
                     className="inline-block"
                     style={{ color: "white" }}
                   />
-                  <span className="ml-2 text-white">Add Attendance</span>
+                  <span className="ml-2 text-md text-white">Add Attendance</span>
                 </button>
               </Link>
+              <button
+                onClick={handleDownloadAttendance}
+                className="bg-green-500 px-3 py-2 rounded-3xl border-none font-bold text-center cursor-pointer transition duration-400 hover:shadow-lg hover:shadow-gray-400 active:transform active:scale-97 active:shadow-lg"
+              >
+                <span className="text-sm text-white"> <DownloadIcon></DownloadIcon> Download Attendance</span>
+              </button>
             </div>
           </div>
         </div>
 
         {showDetailedAttendance ? (
-          
           <Attendance userType={data.userType} />
         ) : (
           <div className="flex justify-center gap-8 h-full w-full p-4 flex-wrap">
@@ -151,7 +183,6 @@ function AttendanceMain() {
             )}
           </div>
         )}
-
       </div>
     </div>
   );
