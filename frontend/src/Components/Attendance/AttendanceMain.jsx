@@ -143,6 +143,13 @@ function AttendanceMain() {
             </div>
 
             <div className="flex flex-col gap-2 ">
+             
+              <button
+                onClick={handleDownloadAttendance}
+                className="bg-green-500 px-3 py-2 rounded-3xl border-none font-bold text-center cursor-pointer transition duration-400 hover:shadow-lg hover:shadow-gray-400 active:transform active:scale-97 active:shadow-lg"
+              >
+                <span className="text-sm text-white"> <DownloadIcon></DownloadIcon> Download Attendance</span>
+              </button>
               <Link to="/HR/dashboard/Attendance/mark-attendance">
                 <button className="bg-bg-color px-3 py-2 rounded-3xl border-none font-bold text-center cursor-pointer transition duration-400 hover:shadow-lg hover:shadow-gray-400 active:transform active:scale-97 active:shadow-lg">
                   <AddIcon
@@ -152,12 +159,6 @@ function AttendanceMain() {
                   <span className="ml-2 text-md text-white">Add Attendance</span>
                 </button>
               </Link>
-              <button
-                onClick={handleDownloadAttendance}
-                className="bg-green-500 px-3 py-2 rounded-3xl border-none font-bold text-center cursor-pointer transition duration-400 hover:shadow-lg hover:shadow-gray-400 active:transform active:scale-97 active:shadow-lg"
-              >
-                <span className="text-sm text-white"> <DownloadIcon></DownloadIcon> Download Attendance</span>
-              </button>
             </div>
           </div>
         </div>

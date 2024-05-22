@@ -69,14 +69,7 @@ function Leave() {
     }
   };
 
-  // Function to validate date format
-  const isValidDate = (dateString) => {
-    // Regular expression to match YYYY-MM-DD format
-    const regex = /^\d{4}-\d{2}-\d{2}$/;
-    return regex.test(dateString);
-  };
-
-  const currentData = showHrLeave ? hrData : employees;
+  const currentData = data.userType === "HR" && showHrLeave ? hrData : employees
 
   return (
     <div className="flex gap-4 w-full">
@@ -203,7 +196,6 @@ function Leave() {
                                   <button
                                     onClick={() =>
                                       handleLeaveAction(
-                                       
                                         employee._id,
                                         leave._id,
                                         "Approved"

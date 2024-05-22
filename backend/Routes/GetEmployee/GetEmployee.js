@@ -13,10 +13,10 @@ router.get("/:organizationId/:userId/:userType", async (req, res) => {
     res.status(500).json(employeeData);
   } else {
     if(userType==='HR'){
-      res.json({employeeData,hrData});
+      res.status(200).json({employeeData,hrData});
     }
     else{
-      res.status(200).send(employeeData);
+      res.status(200).json({employeeData});
     }
   }
 });
