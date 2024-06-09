@@ -41,13 +41,15 @@ async function findEmployeesWithPendingLeaveRequests(organizationId) {
   }
 }
 async function countPendingLeaves(organizationId) {
-  const uri = dbUri;
-  const client = new MongoClient(uri);
+  // const uri = dbUri;
+  // const client = new MongoClient(uri);
 
   try {
-    await client.connect();
+    // await client.connect();
+    const database = await connectToMongoDB();
 
-    const database = client.db(dbName);
+    // const database = client.db(dbName);
+    
     const employeesCollection = database.collection("Employees");
 
     const employees = await employeesCollection
@@ -66,7 +68,7 @@ async function countPendingLeaves(organizationId) {
 
     return totalPendingLeaves;
   } finally {
-    await client.close();
+    await closeMongoDBConnection();
   }
 }
 

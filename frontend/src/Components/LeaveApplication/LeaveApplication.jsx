@@ -21,8 +21,18 @@ function LeaveApplication() {
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+
   const handleChange = (event) => {
     const { name, value } = event.target;
+
+    // Check if start date is in the past
+    if (name === "startDate" && new Date(value) < new Date()) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        startDate: "Start Date cannot be in the past.",
+      }));
+      return;
+    }
 
     // Calculate leave days if start date and end date are provided
     if (name === "startDate" || name === "endDate") {
@@ -32,14 +42,23 @@ function LeaveApplication() {
       if (startDate && endDate) {
         const start = new Date(startDate);
         const end = new Date(endDate);
-        const diffTime = Math.abs(end - start);
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-        setFormData((prevFormData) => ({
-          ...prevFormData,
-          [name]: value,
-          leaveDays: diffDays.toString(), // Update leave days
-        }));
+        if (start > end) {
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            endDate: "End Date must be after Start Date.",
+          }));
+        } else {
+          const diffTime = Math.abs(end - start);
+          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // Include the start date
+
+          setFormData((prevFormData) => ({
+            ...prevFormData,
+            [name]: value,
+            leaveDays: diffDays.toString(),
+          }));
+          setErrors((prevErrors) => ({ ...prevErrors, endDate: "" }));
+        }
       } else {
         setFormData((prevFormData) => ({
           ...prevFormData,
@@ -76,6 +95,10 @@ function LeaveApplication() {
         ? "Number of leave days is required and must be a number."
         : "";
 
+    if (!validator.isEmpty(formData.startDate) && new Date(formData.startDate) < new Date()) {
+      tempErrors.startDate = "Start Date cannot be in the past.";
+    }
+
     if (
       !validator.isEmpty(formData.startDate) &&
       !validator.isEmpty(formData.endDate)
@@ -109,17 +132,14 @@ function LeaveApplication() {
           submissionData
         );
         setLoading(false);
-        // console.log(response.data);
         navigate(
           data.userType === "HR"
             ? "/HR/dashboard/leave"
             : "/employee/dashboard/leave"
         );
-        // Handle response data here, e.g., showing a success message to the user
       } catch (error) {
         setLoading(false);
         console.error(error.response ? error.response.data : error.message);
-        // Handle errors here, e.g., showing an error message to the user
       }
     }
   };
@@ -206,12 +226,10 @@ function LeaveApplication() {
                   className="w-full p-2 border rounded-md"
                   readOnly // Add the readOnly attribute here
                 />
-
                 {errors.leaveDays && (
                   <p className="text-red-500">{errors.leaveDays}</p>
                 )}
               </div>
-
               <button
                 type="submit"
                 className="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700"
