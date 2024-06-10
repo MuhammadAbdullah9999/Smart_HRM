@@ -13,16 +13,35 @@ import {
   TableRow,
   TableCell,
   Paper,
+  TextField,
+  MenuItem,
 } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 
+const months = [
+  { value: "January", label: "January" },
+  { value: "February", label: "February" },
+  { value: "March", label: "March" },
+  { value: "April", label: "April" },
+  { value: "May", label: "May" },
+  { value: "June", label: "June" },
+  { value: "July", label: "July" },
+  { value: "August", label: "August" },
+  { value: "September", label: "September" },
+  { value: "October", label: "October" },
+  { value: "November", label: "November" },
+  { value: "December", label: "December" },
+];
+
 function Payroll() {
   const navigate = useNavigate();
   const [employees, setEmployees] = useState([]);
   const [payrollData, setPayrollData] = useState(null);
+  const [selectedMonth, setSelectedMonth] = useState("");
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const data = useSelector((state) => state.EmployeeData.EmployeeData);
   const organizationId =
     data.userType === "business_owner"
@@ -66,13 +85,29 @@ function Payroll() {
     }
   };
 
-  const handleDownloadPayroll = () => {
+  const handleGenerateReportClick = async () => {
+    try {
+      const response = await axios.post("http://localhost:5000/GenerateReport", {
+        organizationId: organizationId,
+        year: selectedYear,
+        month: selectedMonth,
+        userType: data.userType,
+      });
+console.log(response.data)
+      setPayrollData(response.data.data);
+      handleDownloadPayroll(response.data.data);
+    } catch (error) {
+      console.error("Error generating report:", error.message);
+    }
+  };
+
+  const handleDownloadPayroll = (data) => {
     const workbook = XLSX.utils.book_new();
     const currentYear = new Date().getFullYear();
 
     // Collect all unique allowance types
     const allowanceTypes = new Set();
-    payrollData.forEach((employee) => {
+    data.forEach((employee) => {
       employee.allowances.details.forEach((allowance) => {
         allowanceTypes.add(allowance.type);
       });
@@ -97,7 +132,7 @@ function Payroll() {
 
     // Generate worksheet data
     const worksheetData = [headers];
-    payrollData.forEach((employee) => {
+    data.forEach((employee) => {
       const allowanceAmounts = uniqueAllowanceTypes.map((type) => {
         const allowance = employee.allowances.details.find(
           (a) => a.type === type
@@ -138,7 +173,7 @@ function Payroll() {
       )}
       <div className="w-full m-4">
         <DashboardOverview pageName="Payroll"></DashboardOverview>
-        <div className="my-4">
+        <div className="my-4 flex items-center">
           <button
             onClick={handleGeneratePayrollClick}
             className="bg-bg-color px-3 py-2 rounded-3xl text-white mb-4 border-none font-semibold text-center cursor-pointer transition duration-400 hover:shadow-lg hover:shadow-gray-400 active:transform active:scale-97 active:shadow-lg"
@@ -147,13 +182,40 @@ function Payroll() {
           </button>
           {payrollData && (
             <button
-              onClick={handleDownloadPayroll}
+              onClick={() => handleDownloadPayroll(payrollData)}
               className="bg-green-500 px-3 py-2 ml-4 rounded-3xl text-white border-none font-semibold text-center cursor-pointer transition duration-400 hover:shadow-lg hover:shadow-gray-400 active:
               transform active:scale-97 active:shadow-lg"
             >
               Download Payroll
             </button>
           )}
+          <TextField
+            select
+            label="Month"
+            value={selectedMonth}
+            onChange={(e) => setSelectedMonth(e.target.value)}
+            className="ml-4"
+          >
+            {months.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </TextField>
+          <TextField
+            label="Year"
+            type="number"
+            value={selectedYear}
+            onChange={(e) => setSelectedYear(e.target.value)}
+            className="ml-4"
+          />
+          <button
+            onClick={handleGenerateReportClick}
+            className="bg-blue-500 px-3 py-2 ml-4 rounded-3xl text-white border-none font-semibold text-center cursor-pointer transition duration-400 hover:shadow-lg hover:shadow-gray-400 active:
+            transform active:scale-97 active:shadow-lg"
+          >
+            Generate Report
+          </button>
         </div>
         <TableContainer
           component={Paper}
