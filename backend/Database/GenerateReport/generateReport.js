@@ -1,20 +1,64 @@
 const { connectToMongoDB, closeMongoDBConnection } = require('../connectDB');
 
-async function generateReport(organizationId, year, month) {
+async function generateReport(organizationId, year, month, reportType) {
+    console.log(organizationId,year, month, reportType)
     try {
         const db = await connectToMongoDB();
-        const Collection = db.collection('payroll');
+        let reportData;
+        let message;
 
-        // Query to find payroll data based on organizationId, year, and month
-        const reportData = await Collection.find({ organizationId, year, month }).toArray();
-
-        if (!reportData) {
-            return { data: null, message: `No payroll data found for ${year}-${month}`, error: null };
+        switch (reportType) {
+            case 'allowances':
+                reportData = await db.collection('payroll').find(
+                    { organizationId, year, month },
+                    { projection: { allowances: 1, employeeId: 1, employeeName: 1, email: 1 } }
+                ).toArray();
+                console.log(reportData);
+                message = `Allowances data retrieved successfully for ${year}-${month}`;
+                break;
+            case 'bonuses':
+                reportData = await db.collection('payroll').find(
+                    { organizationId, year, month },
+                    { projection: { bonuses: 1, employeeId: 1, employeeName: 1, email: 1 } }
+                ).toArray();
+                console.log(reportData);
+                message = `Bonuses data retrieved successfully for ${year}-${month}`;
+                break;
+            case 'deductions':
+                reportData = await db.collection('payroll').find(
+                    { organizationId, year, month },
+                    { projection: { deductions: 1, employeeId: 1, employeeName: 1, email: 1 } }
+                ).toArray();
+                message = `Deductions data retrieved successfully for ${year}-${month}`;
+                break;
+            case 'attendance':
+                reportData = await db.collection('payroll').find(
+                    { organizationId, year, month },
+                    { projection: { attendance: 1, employeeId: 1, employeeName: 1, email: 1 } }
+                ).toArray();
+                message = `Attendance data retrieved successfully for ${year}-${month}`;
+                break;
+            case 'past_employees':
+                reportData = await db.collection('past_employees').find({ organizationId }).toArray();
+                message = `Past employees data retrieved successfully`;
+                break;
+            case 'all':
+                reportData = await db.collection('payroll').find({ organizationId }).toArray();
+                message = `Payroll data retrieved successfully for all months`;
+                break;
+            default:
+                reportData = await db.collection('payroll').find({ organizationId, year, month }).toArray();
+                message = `Payroll data retrieved successfully for ${year}-${month}`;
+                break;
         }
 
-        return { data: reportData, message: `Payroll data retrieved successfully for ${year}-${month}`, error: null };
+        if (!reportData.length) {
+            return { data: null, message: `No ${reportType} data found for ${year}-${month}`, error: null };
+        }
+
+        return { data: reportData, message, error: null };
     } catch (error) {
-        return { error: `Error retrieving payroll data: ${error.message}`, data: null };
+        return { error: `Error retrieving ${reportType} data: ${error.message}`, data: null };
     } finally {
         await closeMongoDBConnection();
     }

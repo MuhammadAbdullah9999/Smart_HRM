@@ -1,10 +1,7 @@
-import React from "react";
-import Sidebar from "../Sidebar";
-import CeoSidebar from "../../Ceo/Dashboard/CeoSidebar";
-import RemoveRedEyeRoundedIcon from "@mui/icons-material/RemoveRedEyeRounded";
-import DashboardOverview from "../DashboardOverview";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import {
   Table,
   TableContainer,
@@ -16,10 +13,14 @@ import {
   TextField,
   MenuItem,
 } from "@mui/material";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import * as XLSX from "xlsx";
-import { saveAs } from "file-saver";
+import RemoveRedEyeRoundedIcon from "@mui/icons-material/RemoveRedEyeRounded";
+import Sidebar from "../Sidebar";
+import CeoSidebar from "../../Ceo/Dashboard/CeoSidebar";
+import DashboardOverview from "../DashboardOverview";
+import { generateBonusesReport } from "./BonusesReport";
+import { generateAllowancesReport } from "./AllowancesReport";
+import { generateDeductionsReport } from "./DeductionsReport";
+import { generateAttendanceReport } from "./AttendanceReport";
 
 const months = [
   { value: "January", label: "January" },
@@ -36,12 +37,30 @@ const months = [
   { value: "December", label: "December" },
 ];
 
+const reportTypes = [
+  { value: "past_employees", label: "Past Employees" },
+  { value: "allowances", label: "Allowances" },
+  { value: "deductions", label: "Deductions" },
+  { value: "attendance", label: "Attendance" },
+  { value: "bonuses", label: "Bonuses" },
+  { value: "all", label: "All" },
+];
+
 function Payroll() {
   const navigate = useNavigate();
   const [employees, setEmployees] = useState([]);
   const [payrollData, setPayrollData] = useState(null);
-  const [selectedMonth, setSelectedMonth] = useState("");
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+
+  const currentDate = new Date();
+  const currentMonth = new Intl.DateTimeFormat("en-US", {
+    month: "long",
+  }).format(currentDate);
+  const currentYear = currentDate.getFullYear();
+
+  const [selectedMonth, setSelectedMonth] = useState(currentMonth);
+  const [selectedYear, setSelectedYear] = useState(currentYear);
+  const [selectedReportType, setSelectedReportType] = useState("all");
+
   const data = useSelector((state) => state.EmployeeData.EmployeeData);
   const organizationId =
     data.userType === "business_owner"
@@ -62,12 +81,6 @@ function Payroll() {
     );
     if (confirmGenerate) {
       try {
-        const currentDate = new Date();
-        const currentYear = currentDate.getFullYear();
-        const currentMonth = new Intl.DateTimeFormat("en-US", {
-          month: "long",
-        }).format(currentDate);
-
         const response = await axios.post("http://localhost:5000/Payroll", {
           organizationId: organizationId,
           year: currentYear,
@@ -87,92 +100,51 @@ function Payroll() {
 
   const handleGenerateReportClick = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/GenerateReport", {
-        organizationId: organizationId,
-        year: selectedYear,
-        month: selectedMonth,
-        userType: data.userType,
-      });
-console.log(response.data)
+      const response = await axios.post(
+        "http://localhost:5000/GenerateReport",
+        {
+          organizationId: organizationId,
+          year: selectedYear,
+          month: selectedMonth,
+          reportType: selectedReportType,
+          userType: data.userType,
+        }
+      );
+
+      console.log(response.data);
       setPayrollData(response.data.data);
-      handleDownloadPayroll(response.data.data);
+
+      switch (selectedReportType) {
+        case "bonuses":
+          generateBonusesReport(response.data.data);
+          break;
+        case "allowances":
+          generateAllowancesReport(response.data.data);
+          break;
+        case "deductions":
+          generateDeductionsReport(response.data.data);
+          break;
+        case "attendance":
+          generateAttendanceReport(response.data.data);
+          break;
+        // Add more cases as needed for other report types
+        default:
+          console.error("Unknown report type");
+      }
     } catch (error) {
       console.error("Error generating report:", error.message);
     }
   };
 
-  const handleDownloadPayroll = (data) => {
-    const workbook = XLSX.utils.book_new();
-    const currentYear = new Date().getFullYear();
-
-    // Collect all unique allowance types
-    const allowanceTypes = new Set();
-    data.forEach((employee) => {
-      employee.allowances.details.forEach((allowance) => {
-        allowanceTypes.add(allowance.type);
-      });
-    });
-
-    // Convert set to array
-    const uniqueAllowanceTypes = Array.from(allowanceTypes);
-
-    // Generate headers
-    const headers = [
-      "Employee ID",
-      "Employee Name",
-      "Email",
-      "Salary",
-      "Total Allowances",
-      ...uniqueAllowanceTypes.map((type) => `Allowance - ${type}`),
-      "Deductions",
-      "Total Pay",
-      "Month",
-      "Year",
-    ];
-
-    // Generate worksheet data
-    const worksheetData = [headers];
-    data.forEach((employee) => {
-      const allowanceAmounts = uniqueAllowanceTypes.map((type) => {
-        const allowance = employee.allowances.details.find(
-          (a) => a.type === type
-        );
-        return allowance ? allowance.amount : 0;
-      });
-
-      worksheetData.push([
-        employee.employeeId,
-        employee.employeeName,
-        employee.email,
-        employee.salary,
-        employee.allowances.total,
-        ...allowanceAmounts,
-        employee.deductions.total,
-        employee.totalPay,
-        employee.month,
-        employee.year,
-      ]);
-    });
-
-    const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
-    XLSX.utils.book_append_sheet(workbook, worksheet, `Payroll ${currentYear}`);
-    const excelBuffer = XLSX.write(workbook, {
-      bookType: "xlsx",
-      type: "array",
-    });
-    const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
-    saveAs(blob, `Payroll_${currentYear}.xlsx`);
-  };
-
   return (
     <div className="flex w-full gap-4">
       {data && data.userType === "business_owner" ? (
-        <CeoSidebar></CeoSidebar>
+        <CeoSidebar />
       ) : (
-        <Sidebar></Sidebar>
+        <Sidebar />
       )}
       <div className="w-full m-4">
-        <DashboardOverview pageName="Payroll"></DashboardOverview>
+        <DashboardOverview pageName="Payroll" />
         <div className="my-4 flex items-center">
           <button
             onClick={handleGeneratePayrollClick}
@@ -180,42 +152,54 @@ console.log(response.data)
           >
             Generate Payroll
           </button>
-          {payrollData && (
-            <button
-              onClick={() => handleDownloadPayroll(payrollData)}
-              className="bg-green-500 px-3 py-2 ml-4 rounded-3xl text-white border-none font-semibold text-center cursor-pointer transition duration-400 hover:shadow-lg hover:shadow-gray-400 active:
-              transform active:scale-97 active:shadow-lg"
+          <div className="ml-auto flex items-center gap-4">
+            <TextField
+              select
+              label="Report Type"
+              value={selectedReportType}
+              onChange={(e) => setSelectedReportType(e.target.value)}
+              // className="text-field-medium"
+              size="small"
+              style={{ minWidth: "100px" }}
+
             >
-              Download Payroll
+              {reportTypes.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+            <TextField
+              select
+              label="Month"
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(e.target.value)}
+              className="text-field-small"
+              size="small"
+              
+            >
+              {months.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+            <TextField
+              label="Year"
+              type="number"
+              value={selectedYear}
+              onChange={(e) => setSelectedYear(e.target.value)}
+              size="small"
+              style={{ width: "100px" }}
+            />
+
+            <button
+              onClick={handleGenerateReportClick}
+              className="bg-green-500 px-3 py-2 rounded-3xl text-white border-none font-semibold text-center cursor-pointer transition duration-400 hover:shadow-lg hover:shadow-gray-400 active:transform active:scale-97 active:shadow-lg"
+            >
+              Generate Report
             </button>
-          )}
-          <TextField
-            select
-            label="Month"
-            value={selectedMonth}
-            onChange={(e) => setSelectedMonth(e.target.value)}
-            className="ml-4"
-          >
-            {months.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </TextField>
-          <TextField
-            label="Year"
-            type="number"
-            value={selectedYear}
-            onChange={(e) => setSelectedYear(e.target.value)}
-            className="ml-4"
-          />
-          <button
-            onClick={handleGenerateReportClick}
-            className="bg-blue-500 px-3 py-2 ml-4 rounded-3xl text-white border-none font-semibold text-center cursor-pointer transition duration-400 hover:shadow-lg hover:shadow-gray-400 active:
-            transform active:scale-97 active:shadow-lg"
-          >
-            Generate Report
-          </button>
+          </div>
         </div>
         <TableContainer
           component={Paper}
