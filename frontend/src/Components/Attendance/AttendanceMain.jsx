@@ -10,8 +10,9 @@ import CeoSidebar from "../Ceo/Dashboard/CeoSidebar";
 import Switch from "@mui/material/Switch";
 import Attendance from "./Attendance";
 import * as XLSX from "xlsx";
-import { saveAs } from 'file-saver';
-import DownloadIcon from '@mui/icons-material/Download';
+import { saveAs } from "file-saver";
+import DownloadIcon from "@mui/icons-material/Download";
+import axios from "axios"; // Import Axios
 
 function AttendanceMain() {
   const [employees, setEmployees] = useState([]);
@@ -19,6 +20,11 @@ function AttendanceMain() {
   const [attendanceData, setAttendanceData] = useState([]);
   const [showDetailedAttendance, setShowDetailedAttendance] = useState(false);
   const data = useSelector((state) => state.EmployeeData.EmployeeData);
+
+  const organizationId =
+    data.userType === "business_owner"
+      ? data.user._id
+      : data.user.organizationId;
 
   useEffect(() => {
     setEmployees(data.employeeData);
@@ -63,13 +69,25 @@ function AttendanceMain() {
     setAttendanceData(updatedEmployees);
   }, [data.employeeData]);
 
+  useEffect(() => {
+    // Fetch attendance arrays data using Axios
+    fetchAttendanceData();
+  }, []); // Run once when component mounts
+
+  const fetchAttendanceData = async () => {
+    try {
+      const response = await axios.get(`http://localhost:5000/GetAttendance/${organizationId}/${data.userType}`); // Replace with your API endpoint
+      console.log(response.data)
+      // const { data } = response.data;
+      setAttendanceData(response.data);
+    } catch (error) {
+      console.error("Error fetching attendance data:", error);
+    }
+  };
+
   const filteredEmployees = employees.filter((employee) => {
-    const nameMatch = employee.name
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    const departmentMatch = employee.department
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
+    const nameMatch = employee.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const departmentMatch = employee.department.toLowerCase().includes(searchTerm.toLowerCase());
     return nameMatch || departmentMatch;
   });
 
@@ -81,14 +99,14 @@ function AttendanceMain() {
       ["Employee ID", "Name", "Month", "Present Days", "Absent Days", "Attendance Percentage"],
     ];
 
-    attendanceData.forEach(employee => {
+    attendanceData.forEach((employee) => {
       worksheetData.push([
         employee._id,
         employee.name,
         employee.currentMonth,
         employee.presentDays,
         employee.absentDays,
-        employee.attendancePercentage
+        employee.attendancePercentage,
       ]);
     });
 
@@ -132,30 +150,29 @@ function AttendanceMain() {
               >
                 <SearchRoundedIcon />
               </div>
-              <div className="ml-auto flex items-center">
-                <Switch 
-                  label="HR" 
-                  checked={showDetailedAttendance} 
-                  onChange={() => setShowDetailedAttendance(!showDetailedAttendance)} 
+              {data.userType==='HR' && <div className="ml-auto flex items-center">
+                <Switch
+                  label="HR"
+                  checked={showDetailedAttendance}
+                  onChange={() => setShowDetailedAttendance(!showDetailedAttendance)}
                 />
                 <p>My Attendance</p>
-              </div>
+              </div>}
             </div>
 
-            <div className="flex flex-col gap-2 ">
-             
+            <div className="flex flex-col gap-2">
               <button
                 onClick={handleDownloadAttendance}
                 className="bg-green-500 px-3 py-2 rounded-3xl border-none font-bold text-center cursor-pointer transition duration-400 hover:shadow-lg hover:shadow-gray-400 active:transform active:scale-97 active:shadow-lg"
               >
-                <span className="text-sm text-white"> <DownloadIcon></DownloadIcon> Download Attendance</span>
+                <span className="text-sm text-white">
+                  {" "}
+                  <DownloadIcon></DownloadIcon> Download Attendance
+                </span>
               </button>
               <Link to="/HR/dashboard/Attendance/mark-attendance">
                 <button className="bg-bg-color px-3 py-2 rounded-3xl border-none font-bold text-center cursor-pointer transition duration-400 hover:shadow-lg hover:shadow-gray-400 active:transform active:scale-97 active:shadow-lg">
-                  <AddIcon
-                    className="inline-block"
-                    style={{ color: "white" }}
-                  />
+                  <AddIcon className="inline-block" style={{ color: "white" }} />
                   <span className="ml-2 text-md text-white">Add Attendance</span>
                 </button>
               </Link>

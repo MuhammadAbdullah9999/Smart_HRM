@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DashboardOverview from "../Dashboard/DashboardOverview";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
@@ -6,23 +6,17 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import ReactApexChart from "react-apexcharts";
-import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import axios from 'axios';
 
-
-const Attendance = ({userType}) => {
-  // const { employeeId } = useParams();
+const Attendance = ({ userType }) => {
   const employeeData = useSelector((state) => state.EmployeeData.EmployeeData);
   const currentYear = new Date().getFullYear();
   const [selectedMonth, setSelectedMonth] = useState(
     new Date().toLocaleString("en-US", { month: "long" })
   );
   const [selectedYear, setSelectedYear] = useState(currentYear);
-
-  // const employee =
-  //   employeeData.userType === "employee"
-  //     ? employeeData.user
-  //     : employeeData.employeeData.find((emp) => emp._id === employeeId);
+  const [attendanceData, setAttendanceData] = useState([]);
 
   const parseDate = (dateString) => {
     const date = new Date(dateString);
@@ -38,8 +32,22 @@ const Attendance = ({userType}) => {
     };
   };
 
+  useEffect(() => {
+    fetchAttendanceData();
+  }, []); // Run once when component mounts
+
+  const fetchAttendanceData = async () => {
+    try {
+      const response = await axios.get(`http://localhost:5000/GetAttendance/employee/${employeeData.user._id}/${employeeData.userType}`);
+      console.log(response.data);
+      setAttendanceData(response.data);
+    } catch (error) {
+      console.error("Error fetching attendance data:", error);
+    }
+  };
+
   const currentMonthAttendance =
-    employeeData.user.attendance?.filter((entry) => {
+    attendanceData.filter((entry) => {
       const { year, month } = parseDate(entry.date);
       return (
         year === selectedYear &&
@@ -97,14 +105,9 @@ const Attendance = ({userType}) => {
     },
   };
 
-  // const getLastTwoWords = (str) => {
-  //   const words = str.split(" ");
-  //   return words.slice(-2).join(" ");
-  // };
-
   return (
     <div className="flex flex-col h-full px-4">
-     {userType==='employee'&& <DashboardOverview pageName="Attendance" />}
+      {userType === 'employee' && <DashboardOverview pageName="Attendance" />}
 
       <div className="flex flex-col md:flex-row pt-6 mb-6">
         <div className="flex flex-col justify-center items-center w-full md:w-1/3 rounded-xl mb-4 md:mb-0 mr-0 md:mr-4 border border-gray-200 shadow-md shadow-gray-300 hover:shadow-blue-300 cursor-pointer">
@@ -176,12 +179,12 @@ const Attendance = ({userType}) => {
           <div className="w-1/5 text-center">
             <CalendarTodayIcon /> Date
           </div>
-          {/* <div className="w-1/5 text-center">
+          <div className="w-1/5 text-center">
             <AccessTimeIcon /> Check In
           </div>
           <div className="w-1/5 text-center">
             <AccessTimeIcon /> Check Out
-          </div> */}
+          </div>
           <div className="w-1/5 text-center">
             <CheckIcon /> Status
           </div>
@@ -195,8 +198,8 @@ const Attendance = ({userType}) => {
           return (
             <div key={detail.date} className="flex flex-row justify-evenly mb-2">
               <div className="w-1/5 text-center">{fullDate}</div>
-              {/* <div className="w-1/5 text-center">{detail.checkInTime}</div>
-              <div className="w-1/5 text-center">{detail.checkOutTime}</div> */}
+              <div className="w-1/5 text-center">{detail.checkInTime}</div>
+              <div className="w-1/5 text-center">{detail.checkOutTime}</div>
               <div className="w-1/5 text-center">
                 {detail.attendanceStatus.toLowerCase() === "present" ? (
                   <CheckIcon style={{ color: "#4caf50" }} />
