@@ -42,17 +42,16 @@ async function calculatePayroll(organizationId, year, month, userType) {
             // Convert month name to its corresponding numerical value
             const monthNumber = new Date(Date.parse(`${month} 1, ${year}`)).getMonth() + 1;
 
-            // Retrieve attendance data for the employee for the given month and year
             const monthlyAttendance = attendance ? attendance.filter(a => {
                 if (a.date) {
                     const [attendanceYear, attendanceMonth] = a.date.split('-');
                     return parseInt(attendanceMonth) === monthNumber && parseInt(attendanceYear) === year;
                 } else {
-                    return false; // Return false if a.date is null
+                    return false;
                 }
             }) : [];
 
-            console.log("attendance is", monthlyAttendance);
+            console.log("attendance is ", monthlyAttendance);
 
             // Calculate total work hours or attendance metrics as needed
             const totalWorkHours = monthlyAttendance.length > 0 ? calculateTotalWorkHours(monthlyAttendance) : 0;
@@ -64,7 +63,11 @@ async function calculatePayroll(organizationId, year, month, userType) {
 
             // Check if Allowances array exists
             const totalAllowances = Allowances && Allowances.length > 0
-                ? Allowances.reduce((total, allowance) => total + parseInt(allowance.amount) || 0, 0)
+                ? Allowances.reduce((total, allowance) => {
+                    const amount = parseInt(allowance.amount) || 0;
+                    console.log(`Allowance type: ${allowance.type}, amount: ${amount}`);
+                    return total + amount;
+                }, 0)
                 : 0;
 
             // Check if deductions array exists
@@ -107,45 +110,26 @@ async function calculatePayroll(organizationId, year, month, userType) {
                 bonus: bonusAmount,
                 allowances: {
                     total: totalAllowances,
-                    details: allowanceDetails.length > 0 ? allowanceDetails : [{ type: 'None', amount: 0 }], // Ensure there is at least one entry
+                    details: allowanceDetails, // Include allowance details
                 },
                 deductions: {
                     total: totalDeductions,
-                    types: deductionTypes.length > 0 ? deductionTypes : ['None'], // Ensure there is at least one entry
+                    types: deductionTypes,
                 },
                 bonuses: {
-                    types: bonusTypes.length > 0 ? bonusTypes : ['None'], // Ensure there is at least one entry
+                    types: bonusTypes,
                 },
                 attendance: monthlyAttendance, // Include attendance data
             };
 
-            // Use the email service component
-            // await sendEmail("hafizzabdullah999@gmail.com", `Payroll ${month} ${year}`, payrollEntry);
-
             return payrollEntry;
         });
 
-        // Wait for all payroll entries to be calculated before proceeding
+        // Wait for all emails to be sent and all entries to be calculated before proceeding
         const payroll = await Promise.all(payrollPromises);
 
         // Store the entire payrollEntry in the database
         await payrollCollection.insertMany(payroll);
-
-        // Update employee records to reset allowances, bonuses, and deductions to 0 for the specified month and year
-        const updatePromises = employees.map(async (employee) => {
-            await employeesCollection.updateOne(
-                { _id: employee._id },
-                {
-                    $set: {
-                        Allowances: [],
-                        bonuses: [],
-                        deductions: []
-                    }
-                }
-            );
-        });
-
-        await Promise.all(updatePromises);
 
         const message = `Payroll calculation and email sending completed for ${year}-${month}`;
 
@@ -164,8 +148,6 @@ async function calculatePayroll(organizationId, year, month, userType) {
 
 // Example function to calculate total work hours from attendance data
 function calculateTotalWorkHours(attendance) {
-    // Implement your logic to calculate total work hours from attendance data
-    // Example: Summing up the hours worked each day
     return attendance.reduce((total, day) => {
         const checkIn = new Date(`1970-01-01T${day.checkInTime}:00Z`);
         const checkOut = new Date(`1970-01-01T${day.checkOutTime}:00Z`);
