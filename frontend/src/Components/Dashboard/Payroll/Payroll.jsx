@@ -23,8 +23,10 @@ import { generateAllowancesReport } from "./AllowancesReport";
 import { generateDeductionsReport } from "./DeductionsReport";
 import { generateAttendanceReport } from "./AttendanceReport";
 import { generateAllReport } from "./AllReport";
+import { generatePastEmployeesReport } from "./PastEmployees";
 
 const months = [
+  {value:"All Months",label:"All Months"},
   { value: "January", label: "January" },
   { value: "February", label: "February" },
   { value: "March", label: "March" },
@@ -135,6 +137,9 @@ function Payroll() {
           case "all":
           generateAllReport(response.data.data);
           break;
+          case "past_employees":
+            generatePastEmployeesReport(response.data.data);
+            break;
         // Add more cases as needed for other report types
         default:
           console.error("Unknown report type");
