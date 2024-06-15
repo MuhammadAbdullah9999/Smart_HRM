@@ -3,7 +3,7 @@ const { sendEmail } = require('./SendMail/sendMail');
 const { getOrganizationName } = require('../GetOrganizationData/GetOrganizationName');
 
 async function calculatePayroll(organizationId, year, month, userType) {
-    console.log(month , year)
+    console.log(month, year);
     const organizationName = await getOrganizationName(organizationId);
 
     try {
@@ -39,23 +39,21 @@ async function calculatePayroll(organizationId, year, month, userType) {
             // Convert salary to integer and handle null values
             const parsedSalary = parseInt(salary) || 0;
 
+            // Convert month name to its corresponding numerical value
+            const monthNumber = new Date(Date.parse(`${month} 1, ${year}`)).getMonth() + 1;
+
             // Retrieve attendance data for the employee for the given month and year
-// Convert month name to its corresponding numerical value
-const monthNumber = new Date(Date.parse(`${month} 1, ${year}`)).getMonth() + 1;
+            const monthlyAttendance = attendance ? attendance.filter(a => {
+                if (a.date) {
+                    const [attendanceYear, attendanceMonth] = a.date.split('-');
+                    return parseInt(attendanceMonth) === monthNumber && parseInt(attendanceYear) === year;
+                } else {
+                    return false; // Return false if a.date is null
+                }
+            }) : [];
 
-const monthlyAttendance = attendance ? attendance.filter(a => {
-    // Check if a.date is not null before attempting to split it
-    if (a.date) {
-        const [attendanceYear, attendanceMonth] = a.date.split('-');
-        // Convert attendanceMonth to integer for comparison
-        return parseInt(attendanceMonth) === monthNumber && parseInt(attendanceYear) === year;
-    } else {
-        return false; // Return false if a.date is null
-    }
-}) : [];
+            console.log("attendance is", monthlyAttendance);
 
-
-            console.log("attendance is ",monthlyAttendance)
             // Calculate total work hours or attendance metrics as needed
             const totalWorkHours = monthlyAttendance.length > 0 ? calculateTotalWorkHours(monthlyAttendance) : 0;
 
@@ -109,16 +107,16 @@ const monthlyAttendance = attendance ? attendance.filter(a => {
                 bonus: bonusAmount,
                 allowances: {
                     total: totalAllowances,
-                    details: allowanceDetails, // Include allowance details
+                    details: allowanceDetails.length > 0 ? allowanceDetails : [{ type: 'None', amount: 0 }], // Ensure there is at least one entry
                 },
                 deductions: {
                     total: totalDeductions,
-                    types: deductionTypes,
+                    types: deductionTypes.length > 0 ? deductionTypes : ['None'], // Ensure there is at least one entry
                 },
                 bonuses: {
-                    types: bonusTypes,
+                    types: bonusTypes.length > 0 ? bonusTypes : ['None'], // Ensure there is at least one entry
                 },
-                attendance: monthlyAttendance , // Include attendance data
+                attendance: monthlyAttendance, // Include attendance data
             };
 
             // Use the email service component
@@ -127,15 +125,29 @@ const monthlyAttendance = attendance ? attendance.filter(a => {
             return payrollEntry;
         });
 
-        // Wait for all emails to be sent and all entries to be calculated before proceeding
+        // Wait for all payroll entries to be calculated before proceeding
         const payroll = await Promise.all(payrollPromises);
 
         // Store the entire payrollEntry in the database
         await payrollCollection.insertMany(payroll);
 
-        const message = `Payroll calculation and email sending completed for ${year}-${month}`;
+        // Update employee records to reset allowances, bonuses, and deductions to 0 for the specified month and year
+        const updatePromises = employees.map(async (employee) => {
+            await employeesCollection.updateOne(
+                { _id: employee._id },
+                {
+                    $set: {
+                        Allowances: [],
+                        bonuses: [],
+                        deductions: []
+                    }
+                }
+            );
+        });
 
-        // console.log(message);
+        await Promise.all(updatePromises);
+
+        const message = `Payroll calculation and email sending completed for ${year}-${month}`;
 
         // Send sample email with data for the first employee
         if (payroll.length > 0) {

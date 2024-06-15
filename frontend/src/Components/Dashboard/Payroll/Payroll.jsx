@@ -17,10 +17,12 @@ import RemoveRedEyeRoundedIcon from "@mui/icons-material/RemoveRedEyeRounded";
 import Sidebar from "../Sidebar";
 import CeoSidebar from "../../Ceo/Dashboard/CeoSidebar";
 import DashboardOverview from "../DashboardOverview";
+import * as XLSX from 'xlsx';
 import { generateBonusesReport } from "./BonusesReport";
 import { generateAllowancesReport } from "./AllowancesReport";
 import { generateDeductionsReport } from "./DeductionsReport";
 import { generateAttendanceReport } from "./AttendanceReport";
+import { generateAllReport } from "./AllReport";
 
 const months = [
   { value: "January", label: "January" },
@@ -50,6 +52,8 @@ function Payroll() {
   const navigate = useNavigate();
   const [employees, setEmployees] = useState([]);
   const [payrollData, setPayrollData] = useState(null);
+  const [reportGenerated, setReportGenerated] = useState(false);
+  const [payrollGenerated, setPayrollGenerated] = useState(false);
 
   const currentDate = new Date();
   const currentMonth = new Intl.DateTimeFormat("en-US", {
@@ -90,6 +94,7 @@ function Payroll() {
 
         window.confirm(response.data.message);
         setPayrollData(response.data.data);
+        setPayrollGenerated(true);
 
         console.log("Payroll generated successfully!", response.data);
       } catch (error) {
@@ -127,6 +132,9 @@ function Payroll() {
         case "attendance":
           generateAttendanceReport(response.data.data);
           break;
+          case "all":
+          generateAllReport(response.data.data);
+          break;
         // Add more cases as needed for other report types
         default:
           console.error("Unknown report type");
@@ -136,6 +144,35 @@ function Payroll() {
     }
   };
 
+
+  const handleDownloadPayroll = () => {
+    if (!payrollData || !payrollGenerated) return;
+
+    // Format the data to include allowances, deductions, and bonuses
+    const formattedPayrollData = payrollData.map(({ 
+      employeeId, organizationId, attendance, _id, 
+      allowances, deductions, bonuses, ...rest 
+    }) => {
+      // const formattedAllowances = allowances.details.map(item => `${item.type}: ${item.amount}`).join(", ");
+      // const formattedDeductions = deductions.types.join(", ");
+      // const formattedBonuses = bonuses.types.join(", ");
+      return {
+        ...rest,
+        totalAllowances: allowances.total,
+        totalDeductions: deductions.total,
+        // totalBonuses: bonuses.total,
+        // formattedAllowances,
+        // formattedDeductions,
+        // formattedBonuses
+      };
+    });
+
+    const ws = XLSX.utils.json_to_sheet(formattedPayrollData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Payroll');
+
+    XLSX.writeFile(wb, `Payroll_${currentMonth}_${currentYear}.xlsx`);
+  };
   return (
     <div className="flex w-full gap-4">
       {data && data.userType === "business_owner" ? (
@@ -152,16 +189,23 @@ function Payroll() {
           >
             Generate Payroll
           </button>
+          {payrollGenerated && ( // Show download button only if payroll is generated
+            <button
+              onClick={handleDownloadPayroll}
+              className="bg-bg-color px-3 py-2 rounded-3xl text-white ml-4 mb-4 border-none font-semibold text-center cursor-pointer transition duration-400 hover:shadow-lg hover:shadow-gray-400 active:transform active:scale-97 active:shadow-lg"
+            >
+              Download Payroll
+            </button>
+          )}
+
           <div className="ml-auto flex items-center gap-4">
             <TextField
               select
               label="Report Type"
               value={selectedReportType}
               onChange={(e) => setSelectedReportType(e.target.value)}
-              // className="text-field-medium"
               size="small"
               style={{ minWidth: "100px" }}
-
             >
               {reportTypes.map((option) => (
                 <MenuItem key={option.value} value={option.value}>
@@ -174,9 +218,7 @@ function Payroll() {
               label="Month"
               value={selectedMonth}
               onChange={(e) => setSelectedMonth(e.target.value)}
-              className="text-field-small"
               size="small"
-              
             >
               {months.map((option) => (
                 <MenuItem key={option.value} value={option.value}>
