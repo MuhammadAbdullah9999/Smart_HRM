@@ -152,7 +152,7 @@ const Profile = () => {
         <div className="flex flex-col md:flex-row md:space-x-8">
           <div className="flex-grow md:w-2/5 border border-gray-300 rounded-md p-4 md:mb-0">
             <div className="flex justify-center items-center relative">
-              <label htmlFor="profile-pic-upload">
+              {/* <label htmlFor="profile-pic-upload">
                 <Avatar
                   alt="Profile Picture"
                   src={profileData.profilePic}
@@ -173,9 +173,9 @@ const Profile = () => {
                 >
                   <PhotoCameraIcon style={{ color: "black" }} />
                 </IconButton>
-              </label>
+              </label> */}
             </div>
-            <hr className="my-4" />
+            {/* <hr className="my-4" /> */}
             <h3 className="text-lg font-semibold mb-4">Personal Info</h3>
             <div className="flex flex-col items-center md:text-left">
               <div className="flex items-center justify-between w-full mb-4">
@@ -237,8 +237,8 @@ const Profile = () => {
               <h3 className="text-md font-light mb-4">Base Salary</h3>
               <p className="text-2xl font-light">{data.user.salary}</p>
             </div>
-            {data?.user?.Allowances && data.user.Allowances.length > 0 ? (
-              data.user.Allowances.map((allowance, index) => (
+            {userData?.Allowances && userData.Allowances.length > 0 ? (
+              userData.Allowances.map((allowance, index) => (
                 <div
                   key={index}
                   className="hover:shadow-blue-200 shadow-gray-200 cursor-pointer border border-gray-300 rounded-md p-4 bg-white shadow-md"

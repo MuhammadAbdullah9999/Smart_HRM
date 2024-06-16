@@ -135,7 +135,7 @@ async function calculatePayroll(organizationId, year, month, userType) {
 
         // Send sample email with data for the first employee
         if (payroll.length > 0) {
-            await sendEmail("hafizzabdullah999@gmail.com", `Payroll ${month} ${year}`, payroll[0]);
+            // await sendEmail("hafizzabdullah999@gmail.com", `Payroll ${month} ${year}`, payroll[0]);
         }
 
         return { data: payroll, message, error: null };

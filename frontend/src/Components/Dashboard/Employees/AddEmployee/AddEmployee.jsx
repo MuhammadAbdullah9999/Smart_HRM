@@ -16,7 +16,7 @@ const AddEmployee = () => {
   const navigate = useNavigate();
   const employeeData = useSelector((state) => state.EmployeeData.EmployeeData);
   const [departments, setDepartments] = useState([]);
-  const [positions, setPositions] = useState(["Software Engineer", "HR Manager", "Sales Associate"]); // Example positions
+  const [positions, setPositions] = useState(["Software Engineer", "HR Manager", "Sales Associate"]);
   const [formData, setFormData] = useState({
     organizationId:
       employeeData.userType === "business_owner"
@@ -49,13 +49,13 @@ const AddEmployee = () => {
           `http://localhost:5000/Departments/GetDepartments/${employeeData.user.organizationId}`
         );
         setDepartments(response.data.departments);
-        setLoading(false);
       } catch (error) {
         console.error("Error fetching departments:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
-    // Fetch departments only if user is not a business owner
     if (employeeData.userType !== "business_owner") {
       getDepartments();
     }
@@ -68,7 +68,6 @@ const AddEmployee = () => {
       [name]: value,
     });
 
-    // Clear the error message when the user starts typing
     setErrors({
       ...errors,
       [name]: "",
@@ -85,23 +84,20 @@ const AddEmployee = () => {
       image: "",
     });
   };
+
   const handleNumericInputChange = (e) => {
     const { name, value } = e.target;
-
-    // Remove non-numeric characters from the input value
     const numericValue = value.replace(/\D/g, "");
-
-    // Update the form data state
     setFormData({
       ...formData,
       [name]: numericValue,
     });
-  }
+  };
 
   const handleSubmit = async (e) => {
+    console.log(formData);
     e.preventDefault();
 
-    // Perform form validation
     let hasErrors = false;
 
     if (!validator.isEmail(formData.email)) {
@@ -111,9 +107,7 @@ const AddEmployee = () => {
       }));
       hasErrors = true;
     }
-    
 
-    // Check for empty fields
     Object.entries(formData).forEach(([field, value]) => {
       if (value === "" && field !== "allowances") {
         setErrors((prevErrors) => ({
@@ -124,20 +118,10 @@ const AddEmployee = () => {
       }
     });
 
-
-
     if (employeeData.userType !== "business_owner" && formData.department === "") {
       setErrors((prevErrors) => ({
         ...prevErrors,
         department: "Please select a department",
-      }));
-      hasErrors = true;
-    }
-
-    if (!image) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        image: "Please select an image",
       }));
       hasErrors = true;
     }
@@ -150,25 +134,13 @@ const AddEmployee = () => {
       setApiError("");
       setLoading(true);
 
-      const formDataWithImage = new FormData();
-      formDataWithImage.append("image", image); // Append the image correctly
-
-      Object.entries(formData).forEach(([key, value]) => {
-        formDataWithImage.append(key, value);
-      });
-
-      console.log("FormData with Image:", formDataWithImage);
       let apiUrl = "http://localhost:5000/AddEmployee";
 
       if (employeeData.userType === "business_owner") {
-        apiUrl = "http://localhost:5000/AddHR"; // Use AddHR endpoint for business owners
+        apiUrl = "http://localhost:5000/AddHR";
       }
 
-      const response = await axios.post(apiUrl, formDataWithImage, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.post(apiUrl, formData);
 
       if (response.data) {
         console.log(response.data);
@@ -183,30 +155,31 @@ const AddEmployee = () => {
       }
 
       setFormData({
+        organizationId: employeeData.userType === "business_owner"
+          ? employeeData.user._id
+          : employeeData.user.organizationId,
+        hrEmail: employeeData.user.email,
         employeeId: "",
         name: "",
         position: "",
-        department: "",
+        department: employeeData.userType === "business_owner" ? "human resource" : "",
         dateOfBirth: "",
         contact: "",
         email: "",
         password: "",
         salary: "",
-        allowances: "",
+        allowances: "0",
+        image: null,
       });
+      setImage(null);
     } catch (error) {
       setLoading(false);
-      console.error(error);
       setApiError(error.response.data.error);
     }
   };
 
   return (
-    <div
-      className={`flex gap-12 ${
-        loading ? "pointer-events-none opacity-70" : ""
-      }`}
-    >
+    <div className={`flex gap-12 ${loading ? "pointer-events-none opacity-70" : ""}`}>
       {loading && (
         <div className="absolute z-10 top-1/2 left-[62%] transform -translate-x-1/2 -translate-y-1/2">
           <CircularProgress color="inherit" />
@@ -228,8 +201,7 @@ const AddEmployee = () => {
               ? "Add HR"
               : "Add Employee"
           }
-        ></DashboardOverview>
-
+        />
         <div className="w-full px-12 mr-4 p-6 pt-16 rounded-xl shadow-md grid grid-cols-1 md:grid-cols-1 gap-4 mt-4 bg-slate-200">
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-2 gap-4">
@@ -383,7 +355,7 @@ const AddEmployee = () => {
                 focusColor="black"
                 top="6"
               />
-              <div className="">
+              {/* <div className="">
                 <label className="block text-sm font-medium text-gray-700">
                   Image
                 </label>
@@ -391,12 +363,12 @@ const AddEmployee = () => {
                   type="file"
                   accept="image/*"
                   onChange={handleImageChange}
-                  className=" p-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                  className="p-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
                 />
                 {errors.image && (
                   <p className="text-red-800 font-bold mt-1">{errors.image}</p>
                 )}
-              </div>
+              </div> */}
             </div>
             <div className="">
               {apiError && (

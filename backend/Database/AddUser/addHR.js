@@ -14,22 +14,45 @@ const addHR = async (
   department,
   employeeId,
   allowances,
-  leaves
+  leaves,
+  hrEmail
 ) => {
   try {
     const db = await connectToMongoDB();
-    const col = db.collection("HR");
+    const hrCollection = db.collection("HR");
+    const employeeCollection = db.collection("Employees");
+    const organizationCollection = db.collection("Organizations");
 
     // Convert email to lowercase
     email = email.toLowerCase();
 
-    const existingHR = await col.findOne({ email: email });
+    // Check if email exists in HR collection
+    const existingHR = await hrCollection.findOne({ email: email });
     if (existingHR) {
       return {
         message: null,
-        error: "HR is already registered with these credentials.",
+        error: "User is already registered with these credentials.",
       };
     }
+
+    // Check if email exists in Employees collection
+    const existingEmployee = await employeeCollection.findOne({ email: email });
+    if (existingEmployee) {
+      return {
+        message: null,
+        error: "User is already registered with these credentials.",
+      };
+    }
+
+    // Check if email exists in Organization collection
+    const existingOrganization = await organizationCollection.findOne({ email: email });
+    if (existingOrganization) {
+      return {
+        message: null,
+        error: "User is already registered with these credentials.",
+      };
+    }
+
     const hashedPassword = await generateHash(password);
 
     let hrDocument = {
@@ -47,9 +70,10 @@ const addHR = async (
       password: hashedPassword,
     };
 
-    const result = await col.insertOne(hrDocument);
+    const result = await hrCollection.insertOne(hrDocument);
     if (result) {
-      const { userType, user, employeeData, noOfEmployees, noOfDepartments, noOfHRs } = await getCeoAndEmployee(email, organizationId);
+      const { userType, user, employeeData, noOfEmployees, noOfDepartments, noOfHRs } = await getCeoAndEmployee(hrEmail, organizationId);
+      console.log('user', user);
       const data = { userType, user, employeeData, noOfEmployees, noOfDepartments, noOfHRs };
       return { data: data, error: null };
     }

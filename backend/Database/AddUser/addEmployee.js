@@ -20,17 +20,37 @@ const addEmployee = async (
 ) => {
   try {
     const db = await connectToMongoDB();
-    const col = db.collection("Employees");
+    const employeeCollection = db.collection("Employees");
+    const hrCollection = db.collection("HR");
+    const organizationCollection = db.collection("Organizations");
 
     // Convert email to lowercase
     email = email.toLowerCase();
 
-    // Check if employee with the same email already exists
-    const existingEmployee = await col.findOne({ email: email });
+    // Check if email exists in Employees collection
+    const existingEmployee = await employeeCollection.findOne({ email: email });
     if (existingEmployee) {
       return {
         message: null,
-        error: "Employee is already registered with these credentials.",
+        error: "User is already registered with these credentials.",
+      };
+    }
+
+    // Check if email exists in HR collection
+    const existingHR = await hrCollection.findOne({ email: email });
+    if (existingHR) {
+      return {
+        message: null,
+        error: "User is already registered with these credentials.",
+      };
+    }
+
+    // Check if email exists in Organization collection
+    const existingOrganization = await organizationCollection.findOne({ email: email });
+    if (existingOrganization) {
+      return {
+        message: null,
+        error: "User is already registered with these credentials.",
       };
     }
 
@@ -56,7 +76,7 @@ const addEmployee = async (
       employeeDocument.image = image.buffer.toString("base64"); // Convert image to base64 string
     }
 
-    const result = await col.insertOne(employeeDocument);
+    const result = await employeeCollection.insertOne(employeeDocument);
 
     if (result) {
       const {

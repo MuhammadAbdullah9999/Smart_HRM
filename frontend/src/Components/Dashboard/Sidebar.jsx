@@ -60,7 +60,7 @@ function Sidebar({ isOpen, onClose }) {
       >
         {/* Organization Name */}
         <h1 className="text-white text-lg font-semibold mb-2 mt-4 text-center">
-          DevTech Solutions
+          {employeeData.organizationName}
         </h1>
 
         {/* HR Profile */}

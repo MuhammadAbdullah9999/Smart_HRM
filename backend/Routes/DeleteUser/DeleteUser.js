@@ -14,8 +14,8 @@ console.log(employeeId, userType,email,organizationId);
         const{message,error}=await deleteUser(employeeId,userType);
    
         if(userType==='HR'){
-            const { userType, user, employeeData, totalLeavesRequestPending, departments } = await getHrAndEmployee(email, organizationId);
-            res.status(200).json({ userType, user, employeeData, totalLeavesRequestPending, departments })
+            const { userType, user, employeeData, totalLeavesRequestPending, departments,organizationName } = await getHrAndEmployee(email, organizationId);
+            res.status(200).json({ userType, user, employeeData, totalLeavesRequestPending, departments,organizationName })
         
            }
            else{

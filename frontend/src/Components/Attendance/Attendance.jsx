@@ -12,7 +12,7 @@ import { useParams } from 'react-router-dom'; // Import useParams hook from Reac
 
 const Attendance = ({ userType,id }) => {
   let { employeeId } = useParams();
-  let attendanceType=''
+  let attendanceType='';
   const employeeData = useSelector((state) => state.EmployeeData.EmployeeData);
   if(!employeeId){
     employeeId=id;
@@ -20,7 +20,6 @@ const Attendance = ({ userType,id }) => {
   }else{
     attendanceType=employeeData.userType;
   }
-
 
   const currentYear = new Date().getFullYear();
   const [selectedMonth, setSelectedMonth] = useState(
@@ -51,20 +50,22 @@ const Attendance = ({ userType,id }) => {
     try {
       const response = await axios.get(`http://localhost:5000/GetAttendance/employee/${employeeId}/${attendanceType}`);
       console.log(response.data);
-      setAttendanceData(response.data);
+      setAttendanceData(response.data || []);
     } catch (error) {
       console.error("Error fetching attendance data:", error);
+      setAttendanceData([]);
     }
   };
 
-  const currentMonthAttendance =
-    attendanceData.filter((entry) => {
-      const { year, month } = parseDate(entry.date);
-      return (
-        year === selectedYear &&
-        month.toLowerCase() === selectedMonth.toLowerCase()
-      );
-    }) || [];
+  const currentMonthAttendance = Array.isArray(attendanceData)
+    ? attendanceData.filter((entry) => {
+        const { year, month } = parseDate(entry.date);
+        return (
+          year === selectedYear &&
+          month.toLowerCase() === selectedMonth.toLowerCase()
+        );
+      })
+    : [];
 
   const presentDays = currentMonthAttendance.filter(
     (entry) => entry.attendanceStatus.toLowerCase() === "present"

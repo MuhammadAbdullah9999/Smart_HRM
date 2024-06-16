@@ -5,6 +5,7 @@ const {getJobsByOrganizationId} = require('../GetOrganizationData/getOrganizatio
 const { countEmployeesInOrganization,countHrsInOrganization } = require("../GetOrganizationData/countEmployeeAndHRInOrg");
 const {countUniqueDepartments}=require('../GetOrganizationData/countDepartments');
 const bcrypt = require("bcrypt");
+const {ObjectId}=require('mongodb');
 
 const {getCeoAndEmployee}=require('../GetOrganizationData/getCeoAndEmployee');
 const authenticateUser = async (email, password) => {
@@ -31,7 +32,7 @@ const authenticateUser = async (email, password) => {
     const hrUser = await hrCollection.findOne({ email: lowerCaseEmail });
 
     if (hrUser && (await bcrypt.compare(password, hrUser.password))) {
-      const { userType, user, employeeData, totalLeavesRequestPending, departments } = await getHrAndEmployee(lowerCaseEmail, hrUser.organizationId);
+      const { userType, user, employeeData, totalLeavesRequestPending, departments,organizationName } = await getHrAndEmployee(lowerCaseEmail, hrUser.organizationId);
       
       const jobs = await getJobsByOrganizationId(hrUser.organizationId);
     
@@ -42,6 +43,7 @@ const authenticateUser = async (email, password) => {
         totalLeavesRequestPending,
         departments,
         jobs,
+        organizationName
       };
     }
     
@@ -50,7 +52,9 @@ const authenticateUser = async (email, password) => {
     const empUser = await empCollection.findOne({ email: lowerCaseEmail });
 
     if (empUser && (await bcrypt.compare(password, empUser.password))) {
-      return { userType: "employee", user: empUser };
+      console.log(empUser);
+      const organization = await orgCollection.findOne({ _id: new ObjectId(empUser.organizationId) });
+      return { userType: "employee", user: empUser,organizationName:organization.name };
     }
 
     // Password does not match

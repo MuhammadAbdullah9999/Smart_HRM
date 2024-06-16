@@ -5,11 +5,13 @@ const {countUniqueDepartments}=require('./countDepartments');
 const {countPendingLeaves}=require('../Leave/GetPendingLeavesCount')
 
 async function getCeoAndEmployee(ceoEmail, organizationId) {
+  console.log(ceoEmail,organizationId);
   try {
     const db=await connectToMongoDB();
 
     const orgCollection = db.collection("Organizations");
     const orgUser = await orgCollection.findOne({ email: ceoEmail });
+    console.log('orgUer',orgUser);
 
     const hrData = await getUserData("HR", organizationId);
     const employeesCount = await countEmployeesInOrganization(

@@ -8,8 +8,8 @@ const router=express.Router();
 
 router.post('/', async (req, res) => {
 
-   const {organizationId, organizationName,name, email, password, salary, position, contact, dateOfBirth, department, employeeId, allowances, leaves}=req.body
-   console.log(organizationId, organizationName, name, email, password, salary, position, contact, dateOfBirth, department, employeeId, allowances, leaves);
+   const {organizationId, organizationName,name, email, password, salary, position, contact, dateOfBirth, department, employeeId, allowances, leaves,hrEmail}=req.body
+   console.log(organizationId, organizationName, name, email, password, salary, position, contact, dateOfBirth, department, employeeId, allowances, leaves, hrEmail);
 //    const result= verifyEmailDomain(email,organizationName);
 //    console.log(result);
 //     if(!result){
@@ -17,7 +17,7 @@ router.post('/', async (req, res) => {
 //          return;
 //     }
    try {
-        const {data,error} = await addHR(organizationId, name, email, password, salary, position, contact, dateOfBirth, department, employeeId, allowances, leaves);
+        const {data,error} = await addHR(organizationId, name, email, password, salary, position, contact, dateOfBirth, department, employeeId, allowances, leaves, hrEmail);
         if(data){
             res.status(200).json({data:data}).send();
         }
