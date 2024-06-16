@@ -2,7 +2,7 @@ const { connectToMongoDB, closeMongoDBConnection } = require('../connectDB');
 const { ObjectId } = require('mongodb');
 
 async function getAttendanceData(organizationId,userType) {
-    console.log(organizationId);
+    // console.log(organizationId);
     try {
         // Connect to the database
         const db = await connectToMongoDB();
@@ -19,7 +19,7 @@ async function getAttendanceData(organizationId,userType) {
 
         // Find employees by organization ID
         const employees = await employeesCollection.find({ organizationId }).toArray();
-        console.log(employees);
+        // console.log(employees);
 
         // Extract attendance arrays from each employee
         const attendanceArrays = employees.map(employee => employee.attendance);
@@ -34,11 +34,13 @@ async function getAttendanceData(organizationId,userType) {
     }
 }
 
-async function getEmployeeAttendance(employeeId, userType) {
+async function getEmployeeAttendance(employeeId, attendanceType) {
+    console.log(employeeId,attendanceType);
     try {
         const db = await connectToMongoDB();
 
-        const col = userType === 'HR' ? 'HR' : 'Employees';
+        const col = attendanceType === 'HR' ? 'Employees':attendanceType==='hrAttendance'?'HR' : 'HR';
+        console.log(col)
 
         const employeesCollection = db.collection(col);
 

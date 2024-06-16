@@ -8,9 +8,20 @@ import CloseIcon from "@mui/icons-material/Close";
 import ReactApexChart from "react-apexcharts";
 import { useSelector } from "react-redux";
 import axios from 'axios';
+import { useParams } from 'react-router-dom'; // Import useParams hook from React Router
 
-const Attendance = ({ userType }) => {
+const Attendance = ({ userType,id }) => {
+  let { employeeId } = useParams();
+  let attendanceType=''
   const employeeData = useSelector((state) => state.EmployeeData.EmployeeData);
+  if(!employeeId){
+    employeeId=id;
+    attendanceType='hrAttendance';
+  }else{
+    attendanceType=employeeData.userType;
+  }
+
+
   const currentYear = new Date().getFullYear();
   const [selectedMonth, setSelectedMonth] = useState(
     new Date().toLocaleString("en-US", { month: "long" })
@@ -38,7 +49,7 @@ const Attendance = ({ userType }) => {
 
   const fetchAttendanceData = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/GetAttendance/employee/${employeeData.user._id}/${employeeData.userType}`);
+      const response = await axios.get(`http://localhost:5000/GetAttendance/employee/${employeeId}/${attendanceType}`);
       console.log(response.data);
       setAttendanceData(response.data);
     } catch (error) {

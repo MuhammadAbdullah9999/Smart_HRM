@@ -181,7 +181,7 @@ function AttendanceMain() {
         </div>
 
         {showDetailedAttendance ? (
-          <Attendance userType={data.userType} />
+          <Attendance userType={data.userType} id={data.user._id} />
         ) : (
           <div className="flex justify-center gap-8 h-full w-full p-4 flex-wrap">
             {filteredEmployees.length > 0 ? (

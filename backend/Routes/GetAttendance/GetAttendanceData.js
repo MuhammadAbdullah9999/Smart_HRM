@@ -5,7 +5,7 @@ const router = express.Router();
 // Route to get attendance data for an entire organization
 router.get("/:organizationId/:userType", async (req, res) => {
   const { organizationId, userType } = req.params;
-  console.log(organizationId, userType);
+  // console.log(organizationId, userType);
 
   getAttendanceData(organizationId, userType)
     .then(result => {
@@ -21,11 +21,11 @@ router.get("/:organizationId/:userType", async (req, res) => {
 });
 
 // Route to get attendance data for a particular employee
-router.get("/employee/:employeeId/:userType", async (req, res) => {
-  const { employeeId, userType } = req.params;
-  console.log(employeeId, userType);
+router.get("/employee/:employeeId/:attendanceType", async (req, res) => {
+  const { employeeId, attendanceType } = req.params;
+  console.log(employeeId, attendanceType);
 
-  getEmployeeAttendance(employeeId, userType)
+  getEmployeeAttendance(employeeId, attendanceType)
     .then(result => {
       if (result.error) {
         res.status(500).json(result.error);
