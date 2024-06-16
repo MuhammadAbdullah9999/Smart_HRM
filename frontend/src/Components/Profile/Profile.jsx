@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import Sidebar from "../Dashboard/Sidebar";
 import DashboardOverview from "../Dashboard/DashboardOverview";
 import Avatar from "@mui/material/Avatar";
@@ -16,6 +16,7 @@ import { setEmployeeData } from "../../state";
 const Profile = () => {
   const dispatch = useDispatch();
   const data = useSelector((state) => state.EmployeeData.EmployeeData);
+  const [userData,setUserData]=useState('');
 
   const [changed, setChanged] = useState(false);
 
@@ -27,7 +28,27 @@ const Profile = () => {
     userId: data.user._id,
     userType: data.userType,
   });
+  useEffect(() => {
+    // Fetch user data when component mounts
+    fetchUserData();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const fetchUserData = async () => {
+    try {
+      const response = await axios.get(`http://localhost:5000/GetUser/${data.userType}/${data.user.email}`);
+      console.log("Fetched user data:", response.data);
+      setUserData(response.data.user);
+      // const updatedUserData = { ...data, user: response.data.user };
+      // dispatch(setEmployeeData(updatedUserData));
+      setProfileData({
+        ...profileData,
+        email: response.data.user.email,
+        contact: response.data.user.contact,
+      });
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
   const handleChangeProfileData = (field, value) => {
     setProfileData({ ...profileData, [field]: value });
     setChanged(true);
@@ -101,10 +122,10 @@ const Profile = () => {
       absentCount,
     };
   };
-  const percentages = calculateAttendancePercentage(data?.user?.attendance);
+  const percentages = calculateAttendancePercentage(userData?.attendance);
 
   let leaveCount = 0;
-  data?.user?.leaveRequest?.map((leave) => {
+  userData?.leaveRequest?.map((leave) => {
     if (leave.status.toLowerCase() === "approved") {
       // const currentMonth = new Date().getMonth();
       const currentYear = new Date().getFullYear();

@@ -39,7 +39,7 @@ async function getEmployeeAttendance(employeeId, attendanceType) {
     try {
         const db = await connectToMongoDB();
 
-        const col = attendanceType === 'HR' ? 'Employees':attendanceType==='hrAttendance'?'HR' : 'HR';
+        const col = attendanceType === 'HR' ? 'Employees':attendanceType==='hrAttendance'?'HR':attendanceType==='employee'?'Employees' : 'HR';
         console.log(col)
 
         const employeesCollection = db.collection(col);
