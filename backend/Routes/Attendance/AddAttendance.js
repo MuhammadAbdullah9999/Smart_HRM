@@ -1,28 +1,22 @@
 const express = require('express');
 const router = express.Router();
-
-// Import the addAttendance function from the database module
 const { addAttendance } = require('../../Database/Attendance/addAttendance');
 
-// POST route for adding attendance
-router.post('/',async (req, res) => {
-    const employeeData=req.body;
-    // const { hrEmail,organizationId,employeeId, month, date, checkInTime, checkOutTime, attendanceStatus } = req.body;
-    // Call the addAttendance function from the database module
-    try {
-        // const {data,error}=await addAttendance(hrEmail,organizationId,employeeId, month, date, checkInTime, checkOutTime, attendanceStatus);
-        const {data,error}=await addAttendance(employeeData);
+router.post('/', async (req, res) => {
+  const employeeData = req.body.data;
+  const overwrite = req.body.overwrite;
 
-        if(data){
-            res.status(200).json({ data:data });
-        }
-        else if(error){
-            res.status(400).json({ error });
-        }
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to add attendance' });
+  try {
+    const { data, error, existingAttendance } = await addAttendance(employeeData, overwrite);
+
+    if (data) {
+      res.status(200).json({ data: data, existingAttendance: existingAttendance });
+    } else if (error) {
+      res.status(400).json({ error });
     }
-        
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to add attendance' });
+  }
 });
 
 module.exports = router;

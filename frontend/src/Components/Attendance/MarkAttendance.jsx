@@ -48,7 +48,7 @@ const MarkAttendance = () => {
     }
   }, [employeeData, selectedDate]);
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (overwrite = false) => {
     const validationErrors = {};
 
     // Validate selectedDate
@@ -63,37 +63,45 @@ const MarkAttendance = () => {
       }
     });
 
-    // If there are validation errors, update state and return
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
 
-    // Extract month from selectedDate
     const dateObj = new Date(selectedDate);
     const month = dateObj.toLocaleString("default", { month: "long" });
 
-    // Prepare data for submission
     const attendanceData = employeeAttendance.map((employee) => ({
       employeeId: employee.employeeId,
       name: employee.name,
       attendanceStatus: employee.attendanceStatus,
-      date: selectedDate, // Include selected date
-      month: month, // Include month obtained from selected date
+      date: selectedDate,
+      month: month,
       organizationId: employeeData.employeeData[0].organizationId,
       email: employeeData.user.email,
       loginType: employeeData.userType,
     }));
 
-    // Proceed with API call
     try {
       setErrors({});
-      setLoading(true); // Set loading state to true while making API call
+      setLoading(true);
       const response = await axios.post(
         "http://localhost:5000/AddAttendance",
-        attendanceData
+        { data: attendanceData, overwrite }
       );
-      if (response.data) {
+
+      if (response.data.existingAttendance.length > 0 && !overwrite) {
+        const confirmOverwrite = window.confirm(
+          "Attendance for the selected date already exists. Do you want to overwrite it?"
+        );
+        setLoading(false);
+        if (confirmOverwrite) {
+          handleSubmit(true);
+        }
+        return;
+      }
+
+      if (response.data.data) {
         setLoading(false);
         dispatch(setEmployeeData(response.data.data));
         const redirectPath =
@@ -106,26 +114,22 @@ const MarkAttendance = () => {
       setApiError(error.message);
       console.log(error);
     } finally {
-      setLoading(false); // Reset loading state after API call is completed
+      setLoading(false);
     }
   };
 
   return (
     <div className="flex flex-col md:flex-row">
-      {/* Sidebar */}
       {employeeData && employeeData.userType === "business_owner" ? (
         <CeoSidebar />
       ) : (
         <Sidebar />
       )}
 
-      {/* Main content */}
       <div className="flex-grow p-4 md:p-8">
-        {/* Dashboard Overview with date */}
         <DashboardOverview pageName="Mark Attendance" />
         {loading && <div className="absolute inset-0 backdrop-filter backdrop-blur-sm z-10"></div>}
 
-        {/* Date Selection and Submit Button */}
         <div className="flex flex-col md:flex-row items-center justify-between mb-4">
           <div className="flex items-center">
             <CalendarTodayIcon />
@@ -143,7 +147,7 @@ const MarkAttendance = () => {
           </div>
           <button
             className="bg-blue-500 hover:bg-blue-800 active:bg-white active:text-blue-600 text-white py-2 px-4 rounded-lg"
-            onClick={handleSubmit}
+            onClick={() => handleSubmit(false)}
           >
             Submit
           </button>
@@ -154,7 +158,6 @@ const MarkAttendance = () => {
           </p>
         )}
 
-        {/* Employee Attendance Table */}
         <div className="overflow-auto">
           <table className="table-auto border-collapse border border-gray-300 w-full">
             <thead>
