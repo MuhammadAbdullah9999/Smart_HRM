@@ -12,7 +12,7 @@ import Attendance from "./Attendance";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import DownloadIcon from "@mui/icons-material/Download";
-import axios from "axios"; // Import Axios
+import axios from "axios";
 
 function AttendanceMain() {
   const [employees, setEmployees] = useState([]);
@@ -28,18 +28,31 @@ function AttendanceMain() {
 
   useEffect(() => {
     setEmployees(data.employeeData);
+    fetchAttendanceData();
+  }, [data.employeeData]);
+
+  const fetchAttendanceData = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/GetAttendance/${organizationId}/${data.userType}`
+      );
+      processAttendanceData(response.data);
+    } catch (error) {
+      console.error("Error fetching attendance data:", error);
+    }
+  };
+
+  const processAttendanceData = (rawData) => {
     const currentMonth = new Date()
       .toLocaleString("default", { month: "long" })
       .toLowerCase();
+    
     const updatedEmployees = data.employeeData.map((employee) => {
-      const currentMonthAttendance =
-        employee.attendance?.filter((entry) => {
-          return (
-            entry.month &&
-            typeof entry.month === "string" &&
-            entry.month.toLowerCase() === currentMonth
-          );
-        }) || [];
+      const currentMonthAttendance = rawData[0].filter(
+        (entry) =>
+          entry.employeeId === employee._id &&
+          entry.month.toLowerCase() === currentMonth
+      );
 
       const presentDays = currentMonthAttendance.filter(
         (entry) =>
@@ -52,9 +65,9 @@ function AttendanceMain() {
       ).length;
 
       const totalDays = currentMonthAttendance.length;
-      const attendancePercentage = parseFloat(
-        ((presentDays / totalDays) * 100).toFixed(1)
-      );
+      const attendancePercentage = totalDays
+        ? parseFloat(((presentDays / totalDays) * 100).toFixed(1))
+        : 0;
 
       return {
         ...employee,
@@ -67,22 +80,6 @@ function AttendanceMain() {
 
     setEmployees(updatedEmployees);
     setAttendanceData(updatedEmployees);
-  }, [data.employeeData]);
-
-  useEffect(() => {
-    // Fetch attendance arrays data using Axios
-    fetchAttendanceData();
-  }, []); // Run once when component mounts
-
-  const fetchAttendanceData = async () => {
-    try {
-      const response = await axios.get(`http://localhost:5000/GetAttendance/${organizationId}/${data.userType}`); // Replace with your API endpoint
-      console.log(response.data)
-      // const { data } = response.data;
-      setAttendanceData(response.data);
-    } catch (error) {
-      console.error("Error fetching attendance data:", error);
-    }
   };
 
   const filteredEmployees = employees.filter((employee) => {
@@ -121,9 +118,9 @@ function AttendanceMain() {
     <div className="flex">
       <div className="fixed">
         {data && data.userType === "business_owner" ? (
-          <CeoSidebar></CeoSidebar>
+          <CeoSidebar />
         ) : (
-          <Sidebar></Sidebar>
+          <Sidebar />
         )}
       </div>
       <div className="flex flex-col md:ml-72 w-full">
@@ -150,14 +147,16 @@ function AttendanceMain() {
               >
                 <SearchRoundedIcon />
               </div>
-              {data.userType==='HR' && <div className="ml-auto flex items-center">
-                <Switch
-                  label="HR"
-                  checked={showDetailedAttendance}
-                  onChange={() => setShowDetailedAttendance(!showDetailedAttendance)}
-                />
-                <p>My Attendance</p>
-              </div>}
+              {data.userType === 'HR' && (
+                <div className="ml-auto flex items-center">
+                  <Switch
+                    label="HR"
+                    checked={showDetailedAttendance}
+                    onChange={() => setShowDetailedAttendance(!showDetailedAttendance)}
+                  />
+                  <p>My Attendance</p>
+                </div>
+              )}
             </div>
 
             <div className="flex flex-col gap-2">
@@ -166,8 +165,7 @@ function AttendanceMain() {
                 className="bg-green-500 px-3 py-2 rounded-3xl border-none font-bold text-center cursor-pointer transition duration-400 hover:shadow-lg hover:shadow-gray-400 active:transform active:scale-97 active:shadow-lg"
               >
                 <span className="text-sm text-white">
-                  {" "}
-                  <DownloadIcon></DownloadIcon> Download Attendance
+                  <DownloadIcon /> Download Attendance
                 </span>
               </button>
               <Link to="/HR/dashboard/Attendance/mark-attendance">
