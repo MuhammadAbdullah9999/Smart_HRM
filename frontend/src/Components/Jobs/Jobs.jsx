@@ -106,11 +106,11 @@ function Jobs() {
                       </div>
 
                       <div className="flex flex-col justify-center gap-4 lg:w-auto lg:mt-0 mt-4 w-full">
-                        <div className="w-full">
+                        {/* <div className="w-full">
                           <button className="w-full p-2 bg-bg-color text-white rounded-xl active:bg-sec-color hover:shadow-gray-500 hover:shadow-lg">
                             Apply Now
                           </button>
-                        </div>
+                        </div> */}
 
                         <div className="w-full">
                           <Link
