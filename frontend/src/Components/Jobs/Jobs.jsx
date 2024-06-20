@@ -84,10 +84,10 @@ function Jobs() {
               {organization.jobArray && organization.jobArray.length > 0 ? (
                 organization.jobArray.map((job) => (
                   <div className="py-8" key={job.jobTitle}>
-                    <div className="flex justify-between flex-wrap bg-sec-color rounded-lg p-4 border border-gray-500 text-slate-200 shadow-lg">
+                    <div className="flex justify-between flex-wrap bg-white text-black rounded-xl p-4">
                       <div className="flex flex-col gap-4 sm:w-full md:w-9/12 ">
                         <h2>{organization.organizationName}</h2>
-                        <p className="font-bold text-xl">{job.jobTitle}</p>
+                        <p className="font-bold text-2xl">{job.jobTitle}</p>
                        
                         <p className="text-sm text-justify">
                         <span className="font-bold">Job Description: </span>
@@ -107,7 +107,7 @@ function Jobs() {
 
                       <div className="flex flex-col justify-center gap-4 lg:w-auto lg:mt-0 mt-4 w-full">
                         <div className="w-full">
-                          <button className="w-full p-2 bg-white text-sec-color rounded-lg active:bg-sec-color active:text-white">
+                          <button className="w-full p-2 bg-bg-color text-white rounded-xl active:bg-sec-color hover:shadow-gray-500 hover:shadow-lg">
                             Apply Now
                           </button>
                         </div>
@@ -124,7 +124,7 @@ function Jobs() {
                               organization.organizationName
                             )}/${encodeURIComponent(job._id)}`}
                           >
-                            <button className="w-full p-2 bg-white text-sec-color rounded-lg active:bg-sec-color active:text-white">
+                            <button className="w-full p-2 bg-bg-color text-white rounded-xl active:bg-sec-color hover:shadow-gray-500 hover:shadow-lg">
                               Open Now
                             </button>
                           </Link>
