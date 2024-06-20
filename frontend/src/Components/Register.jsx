@@ -8,9 +8,10 @@ import validator from 'validator'
 import { Link } from "react-router-dom";
 import CircularProgress from '@mui/material/CircularProgress';
 import { useNavigate } from "react-router-dom";
+
 const Register = () => {
-  const navigate=useNavigate();
-  
+  const navigate = useNavigate();
+
   const employeesOptions = [
     { start: 1, end: 10, label: "1 - 10" },
     { start: 11, end: 20, label: "11 - 20" },
@@ -33,11 +34,18 @@ const Register = () => {
 
   const [errors, setErrors] = useState({});
   const [apiError, setApiError] = useState('');
-  const [loading,setLoading]=useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleInputChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-    setErrors({ ...errors, [e.target.name]: "" });
+    const { name, value } = e.target;
+    if (name === "phoneNumber") {
+      if (!/^\d*$/.test(value)) {
+        setErrors({ ...errors, phoneNumber: "Only numbers are allowed" });
+        return;
+      }
+    }
+    setFormData({ ...formData, [name]: value });
+    setErrors({ ...errors, [name]: "" });
     setApiError(null);
   };
 
@@ -90,11 +98,11 @@ const Register = () => {
     try {
       setLoading(true);
       const response = await axios.post(
-        "http://localhost:5000/SignUp",  // Update with your actual backend API endpoint
+        "http://localhost:5000/SignUp", // Update with your actual backend API endpoint
         formData
       );
 
-      if(response){
+      if (response) {
         setLoading(false);
         navigate('/Login');
       }
@@ -110,11 +118,11 @@ const Register = () => {
 
   return (
     <div className={`flex flex-col sm:flex-row w-full min-h-screen ${loading ? 'pointer-events-none opacity-70' : ''} `}>
-     {loading && (
-          <div className="absolute top-1/2 left-[74%] z-10 transform -translate-x-1/2 -translate-y-1/2">
-            <CircularProgress color="inherit" />
-          </div>
-        )}
+      {loading && (
+        <div className="absolute top-1/2 left-[74%] z-10 transform -translate-x-1/2 -translate-y-1/2">
+          <CircularProgress color="inherit" />
+        </div>
+      )}
       {/* Container with Image */}
       <div className="flex-1 justify-center items-center">
         <Link to='/'><ArrowBackIcon className="cursor-pointer absolute top-8 left-8 text-black" /></Link>

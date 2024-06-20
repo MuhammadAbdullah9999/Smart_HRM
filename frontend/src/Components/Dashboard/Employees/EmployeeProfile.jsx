@@ -18,7 +18,8 @@ function EmployeeProfile() {
 
   const employeesData = useSelector((state) => state.EmployeeData.EmployeeData);
   const { employeeId } = useParams();
-console.log(employeesData)
+  console.log(employeesData);
+  
   // Find the employee with the matching employeeId
   const employeeData = employeesData.employeeData.find(
     (employee) => employee._id === employeeId
@@ -88,26 +89,6 @@ console.log(employeesData)
           .join(", ")
       : "",
 
-    // deduction: employeeData
-    // ? employeeData.deduction?.filter(
-    //       (deduction) =>
-    //         deduction.month ===
-    //           new Date().toLocaleString("en-US", { month: "long" }) &&
-    //         deduction.year === new Date().getFullYear()
-    //     )
-    //     .map((deduction) => deduction.deductionAmount)
-    //     .join(", ")
-    // : "",
-    // deductionReason:  employeeData
-    // ? employeeData.deduction?.filter(
-    //       (deduction) =>
-    //         deduction.month ===
-    //           new Date().toLocaleString("en-US", { month: "long" }) &&
-    //         deduction.year === new Date().getFullYear()
-    //     )
-    //     .map((deduction) => deduction.deductionReason)
-    //     .join(", ")
-    // : "",
     grossSalary: grossSalary,
   });
 
@@ -116,6 +97,14 @@ console.log(employeesData)
   };
 
   const handleInputChange = (field, value) => {
+    // Check if the field should only accept numbers
+    const numberFields = ["basicSalary", "homeAllowance", "medicalAllowance", "transportAllowance", "bonus", "grossSalary"];
+    if (numberFields.includes(field)) {
+      // If the value is not a number, return without updating the state
+      if (isNaN(value)) {
+        return;
+      }
+    }
     setInputValues({ ...inputValues, [field]: value });
   };
 
@@ -229,12 +218,12 @@ console.log(employeesData)
         "http://localhost:5000/UpdateEmployeeProfile",
         data
       );
-      console.log(response.data)
-      setLoading(false)
+      console.log(response.data);
+      setLoading(false);
       dispatch(setEmployeeData(response.data));
       // console.log(response.data);
     } catch (error) {
-      setLoading(false)
+      setLoading(false);
       setApiError(error.response.data);
       console.error("Error updating employee profile:", error);
     }
@@ -288,18 +277,29 @@ console.log(employeesData)
   }, []);
 const handleDeleteEmployee=async()=>{
   console.log(employeeId);
-  const email= employeesData.user.email
-  const organizationId= employeesData.userType==='business_owner'? employeesData.user._id:employeesData.user.organizationId
-  try{
-    setLoading(true)
-    const response=await axios.delete(`http://localhost:5000/DeleteUser/${employeeId}/${employeesData.userType}/${email}/${organizationId}`)
-    console.log(response.data)
-    setLoading(false)
-    dispatch(setEmployeeData(response.data))
-    navigate(employeesData.userType==='business_owner'?'/CEO/dashboard/employees':'/HR/dashboard/employees')
-  }catch(error){
-    console.error(error);
-  }  
+  const email= employeesData.user.email;
+  const organizationId= employeesData.userType==='business_owner'? employeesData.user._id:employeesData.user.organizationId;
+  const userType= employeesData.userType;
+  const data={email,organizationId,employeeId,userType};
+  
+  try {
+    setApiError("");
+    setLoading(true);
+    const response = await axios.post(
+      "http://localhost:5000/DeleteEmployee",
+      data
+    );
+    console.log(response.data);
+    setLoading(false);
+    dispatch(setEmployeeData(response.data));
+    navigate('/employees');
+
+  } catch (error) {
+    setLoading(false);
+    setApiError(error.response.data);
+    console.error("Error deleting employee profile:", error);
+  }
+
 }
   return (
     <div className={`flex flex-col md:flex-row ${
@@ -521,6 +521,7 @@ const handleDeleteEmployee=async()=>{
                 <input
                   type="text"
                   value={inputValues.deduction}
+                  disabled={true}
                   onChange={(e) =>
                     handleInputChange("deduction", e.target.value)
                   }
@@ -545,6 +546,7 @@ const handleDeleteEmployee=async()=>{
                 <input
                   type="text"
                   value={inputValues.deductionReason}
+                  disabled={true}
                   onChange={(e) =>
                     handleInputChange("deductionReason", e.target.value)
                   }
