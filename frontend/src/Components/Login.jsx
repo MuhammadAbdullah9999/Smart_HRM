@@ -56,12 +56,12 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setLoading(true);
 
     if (!validateForm()) {
       return;
     }
     try {
+      setLoading(true);
       setErrors({});
       setApiError('')
       const response = await axios.post(

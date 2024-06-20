@@ -32,8 +32,8 @@ const authenticateUser = async (email, password) => {
     const hrUser = await hrCollection.findOne({ email: lowerCaseEmail });
 
     if (hrUser && (await bcrypt.compare(password, hrUser.password))) {
-      const { userType, user, employeeData, totalLeavesRequestPending, departments,organizationName } = await getHrAndEmployee(lowerCaseEmail, hrUser.organizationId);
-      
+      const { userType, user, employeeData, totalLeavesRequestPending, departments} = await getHrAndEmployee(lowerCaseEmail, hrUser.organizationId);
+      const organization = await orgCollection.findOne({ _id: new ObjectId(hrUser.organizationId) });
       const jobs = await getJobsByOrganizationId(hrUser.organizationId);
     
       return {
@@ -43,7 +43,7 @@ const authenticateUser = async (email, password) => {
         totalLeavesRequestPending,
         departments,
         jobs,
-        organizationName
+        organizationName:organization.name
       };
     }
     

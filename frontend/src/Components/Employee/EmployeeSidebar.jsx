@@ -67,7 +67,7 @@ function EmployeeSidebar({ isOpen, onClose }) {
           />
           <div className="text-center">
             <p className="text-white text-lg font-semibold mt-1">{employeeData.user.name}</p>
-            <p className="text-gray-300 text-sm">Employee</p>
+            <p className="text-gray-300 text-sm">{employeeData.user.position}</p>
           </div>
         </div>
 

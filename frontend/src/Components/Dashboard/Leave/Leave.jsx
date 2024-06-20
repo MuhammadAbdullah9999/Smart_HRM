@@ -62,6 +62,8 @@ function Leave() {
       if (response) {
         setLoading(false);
         dispatch(setEmployeeData(response.data));
+        // Reload the page after a successful API response
+        window.location.reload();
       }
     } catch (error) {
       setLoading(false);
@@ -69,7 +71,8 @@ function Leave() {
     }
   };
 
-  const currentData = data.userType === "HR" && showHrLeave ? hrData : employees
+  const currentData =
+    data.userType === "HR" && showHrLeave ? hrData : employees;
 
   return (
     <div className="flex gap-4 w-full">
@@ -92,7 +95,7 @@ function Leave() {
                 Apply Leave
               </button>
             </Link>
-            {data.userType === 'HR' && (
+            {data.userType === "HR" && (
               <div className="ml-auto flex items-center">
                 <Switch
                   label="HR"
@@ -107,7 +110,7 @@ function Leave() {
 
         <div className="flex justify-between gap-8 w-full h-[50%]">
           {/* Leave Calendar Section */}
-          <div className="flex flex-col w-1/3 border border-gray-300 rounded-md shadow-lg shadow-gray-300 min-h-full relative">
+          <div className="flex flex-col w-1/3 border border-gray-300 rounded-md shadow-lg shadow-gray-300 h-96 relative">
             <div className="font-bold bg-white">
               <p className="p-4 sticky top-0 z-10 bg-white">Leave Calendar</p>
               <hr className="border border-gray-300"></hr>
@@ -129,14 +132,16 @@ function Leave() {
                         {leave.status !== "pending" && (
                           <div className="flex justify-between w-full gap-2 p-4">
                             <div>
-                              <p className="font-bold">{employee.name}</p>
+                              <p className="font-bold text-sm">
+                                {employee.name}
+                              </p>
                               <span className="text-sm">
                                 {leave.leaveReason}
                               </span>
                             </div>
                             <div className="self-center">
                               <div>
-                                <p className="font-bold">{employee.name}</p>
+                                {/* <p className="font-bold text-sm">{employee.name}</p> */}
                                 <span className="text-sm">
                                   {leave.leaveDate}
                                 </span>
@@ -144,8 +149,18 @@ function Leave() {
                               <div className="self-center">
                                 <div>
                                   <p>
-                                    <span className="font-bold">Days: </span>
-                                    {leave.leaveDays}
+                                    <span className="font-bold text-xs">
+                                      Status:{" "}
+                                    </span>
+                                    <span
+                                      className={`text-sm font-bold ${
+                                        leave.status === "Approved"
+                                          ? "text-green-500"
+                                          : "text-red-500"
+                                      }`}
+                                    >
+                                      {leave.status}
+                                    </span>
                                   </p>
                                 </div>
                               </div>
@@ -161,7 +176,7 @@ function Leave() {
 
           {/* Leave Requests Section */}
           <div className="w-2/3">
-            <div className="flex flex-col w-full border border-gray-300 rounded-md shadow-lg shadow-gray-300 min-h-full relative">
+            <div className="flex flex-col w-full border border-gray-300 rounded-md shadow-lg shadow-gray-300 h-96 relative">
               <div className="font-bold">
                 <p className="p-4">Leave Requests</p>
                 <hr className="border border-gray-300"></hr>
@@ -221,6 +236,8 @@ function Leave() {
                                   </button>
                                 </div>
                               )}
+                              {data.userType === "employee" ||
+                                (showHrLeave && <div>{leave.status}</div>)}
                             </div>
                           </div>
                           <hr className="border"></hr>

@@ -37,7 +37,7 @@ async function findEmployeesWithPendingLeaveRequests(organizationId) {
 
     return filteredEmployees;
   } finally {
-    await closeMongoDBConnection();
+    // await closeMongoDBConnection();
   }
 }
 async function countPendingLeaves(organizationId) {
@@ -68,7 +68,7 @@ async function countPendingLeaves(organizationId) {
 
     return totalPendingLeaves;
   } finally {
-    await closeMongoDBConnection();
+    // await closeMongoDBConnection();
   }
 }
 
