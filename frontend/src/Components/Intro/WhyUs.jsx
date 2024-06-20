@@ -57,7 +57,7 @@ const WhyUs = () => {
             <h2 className="text-2xl font-bold ml-4">Smart Recruitment</h2>
           </div>
           <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            Smart Recruitment is based on CV filtering of the applicants. CV filtering is based on Natural Language Processing NLP which extracts information from the resumes of the applicants and matches it with the keywords specified by the HR.
           </p>
         </animated.div>
 
@@ -68,7 +68,7 @@ const WhyUs = () => {
             <h2 className="text-2xl font-bold ml-4">Payroll Process</h2>
           </div>
           <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            HR of the organization can easily generate the payroll for all the employees in the organization. HR can manage allowances of the employees such as medical allowances, transport allowances and other allowances.
           </p>
         </animated.div>
       </div>

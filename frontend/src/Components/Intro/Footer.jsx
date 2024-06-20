@@ -55,36 +55,38 @@ const Footer = () => {
         <div className="flex justify-center items-center lg:w-1/2 lg:pl-8 bg-sec-color ">
           <form action="https://formspree.io/f/xrgnrzod"
             method="POST">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-              <label htmlFor="name" className="block text-sm font-medium mb-1">
-                  Name
-              </label>
-                <InputField
-                  label="username"
-                  type="text"
-                  id="name"
-                  name="username"
-                  autoComplete="off"
-                  value={contactformData.username}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div>
-                {/* Email */}
-                <label htmlFor="email" className="block text-sm font-medium mb-1">
-                  Email
+            <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="name" className="block text-sm font-medium mb-1">
+                    Name
                   </label>
-                <InputField
-                  label="abc@gmail.com"
-                  type="email"
-                  id="email"
-                  name="email"
-                  autoComplete="off"
-                  value={contactformData.email}
-                  onChange={handleInputChange}
-                />
-              </div>
+                  <InputField
+                    label="username"
+                    type="text"
+                    id="name"
+                    name="username"
+                    autoComplete="off"
+                    value={contactformData.username}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div>
+                  {/* Email */}
+                  <label htmlFor="email" className="block text-sm font-medium mb-1">
+                    Email
+                  </label>
+                  <InputField
+                    label="abc@gmail.com"
+                    type="email"
+                    id="email"
+                    name="email"
+                    autoComplete="off"
+                    value={contactformData.email}
+                    onChange={handleInputChange}
+                  />
+                </div>
+
+
               <div className="col-span-2">
                 <label htmlFor="message" className="block text-sm font-medium mb-1">
                   Message

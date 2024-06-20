@@ -44,7 +44,7 @@ function Pricing(props) {
           </animated.h2>
           <hr className="border-1 border-black w-full mt-1 mb-8"></hr>
           <animated.h3 style={fadeIn} className="text-black text-4xl lg:text-6xl font-bold mt-4">
-            $0
+          $0
           </animated.h3>
           <animated.p style={{fadeIn, marginTop: 10 }} className="text-gray-500 text-base font-medium whitespace-nowrap my-4">
             per employee, per month
@@ -59,14 +59,14 @@ function Pricing(props) {
           </animated.div>
           <animated.div style={{itemMargin, marginTop: 30 }} className="flex flex-col gap-4 items-start mt-6 mb-6">
             <p className="text-black text-lg">
-              <DoneRoundedIcon className="mr-4"></DoneRoundedIcon> Smart HRM on Desktop
+              <DoneRoundedIcon className="mr-4"></DoneRoundedIcon> Smart HRM web app
             </p>
-            <p className="text-black text-lg">
+            {/* <p className="text-black text-lg">
               <DoneRoundedIcon className="mr-4"></DoneRoundedIcon> Mobile App for Employee
-            </p>
-            <p className="text-black text-lg">
+            </p> */}
+            {/* <p className="text-black text-lg">
               <DoneRoundedIcon className="mr-4"></DoneRoundedIcon> Mobile App for Super Admin
-            </p>
+            </p> */}
             <p className="text-black text-lg">
               <DoneRoundedIcon className="mr-4"></DoneRoundedIcon> HR Management System
             </p>
