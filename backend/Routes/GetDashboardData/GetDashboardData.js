@@ -1,7 +1,7 @@
 const express = require("express");
 // const{getUserData}=require('../../Database/GetOrganizationData/getUser');
 const {
-  getCeoDashboardData,
+  getDashboardData,
 } = require("../../Database/GetOrganizationData/getDashboardData");
 const router = express.Router();
 
@@ -11,13 +11,13 @@ router.get("/:userType/:organizationId", async (req, res) => {
   // console.log(req.body);
   try {
     const { userType, organizationId } = req.params;
-    if(userType==='business_owner'){
+    
         const { noOfEmployees, noOfDepartments, pendingLeaveRequests } =
-        await getCeoDashboardData(organizationId);
+        await getDashboardData(userType,organizationId);
         res
         .status(200)
         .json({ noOfEmployees, noOfDepartments, pendingLeaveRequests  });
-    }
+    
 
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });

@@ -19,7 +19,7 @@ function CeoDashboard() {
       try {
         setLoading(true);
         const data = await axios.get(`http://localhost:5000/GetDashboardData/${employeeData.userType}/${employeeData.user._id}`);
-        console.log(data.data);
+        // console.log(data.data);
 
         setDashboardData(data.data);
         const response = await axios.get(`http://localhost:5000/Announcement/GetAnnouncements/${employeeData.user._id}`);

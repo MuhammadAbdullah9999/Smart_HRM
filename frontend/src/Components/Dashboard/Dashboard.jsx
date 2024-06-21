@@ -13,17 +13,23 @@ function Dashboard() {
 
   useEffect(() => {
     console.log("employeeData", employeeData);
+    const getDashboardData=async()=>{
+      const data = await axios.get(`http://localhost:5000/GetDashboardData/${employeeData.userType}/${employeeData.user.organizationId}`);
+      console.log(data);
+      setOrganizationData({
+        totalEmployees: data.data?.noOfEmployees || 0,
+        totalDepartments: data.data && data.data.noOfDepartments ? data.data.noOfDepartments.uniqueDepartmentsCount : 0,
+        totalLeaveRequest: data.data?.totalLeavesRequestPending || 0,
+      });
+    }
+    getDashboardData();
 
     // Check if employeeData is available and not null
     if (employeeData) {
   
       setUserData(employeeData);
 
-      setOrganizationData({
-        totalEmployees: employeeData.employeeData.length || 0,
-        totalDepartments: employeeData.departments?.uniqueDepartmentsCount || 0,
-        totalLeaveRequest: employeeData.totalLeavesRequestPending || 0,
-      });
+     
     }
   }, [employeeData]);
 

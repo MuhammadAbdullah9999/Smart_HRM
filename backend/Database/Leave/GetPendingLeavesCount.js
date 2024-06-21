@@ -1,6 +1,7 @@
 const { connectToMongoDB, closeMongoDBConnection } = require("../connectDB");
 
 async function countPendingLeaves(organizationId,userType) {
+  console.log(organizationId,userType)
   try {
     const db = await connectToMongoDB();
     let col=''
