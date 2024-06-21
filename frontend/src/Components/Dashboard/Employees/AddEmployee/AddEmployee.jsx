@@ -16,7 +16,7 @@ const AddEmployee = () => {
   const navigate = useNavigate();
   const employeeData = useSelector((state) => state.EmployeeData.EmployeeData);
   const [departments, setDepartments] = useState([]);
-  const [positions, setPositions] = useState(["Software Engineer", "HR Manager", "Sales Associate"]);
+  const [positions, setPositions] = useState(["Software Engineer", "Sales Associate", "UI/UX Designer", "Front-End Developer", "Back-End Developer", "Full-Stack Developer", "Quality Assurance Engineer" ]);
   const [formData, setFormData] = useState({
     organizationId:
       employeeData.userType === "business_owner"

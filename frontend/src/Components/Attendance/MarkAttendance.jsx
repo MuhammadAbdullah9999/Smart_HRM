@@ -13,6 +13,7 @@ import validator from "validator";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import CircularProgress from '@mui/material/CircularProgress';
+import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 
 const MarkAttendance = () => {
   const navigate = useNavigate();
@@ -166,7 +167,7 @@ const MarkAttendance = () => {
                   <EventAvailableIcon /> Name
                 </th>
                 <th className="border border-gray-300 p-2">
-                  <CheckCircleOutlineIcon /> Present
+                  <CheckCircleRoundedIcon /> Present
                 </th>
                 <th className="border border-gray-300 p-2">
                   <CancelIcon /> Absent
@@ -183,9 +184,9 @@ const MarkAttendance = () => {
                     {employee.name}
                   </td>
                   <td className="border border-gray-300 p-2 text-center">
-                    <CheckCircleOutlineIcon
+                    <CheckCircleRoundedIcon
                       style={{
-                        color: employee.attendanceStatus === "present" ? "green" : "gray",
+                        color: employee.attendanceStatus === "present" ? "#4aff26" : "gray",
                       }}
                       onClick={() =>
                         setEmployeeAttendance((prev) =>
