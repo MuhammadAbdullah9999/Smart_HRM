@@ -12,28 +12,27 @@ function CeoDashboard() {
 
   const [announcements, setAnnouncements] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [dashboardData, setDashboardData] = useState(null);
 
   useEffect(() => {
-    const fetchAnnouncements = async () => {
+    const fetchAnnouncementsAndDashboardData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(
-          `http://localhost:5000/Announcement/GetAnnouncements/${employeeData.user._id}`
-        );
+        const data = await axios.get(`http://localhost:5000/GetDashboardData/${employeeData.userType}/${employeeData.user._id}`);
+        console.log(data.data);
+
+        setDashboardData(data.data);
+        const response = await axios.get(`http://localhost:5000/Announcement/GetAnnouncements/${employeeData.user._id}`);
         if (response) {
           setLoading(false);
-          console.log(
-            "Announcements:",
-            response.data.announcement.announcements
-          );
+          console.log("Announcements:", response.data.announcement.announcements);
 
           // Filter announcements for the current month and whose date has not passed
           const currentDate = new Date();
-          const filteredAnnouncements =
-            response.data.announcement.announcements.filter((announcement) => {
-              const announcementDate = new Date(announcement.date);
-              return announcementDate >= currentDate; // Filter announcements whose date has not passed
-            });
+          const filteredAnnouncements = response.data.announcement.announcements.filter((announcement) => {
+            const announcementDate = new Date(announcement.date);
+            return announcementDate >= currentDate; // Filter announcements whose date has not passed
+          });
 
           setAnnouncements(filteredAnnouncements);
         }
@@ -43,13 +42,13 @@ function CeoDashboard() {
       }
     };
 
-    fetchAnnouncements();
+    fetchAnnouncementsAndDashboardData();
   }, [employeeData]);
 
   return (
     <div className="flex flex-col md:flex-row h-screen md:gap-8">
       <CeoSidebar />
-      <div className="w-full ">
+      <div className="w-full">
         <div className="p-4">
           <DashboardOverview pageName="Dashboard"></DashboardOverview>
         </div>
@@ -57,12 +56,12 @@ function CeoDashboard() {
           <div className="flex justify-center md:justify-start flex-wrap gap-4 pl-4">
             <Card
               cardText="Employees"
-              cardNumber={employeeData.noOfEmployees}
+              cardNumber={dashboardData ? dashboardData.noOfEmployees : '-'}
               bgColor="blue-500"
             ></Card>
             <Card
               cardText="Departments"
-              cardNumber={employeeData.noOfDepartments.uniqueDepartmentsCount}
+              cardNumber={dashboardData && dashboardData.noOfDepartments ? dashboardData.noOfDepartments.uniqueDepartmentsCount : '-'}
               bgColor="green-500"
             ></Card>
             <Card
@@ -72,7 +71,7 @@ function CeoDashboard() {
             ></Card>
             <Card
               cardText="Leave Request"
-              cardNumber={employeeData.pendingLeaveRequests}
+              cardNumber={dashboardData ? dashboardData.pendingLeaveRequests : '-'}
               bgColor="blue-500"
             ></Card>
           </div>

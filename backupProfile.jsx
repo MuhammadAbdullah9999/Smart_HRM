@@ -8,17 +8,17 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { setEmployeeData } from "../../../state/index";
 import axios from "axios";
-import CircularProgress from "@mui/material/CircularProgress";
+import CircularProgress from '@mui/material/CircularProgress';
 import { useNavigate } from "react-router-dom";
+
 
 function EmployeeProfile() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const navigate=useNavigate();
 
   const employeesData = useSelector((state) => state.EmployeeData.EmployeeData);
   const { employeeId } = useParams();
-  console.log(employeesData);
-
+console.log(employeesData)
   // Find the employee with the matching employeeId
   const employeeData = employeesData.employeeData.find(
     (employee) => employee._id === employeeId
@@ -74,7 +74,7 @@ function EmployeeProfile() {
               bonus.year === new Date().getFullYear()
           )
           .map((bonus) => bonus.bonusAmount)
-          .reduce((acc, val) => acc + parseFloat(val), 0) || 0 // Sum up the bonus amounts, with default value 0
+          .reduce((acc, val) => acc + parseFloat(val), 0) // Sum up the bonus amounts
       : "",
     bonusReason: employeeData
       ? employeeData.bonuses
@@ -88,6 +88,26 @@ function EmployeeProfile() {
           .join(", ")
       : "",
 
+    // deduction: employeeData
+    // ? employeeData.deduction?.filter(
+    //       (deduction) =>
+    //         deduction.month ===
+    //           new Date().toLocaleString("en-US", { month: "long" }) &&
+    //         deduction.year === new Date().getFullYear()
+    //     )
+    //     .map((deduction) => deduction.deductionAmount)
+    //     .join(", ")
+    // : "",
+    // deductionReason:  employeeData
+    // ? employeeData.deduction?.filter(
+    //       (deduction) =>
+    //         deduction.month ===
+    //           new Date().toLocaleString("en-US", { month: "long" }) &&
+    //         deduction.year === new Date().getFullYear()
+    //     )
+    //     .map((deduction) => deduction.deductionReason)
+    //     .join(", ")
+    // : "",
     grossSalary: grossSalary,
   });
 
@@ -96,14 +116,6 @@ function EmployeeProfile() {
   };
 
   const handleInputChange = (field, value) => {
-    // Check if the field should only accept numbers
-    const numberFields = ["basicSalary", "homeAllowance", "medicalAllowance", "transportAllowance", "bonus", "grossSalary"];
-    if (numberFields.includes(field)) {
-      // If the value is not a number, return without updating the state
-      if (isNaN(value)) {
-        return;
-      }
-    }
     setInputValues({ ...inputValues, [field]: value });
   };
 
@@ -206,8 +218,8 @@ function EmployeeProfile() {
       month,
       year,
       email: employeesData.user.email,
-      organizationId: employeesData.userType === 'business_owner' ? employeesData.user._id : employeesData.user.organizationId,
-      userType: employeesData.userType
+      organizationId: employeesData.userType==='business_owner'? employeesData.user._id:employeesData.user.organizationId,
+      userType:employeesData.userType
     };
 
     try {
@@ -217,12 +229,12 @@ function EmployeeProfile() {
         "http://localhost:5000/UpdateEmployeeProfile",
         data
       );
-      console.log(response.data);
-      setLoading(false);
+      console.log(response.data)
+      setLoading(false)
       dispatch(setEmployeeData(response.data));
       // console.log(response.data);
     } catch (error) {
-      setLoading(false);
+      setLoading(false)
       setApiError(error.response.data);
       console.error("Error updating employee profile:", error);
     }
@@ -236,11 +248,11 @@ function EmployeeProfile() {
     const attendance = employeeData ? employeeData.attendance : [];
 
     // Get the current month and date
-    if (employeeData.attendance) {
+    if(employeeData.attendance){
       const currentDate = new Date();
       const currentMonth = currentDate.getMonth(); // Get current month (0-indexed)
       const currentYear = currentDate.getFullYear(); // Get current year
-
+  
       // Filter attendance records for the current month and year
       const attendanceForCurrentMonthAndYear = attendance.filter((record) => {
         const recordDate = new Date(record.date);
@@ -248,7 +260,7 @@ function EmployeeProfile() {
         const recordYear = recordDate.getFullYear();
         return recordMonth === currentMonth && recordYear === currentYear;
       });
-
+  
       const totalWorkingDays = attendanceForCurrentMonthAndYear.length;
       const presentDays = attendanceForCurrentMonthAndYear.filter(
         (record) => record.attendanceStatus === "present"
@@ -262,34 +274,33 @@ function EmployeeProfile() {
         console.log(deductionValue);
         setInputValues({
           ...inputValues,
-
+  
           deduction: deductionValue,
           deductionReason: "Short Attendance",
         });
       }
-
+  
       console.log(
         `Attendance percentage for the current month: ${attendancePercentage}%`
       );
     }
+  
   }, []);
-
-  const handleDeleteEmployee=async()=>{
-    console.log(employeeId);
-    const email= employeesData.user.email
-    const organizationId= employeesData.userType==='business_owner'? employeesData.user._id:employeesData.user.organizationId
-    try{
-      setLoading(true)
-      const response=await axios.delete(`http://localhost:5000/DeleteUser/${employeeId}/${employeesData.userType}/${email}/${organizationId}`)
-      console.log(response.data)
-      setLoading(false)
-      dispatch(setEmployeeData(response.data))
-      navigate(employeesData.userType==='business_owner'?'/CEO/dashboard/employees':'/HR/dashboard/employees')
-    }catch(error){
-      console.error(error);
-    }  
-  }
-
+const handleDeleteEmployee=async()=>{
+  console.log(employeeId);
+  const email= employeesData.user.email
+  const organizationId= employeesData.userType==='business_owner'? employeesData.user._id:employeesData.user.organizationId
+  try{
+    setLoading(true)
+    const response=await axios.delete(`http://localhost:5000/DeleteUser/${employeeId}/${employeesData.userType}/${email}/${organizationId}`)
+    console.log(response.data)
+    setLoading(false)
+    dispatch(setEmployeeData(response.data))
+    navigate(employeesData.userType==='business_owner'?'/CEO/dashboard/employees':'/HR/dashboard/employees')
+  }catch(error){
+    console.error(error);
+  }  
+}
   return (
     <div className={`flex flex-col md:flex-row ${
       loading ? "pointer-events-none opacity-60" : ""
@@ -502,10 +513,10 @@ function EmployeeProfile() {
               <div className="flex flex-col items-left mt-4 w-full md:w-1/2 lg:w-1/4 mr-2">
                 <label className="flex items-center font-bold text-lg mr-4">
                   Deduction{" "}
-                  {/* <EditIcon
+                  <EditIcon
                     className="ml-2 cursor-pointer"
                     onClick={() => toggleEditMode("deduction")}
-                  /> */}
+                  />
                 </label>
                 <input
                   type="text"
@@ -519,7 +530,6 @@ function EmployeeProfile() {
                       : "cursor-text"
                   }`}
                   readOnly={!editMode.deduction}
-                  disabled
                 />
               </div>
 
@@ -527,10 +537,10 @@ function EmployeeProfile() {
               <div className="flex flex-col items-left mt-4 w-full md:w-1/2 lg:w-1/4 mr-2">
                 <label className="flex items-center font-bold text-lg mr-4">
                   Reason for Deduction{" "}
-                  {/* <EditIcon
+                  <EditIcon
                     className="ml-2 cursor-pointer"
                     onClick={() => toggleEditMode("deductionReason")}
-                  /> */}
+                  />
                 </label>
                 <input
                   type="text"
@@ -544,7 +554,6 @@ function EmployeeProfile() {
                       : "cursor-text"
                   }`}
                   readOnly={!editMode.deductionReason}
-                  disabled
                 />
               </div>
 

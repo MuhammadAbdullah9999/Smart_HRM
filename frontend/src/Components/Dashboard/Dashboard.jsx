@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import DashboardContent from "./DashboardContent";
 import { useSelector } from 'react-redux';
+import axios from 'axios';
 
 function Dashboard() {
   const employeeData = useSelector(state => state.EmployeeData.EmployeeData);
@@ -15,6 +16,7 @@ function Dashboard() {
 
     // Check if employeeData is available and not null
     if (employeeData) {
+  
       setUserData(employeeData);
 
       setOrganizationData({
