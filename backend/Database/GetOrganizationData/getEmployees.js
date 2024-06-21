@@ -1,57 +1,41 @@
 const { connectToMongoDB, closeMongoDBConnection } = require("../connectDB");
-const {ObjectId}=require('mongodb')
+const { ObjectId } = require('mongodb');
 
-async function getEmployees(organizationId,userId,userType) {
-    // console.log(organizationId,userId,userType)
+async function getEmployees(organizationId, userId, userType) {
   try {
     const db = await connectToMongoDB();
+    let collectionName = userType === 'business_owner' ? 'HR' : 'Employees';
+    const employeeCollection = db.collection(collectionName);
 
-    let col;
-    if(userType==='business_owner'){
-        col='HR';
-    }
-    else {
-        col='Employees'
-    }
-    const employeeCollection = db.collection(col);
     let employeeData;
     let hrData;
-if(userType==='HR'){
-    employeeData = await employeeCollection
-    .find({ organizationId: organizationId })
-    .toArray();
 
-    const hrCollection=db.collection('HR');
-    hrData=await hrCollection.find({ _id:new ObjectId(userId) }).toArray();
-}
-    else if(userType==='employee'){
-        employeeData = await employeeCollection
-        .find({ _id:new ObjectId(userId) })
-        .toArray();
+    switch (userType) {
+      case 'HR':
+        employeeData = await employeeCollection.find({ organizationId }).toArray();
+        const hrCollection = db.collection('HR');
+        hrData = await hrCollection.find({ _id: new ObjectId(userId) }).toArray();
+        break;
+      case 'employee':
+        employeeData = await employeeCollection.find({ _id: new ObjectId(userId) }).toArray();
+        break;
+      case 'business_owner':
+        employeeData = await employeeCollection.find({ organizationId: userId }).toArray();
+        break;
+      default:
+        throw new Error(`Unknown userType: ${userType}`);
     }
-    else if(userType==='business_owner'){
-        employeeData = await employeeCollection
-        .find({ organizationId: userId })
-        .toArray();
+
+    if (userType === 'HR') {
+      return { employeeData, hrData };
+    } else {
+      return { employeeData };
     }
-      // console.log(employeeData);
-      if(userType==='HR'){
-        return{
-          employeeData,
-          hrData
-        }
-      }
-      else{
-        return {
-          employeeData: employeeData,
-        };
-      }
-   
   } catch (error) {
-    console.error("Error connecting to MongoDB Atlas:", error);
+    console.error("Error fetching employee data:", error);
     throw error;
   } finally {
-    await closeMongoDBConnection();
+    // Do not close the connection here; manage it at a higher level if needed
   }
 }
 

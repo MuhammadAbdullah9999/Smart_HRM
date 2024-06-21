@@ -237,8 +237,12 @@ function Leave() {
                                   </button>
                                 </div>
                               )}
-                              {data.userType === "employee" ||
-                                (showHrLeave && <div>{leave.status}</div>)}
+                              {data.userType === "employee" ? (
+  <div>{leave.status}</div>
+) : (
+  showHrLeave && <div>{leave.status}</div>
+)}
+
                             </div>
                           </div>
                           <hr className="border"></hr>
