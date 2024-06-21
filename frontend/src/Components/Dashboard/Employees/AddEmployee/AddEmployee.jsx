@@ -229,7 +229,7 @@ const AddEmployee = () => {
                 focusColor="black"
                 top="6"
               />
-              <div className="mb-4 relative">
+              <div className=" relative">
                 <label
                   htmlFor="position"
                   className={`absolute transition-all duration-300 ${
@@ -238,8 +238,20 @@ const AddEmployee = () => {
                       : "top-2 left-3 text-gray-500 text-xs md:text-sm lg:text-sm"
                   }`}
                 ></label>
-                <select
-                  id="position"
+                 <InputField
+                label="Position"
+                type="text"
+                id="position"
+                name="position"
+                autoComplete="off"
+                value={formData.position}
+                error={errors.position}
+                onChange={handleInputChange}
+                focusColor="black"
+                top="6"
+              />
+                {/* <select
+                  id="position" 
                   name="position"
                   className={`p-2 border rounded w-full outline-none ${
                     formData.position ? "text-black" : "text-gray-500"
@@ -254,10 +266,10 @@ const AddEmployee = () => {
                       {option}
                     </option>
                   ))}
-                </select>
-                {errors.position && (
+                </select> */}
+                {/* {errors.position && (
                   <p className="text-red-800 font-bold mt-1">{errors.position}</p>
-                )}
+                )} */}
               </div>
               <div className="mb-4 relative">
                 <label
