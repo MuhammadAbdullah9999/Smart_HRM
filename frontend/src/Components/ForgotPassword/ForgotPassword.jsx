@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
-import {useParams, useNavigate } from "react-router-dom";
-import LoginImage from "../../images/log1.jpg"
+import { useParams, useNavigate } from "react-router-dom";
+import LoginImage from "../../images/log1.jpg";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CircularProgress from '@mui/material/CircularProgress';
 import LoginOutlinedIcon from "@mui/icons-material/LoginOutlined";
@@ -13,7 +13,7 @@ import { setEmployeeData } from "../../state/index";
 import { setJobs } from "../../state/JobsSlice";
 
 const ForgotPassword = () => {
-    const { userType, token } = useParams();
+  const { userType, token } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -24,7 +24,6 @@ const ForgotPassword = () => {
 
   const [errors, setErrors] = useState({});
   const [apiError, setApiError] = useState("");
-  const [user, setUser] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleInputChange = (e) => {
@@ -36,30 +35,32 @@ const ForgotPassword = () => {
   const validateForm = () => {
     let isValid = true;
     const newErrors = {};
-  
-    // if (validator.isEmpty(formData.password)) {
-    //   newErrors.password = "Password is required";
-    //   isValid = false;
-    // } else if (!validator.isLength(formData.password, { min: 8 })) {
-    //   newErrors.password = "Password must be at least 8 characters long";
-    //   isValid = false;
-    // } else if (!validator.isAlphanumeric(formData.password)) {
-    //   newErrors.password = "Password must contain alphanumeric characters";
-    //   isValid = false;
-    // }
-  
-    // if (validator.isEmpty(formData.confirmPassword)) {
-    //   newErrors.confirmPassword = "Confirm Password is required";
-    //   isValid = false;
-    // } else if (formData.password !== formData.confirmPassword) {
-    //   newErrors.confirmPassword = "Passwords do not match";
-    //   isValid = false;
-    // }
-  
+
+    if (validator.isEmpty(formData.password)) {
+      newErrors.password = "Password is required";
+      isValid = false;
+    } else if (!validator.isLength(formData.password, { min: 6 })) {
+      newErrors.password = "Password must be at least 6 characters long";
+      isValid = false;
+    } else if (!validator.matches(formData.password, /[0-9]/)) {
+      newErrors.password = "Password must contain at least one number";
+      isValid = false;
+    } else if (!validator.matches(formData.password, /[!@#$%^&*]/)) {
+      newErrors.password = "Password must contain at least one special character";
+      isValid = false;
+    }
+
+    if (validator.isEmpty(formData.confirmPassword)) {
+      newErrors.confirmPassword = "Confirm Password is required";
+      isValid = false;
+    } else if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match";
+      isValid = false;
+    }
+
     setErrors(newErrors);
     return isValid;
   };
-  
 
   const handleResetPassword = async (e) => {
     e.preventDefault();
@@ -67,14 +68,16 @@ const ForgotPassword = () => {
     if (!validateForm()) {
       return;
     }
+
     try {
-        setLoading(true);
-        const data={
-            userType:userType,
-            token:token,
-            password:formData.password
-        }
-        console.log(data)
+      setLoading(true);
+      const data = {
+        userType: userType,
+        token: token,
+        password: formData.password,
+      };
+
+      console.log(data);
 
       const response = await axios.post(
         "http://localhost:5000/ResetPassword",
@@ -83,14 +86,13 @@ const ForgotPassword = () => {
 
       if (response.data) {
         setLoading(false);
-        console.log(response.data)
+        console.log(response.data);
         navigate(`/login`);
-        
       }
     } catch (error) {
       console.log(error);
       setLoading(false);
-      setApiError(error.response.data.error);
+      setApiError(error.response?.data?.error || "An error occurred");
     }
   };
 
@@ -98,7 +100,7 @@ const ForgotPassword = () => {
     <div className="flex flex-col md:flex-row h-screen">
       {/* Background blur effect */}
       {loading && <div className="absolute inset-0 backdrop-filter backdrop-blur-sm z-10"></div>}
-      
+
       {/* Left Section */}
       <div className="w-full md:w-1/2 p-4 h-full">
         <Link to='/'><ArrowBackIcon className="cursor-pointer absolute top-8 left-8 text-black" /></Link>
@@ -118,11 +120,11 @@ const ForgotPassword = () => {
           </p>
 
           <form className="grid grid-cols-1 gap-6 mt-20" onSubmit={handleResetPassword}>
-            {/* Email */}
+            {/* Password */}
             <div>
               <InputField
                 label="Password"
-                type="text"
+                type="password"
                 id="password"
                 name="password"
                 value={formData.password}
@@ -137,11 +139,11 @@ const ForgotPassword = () => {
                 </p>
               )}
             </div>
-            {/* Password */}
+            {/* Confirm Password */}
             <div>
               <InputField
-                label="confirmPassword"
-                type="confirmPassword"
+                label="Confirm Password"
+                type="password"
                 id="confirmPassword"
                 name="confirmPassword"
                 value={formData.confirmPassword}

@@ -1,4 +1,5 @@
-from CV_Matching import rank_applicants
+# from CV_Matching import rank_applicants
+from CV_Matching_Using_HuggingFace import rank_applicants
  
 applicants=[  {
         "email": "applicant@gmail.com",
