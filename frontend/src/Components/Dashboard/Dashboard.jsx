@@ -19,7 +19,7 @@ function Dashboard() {
       setOrganizationData({
         totalEmployees: data.data?.noOfEmployees || 0,
         totalDepartments: data.data && data.data.noOfDepartments ? data.data.noOfDepartments.uniqueDepartmentsCount : 0,
-        totalLeaveRequest: data.data?.totalLeavesRequestPending || 0,
+        totalLeaveRequest: data.data?.pendingLeaveRequests || 0,
       });
     }
     getDashboardData();
