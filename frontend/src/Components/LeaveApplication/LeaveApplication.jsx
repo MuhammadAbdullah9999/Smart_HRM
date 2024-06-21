@@ -26,7 +26,7 @@ function LeaveApplication() {
     const { name, value } = event.target;
 
     // Check if start date is in the past
-    if (name === "startDate" && new Date(value) < new Date()) {
+    if (name === "startDate" && new Date(value) < new Date().setHours(0, 0, 0, 0)) {
       setErrors((prevErrors) => ({
         ...prevErrors,
         startDate: "Start Date cannot be in the past.",
@@ -95,7 +95,7 @@ function LeaveApplication() {
         ? "Number of leave days is required and must be a number."
         : "";
 
-    if (!validator.isEmpty(formData.startDate) && new Date(formData.startDate) < new Date()) {
+    if (!validator.isEmpty(formData.startDate) && new Date(formData.startDate) < new Date().setHours(0, 0, 0, 0)) {
       tempErrors.startDate = "Start Date cannot be in the past.";
     }
 
@@ -106,7 +106,7 @@ function LeaveApplication() {
       tempErrors.endDate = !validator.isAfter(
         formData.endDate,
         formData.startDate
-      )
+      ) && formData.endDate !== formData.startDate
         ? "End Date must be after Start Date."
         : "";
     }

@@ -23,7 +23,7 @@ function Leave() {
   const [loading, setLoading] = useState(false);
   const [showHrLeave, setShowHrLeave] = useState(false);
   const data = useSelector((state) => state.EmployeeData.EmployeeData);
-  console.log(data);
+  // console.log(data);
 
   useEffect(() => {
     setLoading(true);
@@ -61,6 +61,7 @@ function Leave() {
       );
       if (response) {
         setLoading(false);
+        console.log(response.data);
         dispatch(setEmployeeData(response.data));
         // Reload the page after a successful API response
         window.location.reload();

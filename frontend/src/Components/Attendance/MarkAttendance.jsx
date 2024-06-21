@@ -12,12 +12,13 @@ import { setEmployeeData } from "../../state";
 import validator from "validator";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import CircularProgress from '@mui/material/CircularProgress';
+import CircularProgress from "@mui/material/CircularProgress";
 
 const MarkAttendance = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const employeeData = useSelector((state) => state.EmployeeData.EmployeeData);
+  console.log(employeeData)
 
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().slice(0, 10));
   const [employeeAttendance, setEmployeeAttendance] = useState([]);
@@ -25,15 +26,15 @@ const MarkAttendance = () => {
   const [apiError, setApiError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
+  const updateAttendanceForDate = (date) => {
     if (employeeData) {
-      const initialAttendance = employeeData.employeeData.map((employee) => {
+      const updatedAttendance = employeeData.employeeData.map((employee) => {
         const leaveStatus = employee.leaveRequest && employee.leaveRequest.some((leave) => {
           if (leave.status === "Approved") {
             const [startDate, endDate] = leave.leaveDate.split(" to ");
             const start = new Date(startDate);
             const end = new Date(endDate);
-            const selected = new Date(selectedDate);
+            const selected = new Date(date);
             return selected >= start && selected <= end;
           }
           return false;
@@ -44,8 +45,12 @@ const MarkAttendance = () => {
           attendanceStatus: leaveStatus || "",
         };
       });
-      setEmployeeAttendance(initialAttendance);
+      setEmployeeAttendance(updatedAttendance);
     }
+  };
+
+  useEffect(() => {
+    updateAttendanceForDate(selectedDate);
   }, [employeeData, selectedDate]);
 
   const handleSubmit = async (overwrite = false) => {
@@ -243,7 +248,7 @@ const MarkAttendance = () => {
               ))}
               {loading && (
                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20">
-                  <CircularProgress style={{ color: 'blue' }} />
+                  <CircularProgress style={{ color: "blue" }} />
                 </div>
               )}
             </tbody>

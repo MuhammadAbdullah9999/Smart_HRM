@@ -76,7 +76,7 @@ if(userType==='HR'){
   return({user, departments, employeeData, totalLeavesRequestPending, resUserType:userType,error:null})
 }
 else{
-  const {userType,user,employeeData,noOfEmployees,noOfDepartments,noOfHRs,pendingLeaveRequests}=await getCeoAndEmployee(lowerCaseEmail,orgUser._id.toString())
+  const {userType,user,employeeData,noOfEmployees,noOfDepartments,noOfHRs,pendingLeaveRequests}=await getCeoAndEmployee(email,organizationId);
   return({user,employeeData,noOfEmployees,noOfDepartments,noOfHRs,pendingLeaveRequests,resUserType:userType,error:null})
 }
 
