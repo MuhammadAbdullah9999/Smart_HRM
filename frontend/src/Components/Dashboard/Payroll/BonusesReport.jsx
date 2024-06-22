@@ -5,13 +5,15 @@ export const generateBonusesReport = (data) => {
   const workbook = XLSX.utils.book_new();
   const currentYear = new Date().getFullYear();
 
-  const headers = ["Employee ID", "Employee Name", "Email", "Bonuses", "Year"];
+  const headers = [
+    // "Employee ID", 
+    "Employee Name", "Email", "Bonuses", "Year"];
 
   const worksheetData = [headers];
   if (Array.isArray(data)) {
     data.forEach((employee) => {
       worksheetData.push([
-        employee.employeeId,
+        // employee.employeeId,
         employee.employeeName,
         employee.email,
         employee.bonuses.types.join(", "),

@@ -19,7 +19,7 @@ export const generateAllowancesReport = (data) => {
   const uniqueAllowanceTypes = Array.from(allowanceTypes);
 
   const headers = [
-    "Employee ID",
+    // "Employee ID",
     "Employee Name",
     "Email",
     "Total Allowances",
@@ -36,9 +36,9 @@ export const generateAllowancesReport = (data) => {
           : null;
         return allowance ? allowance.amount : 0;
       });
-
+console.log(data)
       worksheetData.push([
-        employee.employeeId,
+        // employee.employeeId,
         employee.employeeName,
         employee.email,
         employee.allowances.total,

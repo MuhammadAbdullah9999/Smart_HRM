@@ -6,7 +6,7 @@ export const generatePastEmployeesReport = (data) => {
   const currentYear = new Date().getFullYear();
 
   const headers = [
-    "Employee ID",
+    // "Employee ID",
     "Employee Name",
     "Department",
     "position",
@@ -21,9 +21,10 @@ export const generatePastEmployeesReport = (data) => {
 
   const worksheetData = [headers];
   if (Array.isArray(data)) {
+    console.log(data)
     data.forEach((employee) => {
       worksheetData.push([
-        employee.employeeId,
+        // employee.employeeId,
         employee.name,
         employee.department,
         employee.position,
