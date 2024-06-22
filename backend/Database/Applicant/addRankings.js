@@ -2,6 +2,7 @@ const { ObjectId } = require("mongodb");
 const { connectToMongoDB, closeMongoDBConnection } = require("../connectDB");
 
 async function addRanking(flaskApiResponse) {
+  // console.log(flaskApiResponse);
   try {
     const db = await connectToMongoDB();
     const collection = db.collection("Applicants");

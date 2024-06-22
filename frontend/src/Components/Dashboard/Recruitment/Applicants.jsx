@@ -152,7 +152,7 @@ function Applicants() {
           </button>
         </div>
         {!loading && (
-          <div className="h-96 flex flex-col pt-6 justify-between p-3 w-11/12 m-auto bg-sec-color rounded-lg text-white overflow-y-auto">
+          <div className="h-96 flex flex-col pt-6 p-3 w-11/12 m-auto bg-sec-color rounded-lg text-white overflow-y-auto">
             {applicants.map((applicant) => (
               <div key={applicant._id} className=" mb-4 w-full text-sec-color">
                 <div className="flex justify-between bg-white p-3 rounded-lg shadow-md">

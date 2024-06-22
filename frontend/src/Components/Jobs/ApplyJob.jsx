@@ -3,9 +3,16 @@ import { useParams } from 'react-router-dom';
 import InputField from '../Styles/InputField';
 import validator from 'validator';
 import axios from 'axios';
+import CircularProgress from "@mui/material/CircularProgress";
+import { useNavigate } from "react-router-dom";
+
+
 
 function ApplyJob() {
+  const navigate = useNavigate();
+
   const { orgId,jobId, jobTitle, jobDescription, orgName } = useParams();
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -106,16 +113,21 @@ function ApplyJob() {
       formDataToSend.append('orgId', formData.orgId);
 
       try {
+        setLoading(true);
         const response = await axios.post('http://localhost:5000/AddApplicant', formDataToSend, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
         });
 
-        console.log('Form submitted successfully');
+
+        setLoading(false);
+        navigate('/Jobs');
+        // console.log('Form submitted successfully');
         console.log(response);
         // Add your logic for successful form submission
       } catch (error) {
+        setLoading(false);
         console.error('Error submitting form:', error.response.data.error);
         setApiError(error.response.data.error); // Set API error message
       }
@@ -125,6 +137,9 @@ function ApplyJob() {
   return (
     <div className="bg-sec-color min-h-screen text-white pb-12">
       <div className="w-9/12 m-auto pt-12">
+      {loading && (
+          <div className="absolute inset-0 backdrop-filter backdrop-blur-sm z-10"></div>
+        )}
         <h2 className="text-3xl font-bold mb-4">{jobTitle} at {orgName}</h2>
         <p className="text-lg mb-4">Job Description:</p>
         <div className="mb-8">
@@ -224,6 +239,11 @@ function ApplyJob() {
           >
             Submit Application
           </button>
+          {loading && (
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20">
+                  <CircularProgress style={{ color: "blue" }} />
+                </div>
+              )}
         </form>
       </div>
     </div>

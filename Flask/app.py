@@ -18,6 +18,6 @@ applicants1=["\n\nContact\nEducation\n+923101404487\nPhone\nhafizzabdullah999@gm
 ]
 
 data=rank_applicants(job_description,applicants)
-print(data)
+# print(data)
 # for resume in applicants:
 #     print(resume['resume'])

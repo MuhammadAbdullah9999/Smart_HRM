@@ -1,17 +1,18 @@
 const express = require("express");
 const { MongoClient, Binary } = require("mongodb");
 const pdf = require("pdf-parse");
+const { connectToMongoDB, closeMongoDBConnection } = require("../connectDB");
 
-const uri = process.env.DB_URI;
-const dbName = process.env.DB_NAME;
+// const uri = process.env.DB_URI;
+// const dbName = process.env.DB_NAME;
 
-const client = new MongoClient(uri, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+// const client = new MongoClient(uri, {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true,
+// });
 
 const extractTextFromResume = async (resumeBuffer) => {
-  await client.connect();
+  // await client.connect();
   try {
     const data = await pdf(resumeBuffer);
     return data.text;
@@ -23,8 +24,10 @@ const extractTextFromResume = async (resumeBuffer) => {
 
 async function GetApplicantsData(organizationId, jobId) {
   try {
-    await client.connect();
-    const db = client.db(dbName);
+    // await client.connect();
+    // const db = client.db(dbName);
+    const db = await connectToMongoDB();
+    // const col = db.collection("Applicants");
     const applicantCollection = db.collection("Applicants");
 
     const applicants = await applicantCollection
@@ -33,13 +36,11 @@ async function GetApplicantsData(organizationId, jobId) {
         jobId: jobId,
       })
       .toArray();
-    console.log(applicants);
 
     const applicantsWithDecodedResume = await Promise.all(
       applicants.map(async (applicant) => {
         const { _id, name,phoneNumber,email, password, cv } = applicant;
         const decodedResume = await extractTextFromResume(cv.buffer);
-
         return {
           id: _id,
           name,
@@ -59,7 +60,7 @@ async function GetApplicantsData(organizationId, jobId) {
     return [];
   } finally {
     // Close the MongoDB connection after completing the operation
-    await client.close();
+    await closeMongoDBConnection();
   }
 }
 

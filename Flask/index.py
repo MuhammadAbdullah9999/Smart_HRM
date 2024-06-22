@@ -33,6 +33,7 @@ def handle_post_request():
             if isinstance(applicants, list) and all(isinstance(applicant, dict) for applicant in applicants) and isinstance(job_description, str):
                 ranking = rank_applicants(job_description, applicants)
 
+                print(ranking)
                 return jsonify({'ranking': ranking})
             else:
                 return jsonify({'error': 'Invalid format in the request body'})
