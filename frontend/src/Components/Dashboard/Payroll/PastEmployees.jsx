@@ -21,7 +21,6 @@ export const generatePastEmployeesReport = (data) => {
 
   const worksheetData = [headers];
   if (Array.isArray(data)) {
-    console.log(data)
     data.forEach((employee) => {
       worksheetData.push([
         // employee.employeeId,

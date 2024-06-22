@@ -1,6 +1,7 @@
 const { generateHash } = require("../utilities/generatePasswordHash");
 const { getHrAndEmployee } = require("../GetOrganizationData/GetHRandEmployee");
 const { connectToMongoDB, closeMongoDBConnection } = require("../connectDB");
+const {ObjectId}=require('mongodb');
 
 const addEmployee = async (
   organizationId,
@@ -86,6 +87,8 @@ const addEmployee = async (
         totalLeavesRequestPending,
         departments,
       } = await getHrAndEmployee(hrEmail, organizationId);
+      const organization = await organizationCollection.findOne({ _id: new ObjectId(organizationId) });
+
 
       const data = {
         userType: userType,
@@ -93,6 +96,7 @@ const addEmployee = async (
         employeeData: employeeData,
         totalLeavesRequestPending: totalLeavesRequestPending,
         departments: departments,
+        organizationName:organization.name
       };
 
       return { data: data, error: null };

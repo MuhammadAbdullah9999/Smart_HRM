@@ -108,6 +108,15 @@ const AddEmployee = () => {
       hasErrors = true;
     }
 
+    const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,}$/;
+    if (!passwordRegex.test(formData.password)) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        password: "Password must be at least 6 characters long and include at least one number and one special character",
+      }));
+      hasErrors = true;
+    }
+
     Object.entries(formData).forEach(([field, value]) => {
       if (value === "" && field !== "allowances") {
         setErrors((prevErrors) => ({
