@@ -124,7 +124,7 @@ const Attendance = ({ userType,id }) => {
       <div className="flex flex-col md:flex-row pt-6 mb-6">
         <div className="flex flex-col justify-center items-center w-full md:w-1/3 rounded-xl mb-4 md:mb-0 mr-0 md:mr-4 border border-gray-200 shadow-md shadow-gray-300 hover:shadow-blue-300 cursor-pointer">
           <p className="text-xl font-extrabold text-center p-2 rounded-md">
-            <EventAvailableIcon /> {employeeData.user.employeeId}
+            <EventAvailableIcon /> {employeeId}
           </p>
           <p className="text-md text-center text-gray-500">Employee ID</p>
         </div>
@@ -191,17 +191,11 @@ const Attendance = ({ userType,id }) => {
           <div className="w-1/5 text-center">
             <CalendarTodayIcon /> Date
           </div>
-          {/* <div className="w-1/5 text-center">
-            <AccessTimeIcon /> Check In
+          <div className="w-1/5 text-center">
+            Status
           </div>
           <div className="w-1/5 text-center">
-            <AccessTimeIcon /> Check Out
-          </div> */}
-          <div className="w-1/5 text-center">
-            <CheckIcon /> Status
-          </div>
-          <div className="w-1/5 text-center">
-            <CheckIcon /> Attendance Status
+  Attendance Status
           </div>
         </div>
 
@@ -210,8 +204,6 @@ const Attendance = ({ userType,id }) => {
           return (
             <div key={detail.date} className="flex flex-row justify-evenly mb-2">
               <div className="w-1/5 text-center">{fullDate}</div>
-              {/* <div className="w-1/5 text-center">{detail.checkInTime}</div>
-              <div className="w-1/5 text-center">{detail.checkOutTime}</div> */}
               <div className="w-1/5 text-center">
                 {detail.attendanceStatus.toLowerCase() === "present" ? (
                   <CheckIcon style={{ color: "#4caf50" }} />

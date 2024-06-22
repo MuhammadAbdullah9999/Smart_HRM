@@ -290,7 +290,7 @@ function Payroll() {
                     fontSize: "15px",
                   }}
                 >
-                  Salary
+                  Base Salary
                 </TableCell>
                 <TableCell
                   sx={{
