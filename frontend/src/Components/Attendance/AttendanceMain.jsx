@@ -46,12 +46,23 @@ function AttendanceMain() {
     const currentMonth = new Date()
       .toLocaleString("default", { month: "long" })
       .toLowerCase();
-    
+
+    const attendanceMap = new Map();
+
+    rawData.forEach((monthlyData) => {
+      monthlyData.forEach((entry) => {
+        const employeeId = entry.employeeId;
+        if (!attendanceMap.has(employeeId)) {
+          attendanceMap.set(employeeId, []);
+        }
+        attendanceMap.get(employeeId).push(entry);
+      });
+    });
+
     const updatedEmployees = data.employeeData.map((employee) => {
-      const currentMonthAttendance = rawData[0].filter(
-        (entry) =>
-          entry.employeeId === employee._id &&
-          entry.month.toLowerCase() === currentMonth
+      const employeeAttendance = attendanceMap.get(employee._id) || [];
+      const currentMonthAttendance = employeeAttendance.filter(
+        (entry) => entry.month.toLowerCase() === currentMonth
       );
 
       const presentDays = currentMonthAttendance.filter(
