@@ -36,6 +36,7 @@ function AttendanceMain() {
       const response = await axios.get(
         `http://localhost:5000/GetAttendance/${organizationId}/${data.userType}`
       );
+      console.log(response);
       processAttendanceData(response.data);
     } catch (error) {
       console.error("Error fetching attendance data:", error);
@@ -109,7 +110,7 @@ function AttendanceMain() {
 
     attendanceData.forEach((employee) => {
       worksheetData.push([
-        employee.employeeId,
+        employee._id,
         employee.name,
         employee.currentMonth,
         employee.presentDays,

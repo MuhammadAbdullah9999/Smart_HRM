@@ -10,12 +10,15 @@ router.get("/:organizationId/:userType", async (req, res) => {
   getAttendanceData(organizationId, userType)
     .then(result => {
       if (result.error) {
+        console.log(result.error);
         res.status(500).json(result.error);
       } else {
+        console.log(result);
         res.status(200).json(result.attendanceArrays);
       }
     })
     .catch(error => {
+      console.log(error)
       res.status(500).json(error);
     });
 });

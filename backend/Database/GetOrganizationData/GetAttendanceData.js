@@ -1,33 +1,33 @@
 const { connectToMongoDB, closeMongoDBConnection } = require('../connectDB');
 const { ObjectId } = require('mongodb');
 
-async function getAttendanceData(organizationId,userType) {
+async function getAttendanceData(organizationId, userType) {
     // console.log(organizationId);
     try {
         // Connect to the database
         const db = await connectToMongoDB();
 
-        let col='';
-        if(userType=='HR'){
-            col="Employees"
-        }
-        else{
-            col="HR"
+        let col = '';
+        if (userType === 'HR') {
+            col = "Employees"
+        } else {
+            col = "HR"
         }
         // Access the Employees collection
         const employeesCollection = db.collection(col);
 
         // Find employees by organization ID
         const employees = await employeesCollection.find({ organizationId }).toArray();
-        // console.log(employees);
 
-        // Extract attendance arrays from each employee
-        const attendanceArrays = employees.map(employee => employee.attendance);
+        // Extract attendance arrays from each employee and filter out undefined entries
+        const attendanceArrays = employees.map(employee => employee.attendance).filter(attendance => attendance !== undefined);
 
         // Return the extracted attendance arrays
+        console.log(attendanceArrays);
         return { attendanceArrays, error: null };
 
     } catch (error) {
+        console.log(error);
         return { attendanceArrays: null, error: error.message };
     } finally {
         await closeMongoDBConnection();
@@ -35,11 +35,11 @@ async function getAttendanceData(organizationId,userType) {
 }
 
 async function getEmployeeAttendance(employeeId, attendanceType) {
-    console.log(employeeId,attendanceType);
+    console.log(employeeId, attendanceType);
     try {
         const db = await connectToMongoDB();
 
-        const col = attendanceType === 'HR' ? 'Employees':attendanceType==='hrAttendance'?'HR':attendanceType==='employee'?'Employees' : 'HR';
+        const col = attendanceType === 'HR' ? 'Employees' : attendanceType === 'hrAttendance' ? 'HR' : attendanceType === 'employee' ? 'Employees' : 'HR';
         console.log(col)
 
         const employeesCollection = db.collection(col);
