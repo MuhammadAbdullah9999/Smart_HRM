@@ -40,21 +40,21 @@ async function getEmployeeAttendance(employeeId, attendanceType) {
         const db = await connectToMongoDB();
 
         const col = attendanceType === 'HR' ? 'Employees' : attendanceType === 'hrAttendance' ? 'HR' : attendanceType === 'employee' ? 'Employees' : 'HR';
-        console.log(col)
+        // console.log(col)
 
         const employeesCollection = db.collection(col);
 
-        const employee = await employeesCollection.findOne({ _id: new ObjectId(employeeId) });
+        var employee = await employeesCollection.findOne({ _id: new ObjectId(employeeId) });
 
         if (!employee) {
-            return { attendance: null, error: 'Employee not found' };
+            return { attendance: null,employeeId:employee.employeeId, error: 'Employee not found' };
         }
 
         const attendance = employee.attendance;
 
-        return { attendance, error: null };
+        return { attendance,employeeId:employee.employeeId ,error: null };
     } catch (error) {
-        return { attendance: null, error: error.message };
+        return { attendance: null,employeeId:employee.employeeId, error: error.message };
     } finally {
         await closeMongoDBConnection();
     }

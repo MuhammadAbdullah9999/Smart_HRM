@@ -30,7 +30,8 @@ const UpdateUser=require('./Routes/UpdateUser/UpdateUser');
 const GenerateReport=require('./Routes/GenerateReport/GenerateReport');
 const GetAttendanceData=require('./Routes/GetAttendance/GetAttendanceData');
 const GetUser=require('./Routes/GetUser/GetUser')
-const GetDashboardData=require('./Routes/GetDashboardData/GetDashboardData')
+const GetDashboardData=require('./Routes/GetDashboardData/GetDashboardData');
+const Jobs=require('./Routes/Jobs/Jobs');
 const app = express();
 
 app.use(cors({credentials: true }));
@@ -66,7 +67,8 @@ app.use('/UpdateUser',UpdateUser)
 app.use('/GenerateReport',GenerateReport);
 app.use('/GetAttendance',GetAttendanceData);
 app.use('/GetUser',GetUser);
-app.use('/GetDashboardData',GetDashboardData)
+app.use('/GetDashboardData',GetDashboardData);
+app.use('/Jobs',Jobs);
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {

@@ -30,10 +30,11 @@ router.get("/employee/:employeeId/:attendanceType", async (req, res) => {
 
   getEmployeeAttendance(employeeId, attendanceType)
     .then(result => {
+      console.log(result)
       if (result.error) {
-        res.status(500).json(result.error);
+        res.status(500).json(result);
       } else {
-        res.status(200).json(result.attendance);
+        res.status(200).json(result);
       }
     })
     .catch(error => {

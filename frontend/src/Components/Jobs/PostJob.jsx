@@ -12,14 +12,14 @@ function PostJob() {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     organizationId: data.user.organizationId,
-    jobTitle: "Senior Software Engineer",
+    jobTitle: "",
     jobDescription:
-      "Software Engineer required for cleaning the office and making tea for CEO. ",
-    jobType: "Full time",
+      "",
+    jobType: "",
     requirements:
-      "Must have strong knowledge of OOP, Data structures and algorithm and Databases",
-    noOfPositions: "2",
-    location: "Lahore, Pakistan",
+      "",
+    noOfPositions: "",
+    location: "",
   });
   const [errors, setErrors] = useState({});
 

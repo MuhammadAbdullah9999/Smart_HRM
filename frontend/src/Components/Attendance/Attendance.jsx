@@ -14,6 +14,7 @@ const Attendance = ({ userType,id }) => {
   let { employeeId } = useParams();
   let attendanceType='';
   const employeeData = useSelector((state) => state.EmployeeData.EmployeeData);
+  console.log(employeeData)
   if(!employeeId){
     employeeId=id;
     attendanceType='hrAttendance';
@@ -50,15 +51,15 @@ const Attendance = ({ userType,id }) => {
     try {
       const response = await axios.get(`http://localhost:5000/GetAttendance/employee/${employeeId}/${attendanceType}`);
       console.log(response.data);
-      setAttendanceData(response.data || []);
+      setAttendanceData(response.data);
     } catch (error) {
       console.error("Error fetching attendance data:", error);
       setAttendanceData([]);
     }
   };
 
-  const currentMonthAttendance = Array.isArray(attendanceData)
-    ? attendanceData.filter((entry) => {
+  const currentMonthAttendance = Array.isArray(attendanceData.attendance)
+    ? attendanceData.attendance.filter((entry) => {
         const { year, month } = parseDate(entry.date);
         return (
           year === selectedYear &&
@@ -124,7 +125,7 @@ const Attendance = ({ userType,id }) => {
       <div className="flex flex-col md:flex-row pt-6 mb-6">
         <div className="flex flex-col justify-center items-center w-full md:w-1/3 rounded-xl mb-4 md:mb-0 mr-0 md:mr-4 border border-gray-200 shadow-md shadow-gray-300 hover:shadow-blue-300 cursor-pointer">
           <p className="text-xl font-extrabold text-center p-2 rounded-md">
-            <EventAvailableIcon /> {employeeData.user.employeeId}
+            <EventAvailableIcon /> {attendanceData.employeeId}
           </p>
           <p className="text-md text-center text-gray-500">Employee ID</p>
         </div>
