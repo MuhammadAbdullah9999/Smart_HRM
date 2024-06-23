@@ -9,21 +9,36 @@ function Dashboard() {
   console.log(employeeData);
 
   const [userData, setUserData] = useState(null);
+  const [job, setJob] = useState([]);
   const [organizationData, setOrganizationData] = useState(null);
+
+  
 
   useEffect(() => {
     console.log("employeeData", employeeData);
+
+    const fetchJobs = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/jobs/${employeeData.user.organizationId}`);
+        // console.log(response.data.length);
+        setJob(response.data.length || []);
+      } catch (error) {
+        console.error("Error fetching jobs:", error);
+      }
+    };
+
     const getDashboardData=async()=>{
       const data = await axios.get(`http://localhost:5000/GetDashboardData/${employeeData.userType}/${employeeData.user.organizationId}`);
-      console.log(data);
+      // console.log(data);
       setOrganizationData({
         totalEmployees: data.data?.noOfEmployees || 0,
         totalDepartments: data.data && data.data.noOfDepartments ? data.data.noOfDepartments.uniqueDepartmentsCount : 0,
         totalLeaveRequest: data.data?.pendingLeaveRequests || 0,
+        totalJobs:job?job:'0'
       });
     }
     getDashboardData();
-
+    fetchJobs();
     // Check if employeeData is available and not null
     if (employeeData) {
   

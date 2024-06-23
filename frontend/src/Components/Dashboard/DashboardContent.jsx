@@ -94,7 +94,7 @@ function DashboardContent(props) {
                 <DashboardStat label="Total Employees" value={props.data.totalEmployees} />
                 <DashboardStat label="Departments" value={props.data.totalDepartments} />
                 <DashboardStat label="Leave Requests" value={props.data.totalLeaveRequest} />
-                <DashboardStat label="Loan Requests" value="0" />
+                <DashboardStat label="Total Open Jobs" value={props.data.totalJobs} />
             </div>)}
             
             {/* {toDoList?( */}

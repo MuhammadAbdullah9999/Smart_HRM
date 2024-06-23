@@ -17,8 +17,8 @@
 # if __name__ == '__main__':
 #     app.run(port=5001)
 from flask import Flask, request, jsonify
-from CV_Matching import rank_applicants
-
+# from CV_Matching import rank_applicants
+from CV_Matching_Using_HuggingFace import rank_applicants
 app = Flask(__name__)
 
 @app.route('/api', methods=['POST'])
