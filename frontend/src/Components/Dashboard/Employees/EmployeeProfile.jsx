@@ -324,7 +324,7 @@ const handleDeleteEmployee=async()=>{
 
         {/* Employee profile details */}
         <div className="mt-10">
-          <table className="w-full rounded-lg border border-gray-200 shadow-lg shadow-gray-200 cursor-pointer hover:shadow-blue-200 ">
+          <table className="bg-sec-color bg-opacity-90 text-white w-full rounded-lg border border-gray-200 shadow-lg shadow-gray-200 cursor-pointer hover:shadow-blue-200 ">
             <tbody>
               <tr>
                 <th className="p-3 pl-8 text-left text-md text-gray-500">
