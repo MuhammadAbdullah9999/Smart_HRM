@@ -130,9 +130,10 @@ function Leave() {
                     employee.leaveRequest.length > 0 &&
                     employee.leaveRequest.map((leave) => (
                       <div key={leave._id}>
-                        {leave.status !== "pending" && (
+                      {/* {leave.status !== "pending" && (
                           <div className="flex justify-between w-full gap-2 p-4">
                             <div>
+                            <span className="text-sm">{(employee.employeeId)}</span>
                               <p className="font-bold text-sm">
                                 {employee.name}
                               </p>
@@ -142,7 +143,7 @@ function Leave() {
                             </div>
                             <div className="self-center">
                               <div>
-                                {/* <p className="font-bold text-sm">{employee.name}</p> */}
+                               
                                 <span className="text-sm">
                                   {leave.leaveDate}
                                 </span>
@@ -151,7 +152,7 @@ function Leave() {
                                 <div>
                                   <p>
                                     <span className="font-bold text-xs">
-                                      Status:{" "}
+                                      Status:
                                     </span>
                                     <span
                                       className={`text-sm font-bold ${
@@ -165,6 +166,33 @@ function Leave() {
                                   </p>
                                 </div>
                               </div>
+                            </div>
+                          </div>
+                        )} */}
+                        {leave.status !== "pending" && (
+                          
+                          <div className="flex flex-col justify-center w-full gap-2 p-2">
+                            <div className="flex justify-between">
+                              <p className="font-bold text-sm">{employee.name}</p>
+                              <p className="font-bold text-sm">{employee.employeeId}</p>
+                            </div>
+                            <div className="flex justify-center">
+                             <span className="font-bold text-sm pr-1">Date:</span> <p className="text-sm">{leave.leaveDate}</p>
+                            </div>
+                            <div className="flex justify-center">
+                            <span className="font-bold text-sm pr-1">Reason:</span>  <p className="text-sm">{leave.leaveReason}</p>
+                            </div>
+                            <div className="flex justify-center">
+                              <span className="font-bold text-sm pr-1">Status: </span>
+                              <p
+                                className={`text-sm font-bold ${
+                                  leave.status === "Approved"
+                                    ? "text-green-500"
+                                    : "text-red-500"
+                                }`}
+                              >
+                                {leave.status}
+                              </p>
                             </div>
                           </div>
                         )}
@@ -238,11 +266,10 @@ function Leave() {
                                 </div>
                               )}
                               {data.userType === "employee" ? (
-  <div>{leave.status}</div>
-) : (
-  showHrLeave && <div>{leave.status}</div>
-)}
-
+                                <div>{leave.status}</div>
+                              ) : (
+                                showHrLeave && <div>{leave.status}</div>
+                              )}
                             </div>
                           </div>
                           <hr className="border"></hr>

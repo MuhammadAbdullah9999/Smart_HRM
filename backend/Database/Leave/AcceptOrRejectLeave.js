@@ -64,6 +64,11 @@ async function acceptOrRejectLeave(
         }
       }
     }
+    const orgCollection = db.collection('Organizations');
+    const organization = await orgCollection.findOne({
+      _id: new ObjectId(organizationId),
+    });
+
 if(userType==='HR'){
   const{
     userType,
@@ -73,11 +78,11 @@ if(userType==='HR'){
     departments,
   } = await getHrAndEmployee(email,organizationId);
   // console.log(user,userType,employeeData,totalLeavesRequestPending,departments);
-  return({user, departments, employeeData, totalLeavesRequestPending, resUserType:userType,error:null})
+  return({user, departments, employeeData, totalLeavesRequestPending, resUserType:userType,organizationName:organization.name,error:null})
 }
 else{
   const {userType,user,employeeData,noOfEmployees,noOfDepartments,noOfHRs,pendingLeaveRequests}=await getCeoAndEmployee(email,organizationId);
-  return({user,employeeData,noOfEmployees,noOfDepartments,noOfHRs,pendingLeaveRequests,resUserType:userType,error:null})
+  return({user,employeeData,noOfEmployees,noOfDepartments,noOfHRs,pendingLeaveRequests,resUserType:userType,organizationName:organization.name,error:null})
 }
 
   } catch (error) {

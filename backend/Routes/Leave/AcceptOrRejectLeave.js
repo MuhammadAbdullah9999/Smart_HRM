@@ -16,6 +16,7 @@ router.post("/", async (req, res) => {
         employeeData,
         totalLeavesRequestPending,
         departments,
+        organizationName,
         error,
       } = await acceptOrRejectLeave(
         employeeId,
@@ -36,9 +37,10 @@ router.post("/", async (req, res) => {
           employeeData,
           totalLeavesRequestPending,
           departments,
+          organizationName
         }); // Return here as well
     } else {
-      console.log('else')
+      // console.log('else')
       const {
         user,
         employeeData,
@@ -47,6 +49,7 @@ router.post("/", async (req, res) => {
         noOfHRs,
         pendingLeaveRequests,
         resUserType,
+        organizationName,
         error,
       } = await acceptOrRejectLeave(
         employeeId,
@@ -59,14 +62,14 @@ router.post("/", async (req, res) => {
       if (error) {
         return res.status(500).json(error); // Return here to prevent further execution
       }
-      console.log(user,
-        employeeData,
-        noOfEmployees,
-        noOfDepartments,
-        noOfHRs,
-        pendingLeaveRequests,
-        resUserType,
-        error,)
+      // console.log(user,
+      //   employeeData,
+      //   noOfEmployees,
+      //   noOfDepartments,
+      //   noOfHRs,
+      //   pendingLeaveRequests,
+      //   resUserType,
+      //   error,)
       return res
         .status(200)
         .json({
@@ -77,6 +80,7 @@ router.post("/", async (req, res) => {
           noOfHRs,
           pendingLeaveRequests,
           userType: resUserType,
+          organizationName,
           error,
         }); // Return here as well
     }
