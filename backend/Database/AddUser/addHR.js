@@ -1,7 +1,7 @@
 const { generateHash } = require("../utilities/generatePasswordHash");
 const { connectToMongoDB, closeMongoDBConnection } = require("../connectDB");
 const { getCeoAndEmployee } = require('../../Database/GetOrganizationData/getCeoAndEmployee');
-const {ObjectId}=require('mongodb');
+const { ObjectId } = require('mongodb');
 
 const addHR = async (
   organizationId,
@@ -36,12 +36,30 @@ const addHR = async (
       };
     }
 
+    // Check if employeeId exists in HR collection
+    const existingHRById = await hrCollection.findOne({ employeeId: employeeId });
+    if (existingHRById) {
+      return {
+        message: null,
+        error: "HR with this ID already exists.",
+      };
+    }
+
     // Check if email exists in Employees collection
     const existingEmployee = await employeeCollection.findOne({ email: email });
     if (existingEmployee) {
       return {
         message: null,
         error: "User is already registered with these credentials.",
+      };
+    }
+
+    // Check if employeeId exists in Employees collection
+    const existingEmployeeById = await employeeCollection.findOne({ employeeId: employeeId });
+    if (existingEmployeeById) {
+      return {
+        message: null,
+        error: "Employee with this ID already exists.",
       };
     }
 
@@ -75,7 +93,7 @@ const addHR = async (
     if (result) {
       const { userType, user, employeeData, noOfEmployees, noOfDepartments, noOfHRs } = await getCeoAndEmployee(hrEmail, organizationId);
       const organization = await organizationCollection.findOne({ _id: new ObjectId(organizationId) });
-      const data = { userType, user, employeeData, noOfEmployees, noOfDepartments, noOfHRs ,organizationName:organization.name};
+      const data = { userType, user, employeeData, noOfEmployees, noOfDepartments, noOfHRs, organizationName: organization.name };
       return { data: data, error: null };
     }
   } catch (err) {
