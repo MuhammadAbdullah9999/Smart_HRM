@@ -15,7 +15,7 @@ function PostJob() {
     jobTitle: "",
     jobDescription:
       "",
-    jobType: "",
+    jobType: "Full time",
     requirements:
       "",
     noOfPositions: "",

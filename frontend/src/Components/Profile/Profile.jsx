@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "../Dashboard/Sidebar";
 import DashboardOverview from "../Dashboard/DashboardOverview";
 import Avatar from "@mui/material/Avatar";
@@ -12,14 +12,14 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { setEmployeeData } from "../../state";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const data = useSelector((state) => state.EmployeeData.EmployeeData);
-  const [userData,setUserData]=useState('');
-
+  const [userData, setUserData] = useState('');
   const [changed, setChanged] = useState(false);
-
   const [profileData, setProfileData] = useState({
     profilePic: "",
     email: data.user.email,
@@ -28,6 +28,9 @@ const Profile = () => {
     userId: data.user._id,
     userType: data.userType,
   });
+  const [passwordError, setPasswordError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+
   useEffect(() => {
     // Fetch user data when component mounts
     fetchUserData();
@@ -38,8 +41,6 @@ const Profile = () => {
       const response = await axios.get(`http://localhost:5000/GetUser/${data.userType}/${data.user.email}`);
       console.log("Fetched user data:", response.data);
       setUserData(response.data.user);
-      // const updatedUserData = { ...data, user: response.data.user };
-      // dispatch(setEmployeeData(updatedUserData));
       setProfileData({
         ...profileData,
         email: response.data.user.email,
@@ -49,6 +50,7 @@ const Profile = () => {
       console.error("Error fetching user data:", error);
     }
   };
+
   const handleChangeProfileData = (field, value) => {
     setProfileData({ ...profileData, [field]: value });
     setChanged(true);
@@ -67,15 +69,21 @@ const Profile = () => {
 
   const handleSubmit = async () => {
     console.log("Updated Profile Data:", profileData);
+
+    // Password validation regex: at least 6 characters long, containing at least one letter, one number, and one special character
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/;
+    if (profileData.password && !passwordRegex.test(profileData.password)) {
+      setPasswordError("Password must be at least 6 characters long and contain at least one letter, one number, and one special character.");
+      return;
+    }
+
     try {
-      const response = await axios.put(
-        "http://localhost:5000/UpdateUser",
-        profileData
-      );
+      setPasswordError('');
+      const response = await axios.put("http://localhost:5000/UpdateUser", profileData);
       console.log("response is", response);
       const updatedUserData = { ...data, user: response.data.user };
-
       dispatch(setEmployeeData(updatedUserData));
+      setSuccessMessage("Profile updated successfully.");
     } catch (error) {
       console.error(error);
     }
@@ -122,22 +130,21 @@ const Profile = () => {
       absentCount,
     };
   };
+
   const percentages = calculateAttendancePercentage(userData?.attendance);
 
   let leaveCount = 0;
   userData?.leaveRequest?.map((leave) => {
     if (leave.status.toLowerCase() === "approved") {
-      // const currentMonth = new Date().getMonth();
       const currentYear = new Date().getFullYear();
-
       const leaveDates = leave.leaveDate.split(" to ");
       const leaveStartDate = new Date(leaveDates[0]);
-      // const leaveEndDate = new Date(leaveDates[1]);
       if (leaveStartDate.getFullYear() === currentYear) {
         leaveCount++;
       }
     }
   });
+
   return (
     <div className="flex">
       {data && data.userType === "business_owner" ? (
@@ -175,7 +182,6 @@ const Profile = () => {
                 </IconButton>
               </label> */}
             </div>
-            {/* <hr className="my-4" /> */}
             <h3 className="text-lg font-semibold mb-4">Personal Info</h3>
             <div className="flex flex-col items-center md:text-left">
               <div className="flex items-center justify-between w-full mb-4">
@@ -212,6 +218,9 @@ const Profile = () => {
                   style={{ width: "100%" }}
                 />
               </div>
+              {passwordError && (
+                <p className="text-red-500 text-sm mt-2">{passwordError}</p>
+              )}
               {changed && (
                 <Button
                   variant="contained"
@@ -221,6 +230,9 @@ const Profile = () => {
                 >
                   Save Changes
                 </Button>
+              )}
+              {successMessage && (
+                <p className="text-green-500 mt-2">{successMessage}</p>
               )}
             </div>
           </div>
@@ -251,14 +263,11 @@ const Profile = () => {
               ))
             ) : (
               <div
-  
-                  className="hover:shadow-blue-200 shadow-gray-200 cursor-pointer border border-gray-300 rounded-md p-4 bg-white shadow-md"
-                >
-                  <h3 className="text-md font-light mb-2">
-                    Allowances
-                  </h3>
-                  <p className="text-2xl">No Allowances to Show !!!</p>
-                </div>
+                className="hover:shadow-blue-200 shadow-gray-200 cursor-pointer border border-gray-300 rounded-md p-4 bg-white shadow-md"
+              >
+                <h3 className="text-md font-light mb-2">Allowances</h3>
+                <p className="text-2xl">No Allowances to Show !!!</p>
+              </div>
             )}
           </div>
         </div>

@@ -38,7 +38,7 @@ function Sidebar({ isOpen, onClose }) {
   };
 
   const handleLogout=()=>{
-    console.log('logout')
+    // console.log('logout')
     dispatch(setEmployeeData(null));
     navigate("/login");
   }

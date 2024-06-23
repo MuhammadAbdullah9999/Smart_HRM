@@ -54,7 +54,7 @@ function Recruitment() {
                 <p className="text-sm">
                   {job.jobDescription.split("\n").slice(0, 3).join("\n")}...
                 </p>
-                <div className="flex justify-between">
+                <div className="flex gap-4">
                   <Link
                     to={`/HR/dashboard/recruitment/applicants/${job._id}/${job.organizationId}`}
                   >
