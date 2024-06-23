@@ -12,39 +12,37 @@ function Dashboard() {
   const [job, setJob] = useState([]);
   const [organizationData, setOrganizationData] = useState(null);
 
-  
-
   useEffect(() => {
     console.log("employeeData", employeeData);
 
-    const fetchJobs = async () => {
+    const fetchJobsAndDashboardData = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/jobs/${employeeData.user.organizationId}`);
-        // console.log(response.data.length);
-        setJob(response.data.length || []);
+        // Fetch jobs
+        const jobResponse = await axios.get(`http://localhost:5000/jobs/${employeeData.user.organizationId}`);
+        const jobs = jobResponse.data || [];
+        console.log(jobs.length);
+        setJob(jobs);
+
+        // Fetch dashboard data
+        const dashboardResponse = await axios.get(`http://localhost:5000/GetDashboardData/${employeeData.userType}/${employeeData.user.organizationId}`);
+        const dashboardData = dashboardResponse.data;
+        
+        // Set organization data
+        setOrganizationData({
+          totalEmployees: dashboardData?.noOfEmployees || 0,
+          totalDepartments: dashboardData?.noOfDepartments?.uniqueDepartmentsCount || 0,
+          totalLeaveRequest: dashboardData?.pendingLeaveRequests || 0,
+          totalJobs: jobs.length || 0
+        });
       } catch (error) {
-        console.error("Error fetching jobs:", error);
+        console.error("Error fetching data:", error);
       }
     };
 
-    const getDashboardData=async()=>{
-      const data = await axios.get(`http://localhost:5000/GetDashboardData/${employeeData.userType}/${employeeData.user.organizationId}`);
-      // console.log(data);
-      setOrganizationData({
-        totalEmployees: data.data?.noOfEmployees || 0,
-        totalDepartments: data.data && data.data.noOfDepartments ? data.data.noOfDepartments.uniqueDepartmentsCount : 0,
-        totalLeaveRequest: data.data?.pendingLeaveRequests || 0,
-        totalJobs:job?job:'0'
-      });
-    }
-    getDashboardData();
-    fetchJobs();
     // Check if employeeData is available and not null
     if (employeeData) {
-  
       setUserData(employeeData);
-
-     
+      fetchJobsAndDashboardData();
     }
   }, [employeeData]);
 
@@ -63,12 +61,7 @@ function Dashboard() {
   }
 
   return (
-  
     <div className="flex flex-col md:flex-row h-screen">
-      {/* <img
-      src={`data:image/jpeg;base64,${employeeData.employeeData[9].image}`}
-    alt="Employee Image"
-  /> */}
       <Sidebar></Sidebar>
       <div className='flex-1 flex flex-col overflow-hidden bg-color'>
         <main className="flex-1 overflow-x-hidden overflow-y-auto">
