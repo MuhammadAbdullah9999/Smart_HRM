@@ -23,6 +23,7 @@ function Applicants() {
   const [selectedApplicant, setSelectedApplicant] = useState(null);
   const [emailSubject, setEmailSubject] = useState("");
   const [emailBody, setEmailBody] = useState("");
+  const [emailError, setEmailError] = useState("");
 
   useEffect(() => {
     const getApplicants = async () => {
@@ -33,7 +34,7 @@ function Applicants() {
 
         setLoading(false);
         setApplicants(response.data);
-        console.log(response.data)
+        console.log(response.data);
       } catch (error) {
         setApiError(error.response.data);
         setLoading(false);
@@ -102,31 +103,41 @@ function Applicants() {
     pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
   }, []);
 
-  const handleEmail = () => {
-    window.open(`mailto:${selectedApplicant.email}?subject=${emailSubject}&body=${emailBody}`);
-  };
+  const handleEmail = async () => {
+    if (!emailSubject || !emailBody) {
+      setEmailError("Please enter both subject and email body.");
+      return;
+    }
 
-  const handleCall = () => {
-    // Implement call functionality here
-    // You may use a library like Twilio to make calls
+    try {
+     const response= await axios.post('http://localhost:5000/Mail/sendEmail', {
+        to: selectedApplicant.email,
+        subject: emailSubject,
+        text: emailBody
+      });
+      console.log(response)
+      setSelectedApplicant(null);
+      setEmailSubject("");
+      setEmailBody("");
+      setEmailError("");
+    } catch (error) {
+      console.error("Error sending email:", error);
+      setEmailError("Failed to send email. Please try again.");
+    }
   };
 
   return (
-    <div
-      className={`flex gap-4 ${
-        loading ? "pointer-events-none opacity-70" : ""
-      }`}
-    >
+    <div className={`flex gap-4 ${loading ? "pointer-events-none opacity-70" : ""}`}>
       {loading && (
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
           <CircularProgress color="primary" />
         </div>
       )}
       <div>
-        <Sidebar></Sidebar>
+        <Sidebar />
       </div>
       <div className="w-full p-4">
-        <DashboardOverview pageName="Applicants"></DashboardOverview>
+        <DashboardOverview pageName="Applicants" />
         <h1 className="my-4 font-bold text-2xl pl-12">
           {applicants.length} Job Application
         </h1>
@@ -145,16 +156,16 @@ function Applicants() {
             />
           </div>
           <button
-            className="p-2 px-4  mb-4 text-sm mr-2 bg-sec-color text-white rounded-lg active:text-sec-color active:bg-white"
+            className="p-2 px-4 mb-4 text-sm mr-2 bg-sec-color text-white rounded-lg active:text-sec-color active:bg-white"
             onClick={handleFilter}
           >
-            <FilterAltIcon className="mr-1"></FilterAltIcon>Filter
+            <FilterAltIcon className="mr-1" />Filter
           </button>
         </div>
         {!loading && (
           <div className="h-96 flex flex-col pt-6 p-3 w-11/12 m-auto bg-sec-color rounded-lg text-white overflow-y-auto">
             {applicants.map((applicant) => (
-              <div key={applicant._id} className=" mb-4 w-full text-sec-color">
+              <div key={applicant._id} className="mb-4 w-full text-sec-color">
                 <div className="flex justify-between bg-white p-3 rounded-lg shadow-md">
                   <div>
                     <p className="text-sm font-bold">{applicant.name}</p>
@@ -163,13 +174,10 @@ function Applicants() {
                   </div>
                   <div className="flex justify-end mt-2">
                     <div className="px-12">
-                    <IconButton onClick={() => setSelectedApplicant(applicant)}>
-                      <EmailIcon style={{ color: 'indianRed',fontSize: 30 }} />
-                    </IconButton>
+                      <IconButton onClick={() => setSelectedApplicant(applicant)}>
+                        <EmailIcon style={{ color: 'indianRed', fontSize: 30 }} />
+                      </IconButton>
                     </div>
-                    {/* <IconButton onClick={() => handleCall(applicant)}>
-                      <PhoneIcon />
-                    </IconButton> */}
                     <button
                       className="p-2 text-sm bg-sec-color text-white rounded-lg active:text-sec-color active:bg-white"
                       onClick={() => handlePdfClick(applicant.cv)}
@@ -182,17 +190,14 @@ function Applicants() {
             ))}
           </div>
         )}
-        {apiError && (<p className="text-red-500">{apiError}</p>)}
+        {apiError && <p className="text-red-500">{apiError}</p>}
       </div>
 
       {/* Email Modal */}
       {selectedApplicant && (
         <div className="fixed inset-0 z-50 overflow-y-auto">
           <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <div
-              className="fixed inset-0 transition-opacity"
-              aria-hidden="true"
-            >
+            <div className="fixed inset-0 transition-opacity" aria-hidden="true">
               <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
             </div>
 
@@ -218,11 +223,12 @@ function Applicants() {
                         value={emailBody}
                         onChange={(e) => setEmailBody(e.target.value)}
                       ></textarea>
+                      {emailError && <p className="text-red-500 mt-2">{emailError}</p>}
                     </div>
                   </div>
                 </div>
               </div>
-              <div className= "px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+              <div className="px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                 <button
                   onClick={handleEmail}
                   className="mx-2 bg-sec-color text-white px-4 border rounded-lg shadow-md hover:text-gray-200 hover:bg-gray-600 active:text-sec-color active:bg-white"

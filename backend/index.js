@@ -32,6 +32,7 @@ const GetAttendanceData=require('./Routes/GetAttendance/GetAttendanceData');
 const GetUser=require('./Routes/GetUser/GetUser')
 const GetDashboardData=require('./Routes/GetDashboardData/GetDashboardData');
 const Jobs=require('./Routes/Jobs/Jobs');
+const SendMail=require('./Routes/SendMail/SendMail')
 const app = express();
 
 app.use(cors({credentials: true }));
@@ -69,6 +70,7 @@ app.use('/GetAttendance',GetAttendanceData);
 app.use('/GetUser',GetUser);
 app.use('/GetDashboardData',GetDashboardData);
 app.use('/Jobs',Jobs);
+app.use('/Mail',SendMail);
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {

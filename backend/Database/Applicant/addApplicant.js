@@ -1,17 +1,17 @@
 const { generateHash } = require("../utilities/generatePasswordHash");
 const { connectToMongoDB, closeMongoDBConnection } = require("../connectDB");
 
-const addApplicant = async (name, email, password, phoneNumber,jobId,orgId, cv) => {
+const addApplicant = async (name, email, password, phoneNumber, jobId, orgId, cv) => {
   try {
     const db = await connectToMongoDB();
     const col = db.collection("Applicants");
 
-    // Check if an applicant with the same email already exists
-    const existingApplicant = await col.findOne({ email });
+    // Check if an applicant with the same email and jobId already exists
+    const existingApplicant = await col.findOne({ email, jobId });
     if (existingApplicant) {
       return {
         message: null,
-        error: "Applicant is already registered with these credentials.",
+        error: "Applicant has already applied for this job with these credentials.",
       };
     }
 
@@ -32,8 +32,7 @@ const addApplicant = async (name, email, password, phoneNumber,jobId,orgId, cv) 
     if (result) {
       // Add any additional logic you need after successfully adding an applicant
       console.log('Applicant data stored successfully');
-      
-      return { data:"Applied Successfully",error:null  };
+      return { data: "Applied Successfully", error: null };
     }
   } catch (err) {
     console.error('Failed to store applicant data:', err);
