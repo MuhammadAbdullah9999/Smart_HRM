@@ -133,17 +133,13 @@ const Profile = () => {
 
   const percentages = calculateAttendancePercentage(userData?.attendance);
 
-  let leaveCount = 0;
-  userData?.leaveRequest?.map((leave) => {
+  // Calculate the total number of approved leave days
+  const totalLeaveDays = userData?.leaveRequest?.reduce((total, leave) => {
     if (leave.status.toLowerCase() === "approved") {
-      const currentYear = new Date().getFullYear();
-      const leaveDates = leave.leaveDate.split(" to ");
-      const leaveStartDate = new Date(leaveDates[0]);
-      if (leaveStartDate.getFullYear() === currentYear) {
-        leaveCount++;
-      }
+      return total + parseInt(leave.leaveDays, 10);
     }
-  });
+    return total;
+  }, 0) || 0;
 
   return (
     <div className="flex">
@@ -243,7 +239,7 @@ const Profile = () => {
             </div>
             <div className="hover:shadow-blue-200 shadow-gray-200 cursor-pointer border border-gray-300 rounded-md p-4 bg-white shadow-md">
               <h3 className="text-md font-light mb-4">Leaves</h3>
-              <p className="text-2xl font-thin">{leaveCount}</p>
+              <p className="text-2xl font-thin">{totalLeaveDays}</p>
             </div>
             <div className="hover:shadow-blue-200 shadow-gray-200 cursor-pointer border border-gray-300 rounded-md p-4 bg-white shadow-md">
               <h3 className="text-md font-light mb-4">Base Salary</h3>
